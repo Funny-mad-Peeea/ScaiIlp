@@ -30,6 +30,9 @@
     <ClInclude Include="ilp_solver_cbc.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="ilp_solver_factory.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="IlpSolverDll.cpp">
@@ -48,6 +51,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="ilp_solver_cbc.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ilp_solver_factory.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

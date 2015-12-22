@@ -89,6 +89,7 @@
   <ItemGroup>
     <ClInclude Include="IlpSolverDll.hpp" />
     <ClInclude Include="ilp_solver_cbc.hpp" />
+    <ClInclude Include="ilp_solver_factory.hpp" />
     <ClInclude Include="ilp_solver_interface.hpp" />
     <ClInclude Include="ilp_solver_osi.hpp" />
     <ClInclude Include="ilp_solver_osi_model.hpp" />
@@ -104,6 +105,7 @@
     </ClCompile>
     <ClCompile Include="IlpSolverDll.cpp" />
     <ClCompile Include="ilp_solver_cbc.cpp" />
+    <ClCompile Include="ilp_solver_factory.cpp" />
     <ClCompile Include="ilp_solver_interface.cpp" />
     <ClCompile Include="ilp_solver_osi.cpp" />
     <ClCompile Include="ilp_solver_osi_model.cpp" />
