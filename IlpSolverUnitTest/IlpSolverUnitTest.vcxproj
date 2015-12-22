@@ -84,7 +84,11 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="ilp_solver_interface_t.cpp" />
     <ClCompile Include="unit_tests.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="ilp_solver_interface_t.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
