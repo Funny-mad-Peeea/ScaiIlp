@@ -54,12 +54,15 @@
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>ILP_SOLVER_DLL_EXPORTS;_ITERATOR_DEBUG_LEVEL=0;WIN32;_DEBUG;_WINDOWS;_USRDLL;ILPSOLVERDLL_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
+      <AdditionalIncludeDirectories>$(CBC_DIR)\Clp\src;$(CBC_DIR)\Osi\src\Osi;$(CBC_DIR)\CoinUtils\src;$(CBC_DIR)\Clp\src\OsiClp;$(CBC_DIR)\Cbc\src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <MinimalRebuild>false</MinimalRebuild>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>$(CBC_DIR)\Cbc\MSVisualStudio\v10\$(Configuration);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>libCbc.lib;libCoinUtils.lib;libClp.lib;libOsi.lib;libOsiClp.lib;libCgl.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -71,6 +74,7 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>ILP_SOLVER_DLL_EXPORTS;_ITERATOR_DEBUG_LEVEL=0;WIN32;NDEBUG;_WINDOWS;_USRDLL;ILPSOLVERDLL_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
+      <AdditionalIncludeDirectories>$(CBC_DIR)\Clp\src;$(CBC_DIR)\Osi\src\Osi;$(CBC_DIR)\CoinUtils\src;$(CBC_DIR)\Clp\src\OsiClp;$(CBC_DIR)\Cbc\src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
@@ -78,11 +82,14 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
+      <AdditionalLibraryDirectories>$(CBC_DIR)\Cbc\MSVisualStudio\v10\$(Configuration);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>libCbc.lib;libCoinUtils.lib;libClp.lib;libOsi.lib;libOsiClp.lib;libCgl.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="IlpSolverDll.hpp" />
     <ClInclude Include="ilp_solver_interface.hpp" />
+    <ClInclude Include="ilp_solver_osi_model.hpp" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp">
@@ -95,6 +102,7 @@
     </ClCompile>
     <ClCompile Include="IlpSolverDll.cpp" />
     <ClCompile Include="ilp_solver_interface.cpp" />
+    <ClCompile Include="ilp_solver_osi_model.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
