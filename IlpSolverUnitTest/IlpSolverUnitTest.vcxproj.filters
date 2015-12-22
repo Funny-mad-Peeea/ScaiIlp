@@ -13,11 +13,17 @@
     <ClCompile Include="unit_tests.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="ilp_solver_cbc_t.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="ilp_solver_interface_t.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="ilp_solver_cbc_t.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
     <ClInclude Include="ilp_solver_interface_t.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>

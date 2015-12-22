@@ -1,0 +1,10 @@
+#ifndef _ILP_SOLVER_CBC_T_HPP
+#define _ILP_SOLVER_CBC_T_HPP
+
+namespace ILPSolver
+{
+    void test_sorting_cbc();
+    void test_linear_programming_cbc();
+}
+
+#endif
