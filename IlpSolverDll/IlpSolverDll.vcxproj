@@ -82,6 +82,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="IlpSolverDll.hpp" />
+    <ClInclude Include="ilp_solver_interface.hpp" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp">
@@ -93,6 +94,7 @@
       </PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="IlpSolverDll.cpp" />
+    <ClCompile Include="ilp_solver_interface.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

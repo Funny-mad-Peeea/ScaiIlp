@@ -18,12 +18,18 @@
     <ClInclude Include="IlpSolverDll.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="ilp_solver_interface.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="IlpSolverDll.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="dllmain.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ilp_solver_interface.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
