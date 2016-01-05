@@ -58,13 +58,13 @@ namespace ILPSolver
     void ILPSolverInterface::minimize()
     {
         do_set_objective_sense(ObjectiveSense::MINIMIZE);
-        do_solve();
+        do_prepare_and_solve();
     }
     
     void ILPSolverInterface::maximize() 
     {
         do_set_objective_sense(ObjectiveSense::MAXIMIZE);
-        do_solve();
+        do_prepare_and_solve();
     }
     
     const double* ILPSolverInterface::get_solution() const
