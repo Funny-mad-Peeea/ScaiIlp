@@ -19,8 +19,8 @@ namespace ILPSolver
             void    do_add_constraint       (std::vector<int> p_col_indices, std::vector<double> p_col_values, double p_lower_bound, double p_upper_bound, std::string p_name) override;
             void    do_set_objective_sense  (ObjectiveSense p_sense) override;
     
-            virtual OsiSolverInterface*         solver() = 0;
-            virtual const OsiSolverInterface*   solver() const = 0;
+            virtual OsiSolverInterface&         solver() = 0;
+            virtual const OsiSolverInterface&   solver() const = 0;
     };
 }
 

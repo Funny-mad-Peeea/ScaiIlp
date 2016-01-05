@@ -4,20 +4,19 @@
 
 namespace ILPSolver
 {
-    OsiSolverInterface* ILPSolverCbc::solver()
+    OsiSolverInterface& ILPSolverCbc::solver()
     {
-        return &d_clp_solver;
+        return d_clp_solver;
     }
 
-    const OsiSolverInterface* ILPSolverCbc::solver() const
+    const OsiSolverInterface& ILPSolverCbc::solver() const
     {
-        return &d_clp_solver;
+        return d_clp_solver;
     }
 
     void ILPSolverCbc::do_solve()
     {
-        auto solver = dynamic_cast<OsiSolverInterface*>(&d_clp_solver); // unclear why we need a cast here
-        d_model.assignSolver(solver, false);
+        d_model = CbcModel(solver());
         d_model.branchAndBound();
     }
 

@@ -11,13 +11,13 @@ namespace ILPSolver
     class ILPSolverOsi: public ILPSolverOsiModel
     {
     public:
-        ILPSolverOsi(OsiSolverInterface* const p_ilp_solver);
+        ILPSolverOsi(OsiSolverInterface& p_ilp_solver);
 
         private:
-            OsiSolverInterface* const d_ilp_solver;
+            OsiSolverInterface& d_ilp_solver;
 
-            OsiSolverInterface*         solver              () override         { return d_ilp_solver; }
-            const OsiSolverInterface*   solver              () const override   { return d_ilp_solver; }
+            OsiSolverInterface&         solver              () override         { return d_ilp_solver; }
+            const OsiSolverInterface&   solver              () const override   { return d_ilp_solver; }
 
             void                        do_solve            () override;
             const double*               do_get_solution     () const override;

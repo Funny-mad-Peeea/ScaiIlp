@@ -16,8 +16,8 @@ namespace ILPSolver
             OsiClpSolverInterface d_clp_solver;
             CbcModel d_model;
 
-            OsiSolverInterface*         solver              () override;
-            const OsiSolverInterface*   solver              () const override;
+            OsiSolverInterface&         solver              () override;
+            const OsiSolverInterface&   solver              () const override;
 
             void                        do_solve            () override;
             const double*               do_get_solution     () const override;
