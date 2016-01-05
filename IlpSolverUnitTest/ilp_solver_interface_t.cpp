@@ -205,10 +205,11 @@ namespace ILPSolver
             for (auto i = 0; i < num_vars; ++i)
                 constraint_value += a[j][i]*x[i];
 
-            cout << constraint_value << " (must be in [" << b[j] -constraint_shift << "," << b[j] << ")" << endl;
+            cout << constraint_value << " (must be in [" << b[j] -constraint_shift << "," << b[j] << "), expected " << b[j] << endl;
 
             assert(constraint_value >= b[j] - constraint_shift - eps);  // solution obeys lower bound of the j'th constraint
             assert(constraint_value <= b[j] + eps);                     // solution obeys upper bound of the j'th constraint
+            assert(constraint_value >= b[j] - eps);                     // upper bound of the j'th constraint is tight
         }
 
         cout << endl << "Expected solution: ";
