@@ -130,7 +130,7 @@ namespace ILPSolver
             p_solver->add_constraint_upper(indices, values, b[j],        "x*dir" + std::to_string(j) + " <= b" + std::to_string(j));
         }
 
-        p_solver->minimize();
+        p_solver->maximize();
         
         // Check correctness of solution
         const auto x = p_solver->get_solution();
