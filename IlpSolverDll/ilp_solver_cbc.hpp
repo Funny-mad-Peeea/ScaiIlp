@@ -22,6 +22,7 @@ namespace ILPSolver
             void                        do_solve            () override;
             const double*               do_get_solution     () const override;
             double                      do_get_objective    () const override;
+            void                        do_set_num_threads  (int p_num_threads) override;
     };
 }
 

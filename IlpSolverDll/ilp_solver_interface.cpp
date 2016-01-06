@@ -82,4 +82,9 @@ namespace ILPSolver
     {
         return do_get_objective();
     }
+
+    void ILPSolverInterface::set_num_threads(int p_num_threads)
+    {
+        do_set_num_threads(p_num_threads);
+    }
 }

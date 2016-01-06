@@ -44,6 +44,7 @@ namespace ILPSolver
             virtual void            do_prepare_and_solve        () = 0;
             virtual const double*   do_get_solution             () const = 0;
             virtual double          do_get_objective            () const = 0;
+            virtual void            do_set_num_threads          (int p_num_threads) = 0;
     };
 }
 

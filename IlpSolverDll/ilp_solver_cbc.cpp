@@ -30,4 +30,8 @@ namespace ILPSolver
         return d_model.getObjValue();
     }
 
+    void ILPSolverCbc::do_set_num_threads(int p_num_threads)
+    {
+        d_model.setNumberThreads(p_num_threads);
+    }
 }
