@@ -37,7 +37,7 @@ namespace ILPSolver
 
         // Add variables
         for (auto i = 0; i < num_vars; ++i)
-            p_solver->add_variable_integer(1, 0, DBL_MAX, "x" + std::to_string(i));
+            p_solver->add_variable_integer(1, 0, std::numeric_limits<double>::max(), "x" + std::to_string(i));
 
         // Add constraints
         cout << "Initial array: ";
@@ -158,7 +158,7 @@ namespace ILPSolver
 
         // Add variables
         for (auto i = 0; i < num_vars; ++i)
-            p_solver->add_variable_continuous(c[i], -DBL_MAX, DBL_MAX, "x" + std::to_string(i));
+            p_solver->add_variable_continuous(c[i], -std::numeric_limits<double>::max(), std::numeric_limits<double>::max(), "x" + std::to_string(i));
 
         // Add constraints
         auto indices = vector<int>();
