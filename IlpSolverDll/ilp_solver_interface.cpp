@@ -42,12 +42,18 @@ namespace ILPSolver
     
     void ILPSolverInterface::add_constraint_upper(vector<int> p_col_indices, vector<double> p_col_values, double p_upper_bound, string p_name)
     {
-        do_add_constraint(p_col_indices, p_col_values, -DBL_MAX, p_upper_bound, p_name);
+        if (p_upper_bound >= 0.5*std::numeric_limits<double>::max())    // no restriction
+            return;
+
+        do_add_constraint(p_col_indices, p_col_values, -std::numeric_limits<double>::max(), p_upper_bound, p_name);
     }
     
     void ILPSolverInterface::add_constraint_lower(vector<int> p_col_indices, vector<double> p_col_values, double p_lower_bound, string p_name)
     {
-        do_add_constraint(p_col_indices, p_col_values, p_lower_bound, DBL_MAX, p_name);
+        if (p_lower_bound <= -0.5*std::numeric_limits<double>::max())   // no restriction
+            return;
+
+        do_add_constraint(p_col_indices, p_col_values, p_lower_bound, std::numeric_limits<double>::max(), p_name);
     }
     
     void ILPSolverInterface::add_constraint_equality(vector<int> p_col_indices, vector<double> p_col_values, double p_value, string p_name)
