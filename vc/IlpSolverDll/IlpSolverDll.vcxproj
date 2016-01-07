@@ -87,28 +87,20 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="IlpSolverDll.hpp" />
-    <ClInclude Include="ilp_solver_cbc.hpp" />
-    <ClInclude Include="ilp_solver_factory.hpp" />
-    <ClInclude Include="ilp_solver_interface.hpp" />
-    <ClInclude Include="ilp_solver_osi.hpp" />
-    <ClInclude Include="ilp_solver_osi_model.hpp" />
+    <ClInclude Include="..\..\src\IlpSolverDll.hpp" />
+    <ClInclude Include="..\..\src\ilp_solver_cbc.hpp" />
+    <ClInclude Include="..\..\src\ilp_solver_factory.hpp" />
+    <ClInclude Include="..\..\src\ilp_solver_interface.hpp" />
+    <ClInclude Include="..\..\src\ilp_solver_osi.hpp" />
+    <ClInclude Include="..\..\src\ilp_solver_osi_model.hpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="dllmain.cpp">
-      <CompileAsManaged Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</CompileAsManaged>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-      </PrecompiledHeader>
-      <CompileAsManaged Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">false</CompileAsManaged>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-      </PrecompiledHeader>
-    </ClCompile>
-    <ClCompile Include="IlpSolverDll.cpp" />
-    <ClCompile Include="ilp_solver_cbc.cpp" />
-    <ClCompile Include="ilp_solver_factory.cpp" />
-    <ClCompile Include="ilp_solver_interface.cpp" />
-    <ClCompile Include="ilp_solver_osi.cpp" />
-    <ClCompile Include="ilp_solver_osi_model.cpp" />
+    <ClCompile Include="..\..\src\dllmain.cpp" />
+    <ClCompile Include="..\..\src\ilp_solver_cbc.cpp" />
+    <ClCompile Include="..\..\src\ilp_solver_factory.cpp" />
+    <ClCompile Include="..\..\src\ilp_solver_interface.cpp" />
+    <ClCompile Include="..\..\src\ilp_solver_osi.cpp" />
+    <ClCompile Include="..\..\src\ilp_solver_osi_model.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

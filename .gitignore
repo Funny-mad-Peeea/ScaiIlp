@@ -1,8 +1,8 @@
-Debug/*
-Release/*
-ipch/*
-IlpSolverDll/obj/*
-IlpSolverUnitTest/obj/*
+vc/Debug/*
+vc/Release/*
+vc/ipch/*
+vc/IlpSolverDll/obj/*
+vc/IlpSolverUnitTest/obj/*
 *.sdf
 *.opensdf
 *.suo

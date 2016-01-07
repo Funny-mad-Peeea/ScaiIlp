@@ -87,13 +87,13 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="ilp_solver_cbc_t.cpp" />
-    <ClCompile Include="ilp_solver_interface_t.cpp" />
-    <ClCompile Include="unit_tests.cpp" />
+    <ClInclude Include="..\..\src\ilp_solver_cbc_t.hpp" />
+    <ClInclude Include="..\..\src\ilp_solver_interface_t.hpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="ilp_solver_cbc_t.hpp" />
-    <ClInclude Include="ilp_solver_interface_t.hpp" />
+    <ClCompile Include="..\..\src\ilp_solver_cbc_t.cpp" />
+    <ClCompile Include="..\..\src\ilp_solver_interface_t.cpp" />
+    <ClCompile Include="..\..\src\unit_tests.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
