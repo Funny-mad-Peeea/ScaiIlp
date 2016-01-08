@@ -8,7 +8,7 @@
 
 class OsiSolverInterface;
 
-namespace ILPSolver
+namespace ilp_solver
 {
     class ILPSolverCbc : public ILPSolverOsiModel
     {

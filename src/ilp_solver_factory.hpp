@@ -7,7 +7,7 @@
 
 #include <memory>
 
-namespace ILPSolver
+namespace ilp_solver
 {
     // Do not call this explicitly:
     ILP_SOLVER_DLL_API void destroy_solver(ILPSolverInterface* p_solver);

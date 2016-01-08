@@ -2,7 +2,7 @@
 
 #include "OsiSolverInterface.hpp"
 
-namespace ILPSolver
+namespace ilp_solver
 {
     ILPSolverOsi::ILPSolverOsi(OsiSolverInterface* p_ilp_solver) : d_ilp_solver(p_ilp_solver) {}
 

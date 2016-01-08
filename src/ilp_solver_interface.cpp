@@ -3,7 +3,7 @@
 using std::string;
 using std::vector;
 
-namespace ILPSolver
+namespace ilp_solver
 {
     void ILPSolverInterface::add_variable_boolean(double p_objective, string p_name)
     {

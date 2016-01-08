@@ -20,7 +20,7 @@ const auto c_column_ordered = false;
 
 const auto c_test_for_duplicate_index = false;
 
-namespace ILPSolver
+namespace ilp_solver
 {
     ILPSolverOsiModel::ILPSolverOsiModel() : d_matrix(c_column_ordered, 0, 0)
     {

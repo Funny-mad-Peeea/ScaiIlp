@@ -3,7 +3,7 @@
 #include "ilp_solver_interface_t.hpp"
 #include "ilp_solver_factory.hpp"
 
-namespace ILPSolver
+namespace ilp_solver
 {
     void test_sorting_cbc()
     {

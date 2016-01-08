@@ -11,7 +11,7 @@ using std::vector;
 
 const auto eps = 0.0001;
 
-namespace ILPSolver
+namespace ilp_solver
 {
     int round(double x)
     {

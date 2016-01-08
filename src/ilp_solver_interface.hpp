@@ -6,7 +6,7 @@
 
 #include "IlpSolverDll.hpp"
 
-namespace ILPSolver
+namespace ilp_solver
 {
     class ILP_SOLVER_DLL_API ILPSolverInterface
     {

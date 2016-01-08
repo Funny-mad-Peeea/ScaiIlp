@@ -4,7 +4,7 @@
 
 using std::unique_ptr;
 
-namespace ILPSolver
+namespace ilp_solver
 {
     template<class T, class Deleter>
     unique_ptr<T, Deleter> make_unique()

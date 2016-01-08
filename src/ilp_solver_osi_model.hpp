@@ -10,7 +10,7 @@
 
 class OsiSolverInterface;
 
-namespace ILPSolver
+namespace ilp_solver
 {
     // Implements all methods from ILPSolverInterface that can be realized
     // via the model of the OsiSolverInterface.

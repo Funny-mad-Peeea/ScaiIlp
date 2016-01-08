@@ -2,6 +2,6 @@
 
 void main()
 {
-    ILPSolver::test_sorting_cbc();
-    ILPSolver::test_linear_programming_cbc();
+    ilp_solver::test_sorting_cbc();
+    ilp_solver::test_linear_programming_cbc();
 }

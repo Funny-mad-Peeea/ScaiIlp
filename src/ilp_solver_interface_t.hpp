@@ -1,7 +1,7 @@
 #ifndef _ILP_SOLVER_INTERFACE_T_HPP
 #define _ILP_SOLVER_INTERFACE_T_HPP
 
-namespace ILPSolver
+namespace ilp_solver
 {
     class ILPSolverInterface;
 

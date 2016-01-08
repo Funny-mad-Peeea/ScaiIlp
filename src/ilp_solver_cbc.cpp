@@ -2,7 +2,7 @@
 
 #include "OsiSolverInterface.hpp"
 
-namespace ILPSolver
+namespace ilp_solver
 {
     OsiSolverInterface* ILPSolverCbc::solver()
     {
