@@ -27,6 +27,7 @@ namespace ILPSolver
         d_matrix.setDimensions(0, 0);
     }
 
+
     void ILPSolverOsiModel::do_add_variable(const vector<int>& p_row_indices, const vector<double>& p_row_values, double p_objective, double p_lower_bound, double p_upper_bound, string p_name, VariableType p_type)
     {
         const auto num_indices = (int) p_row_indices.size();
@@ -45,6 +46,7 @@ namespace ILPSolver
         #endif
     }
 
+
     void ILPSolverOsiModel::do_add_constraint(const vector<int>& p_col_indices, const vector<double>& p_col_values, double p_lower_bound, double p_upper_bound, string p_name)
     {
         const auto num_indices = (int) p_col_indices.size();
@@ -61,16 +63,19 @@ namespace ILPSolver
         #endif
     }
 
+
     void ILPSolverOsiModel::do_set_objective_sense(ObjectiveSense p_sense)
     {
         solver().setObjSense(p_sense == ILPSolverInterface::ObjectiveSense::MINIMIZE ? 1 : -1);
     }
+
 
     void ILPSolverOsiModel::do_prepare_and_solve()
     {
         prepare();        
         do_solve();
     }
+
 
     void ILPSolverOsiModel::prepare()
     {

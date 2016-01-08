@@ -44,7 +44,6 @@ namespace ILPSolver
     {
         if (p_upper_bound >= 0.5*std::numeric_limits<double>::max())    // no restriction
             return;
-
         do_add_constraint(p_col_indices, p_col_values, -std::numeric_limits<double>::max(), p_upper_bound, p_name);
     }
     
@@ -52,7 +51,6 @@ namespace ILPSolver
     {
         if (p_lower_bound <= -0.5*std::numeric_limits<double>::max())   // no restriction
             return;
-
         do_add_constraint(p_col_indices, p_col_values, p_lower_bound, std::numeric_limits<double>::max(), p_name);
     }
     
