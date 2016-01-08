@@ -9,7 +9,7 @@ using std::cout;
 using std::endl;
 using std::vector;
 
-const auto eps = 0.0001;
+const auto c_eps = 0.0001;
 
 namespace ilp_solver
 {
@@ -73,7 +73,7 @@ namespace ilp_solver
 
         // Check correctness of objective
         const auto expected_obj_value = num_vars*(num_vars-1)/2;
-        assert(fabs(obj_value - expected_obj_value) < eps);  // objective should be 0+1+...+(num_numbers-1)
+        assert(fabs(obj_value - expected_obj_value) < c_eps);  // objective should be 0+1+...+(num_numbers-1)
 
         // Check correctness of solution
         auto sorted = vector<int>(num_vars, INT_MIN);       // sort according solution
@@ -85,7 +85,7 @@ namespace ilp_solver
 
             cout << pos << " ";
 
-            assert(fabs(pos - permutation[i]) < eps);    // solution must be integral
+            assert(fabs(pos - permutation[i]) < c_eps);    // solution must be integral
             sorted[pos] = numbers[i];
         }
         cout << endl;
@@ -189,13 +189,13 @@ namespace ilp_solver
         auto obj_cmp = 0.0;
         for (auto i = 0; i < num_vars; ++i)
             obj_cmp += c[i]*x[i];
-        assert(fabs(obj - obj_cmp) < eps);   // objective should fit to the solution
+        assert(fabs(obj - obj_cmp) < c_eps);   // objective should fit to the solution
 
         cout << endl;
         cout << "Expected objective: " << obj0 << endl;
         cout << "Resulting objective: " << obj << endl;
 
-        assert(fabs(obj - obj0) < eps);      // objective should equal the optimal objective
+        assert(fabs(obj - obj0) < c_eps);      // objective should equal the optimal objective
 
         // Check correctness of solution
         cout << endl << "Constraint values:" << endl;
@@ -207,9 +207,9 @@ namespace ilp_solver
 
             cout << constraint_value << " (must be in [" << b[j] -constraint_shift << "," << b[j] << "), expected " << b[j] << endl;
 
-            assert(constraint_value >= b[j] - constraint_shift - eps);  // solution obeys lower bound of the j'th constraint
-            assert(constraint_value <= b[j] + eps);                     // solution obeys upper bound of the j'th constraint
-            assert(constraint_value >= b[j] - eps);                     // upper bound of the j'th constraint is tight
+            assert(constraint_value >= b[j] - constraint_shift - c_eps);  // solution obeys lower bound of the j'th constraint
+            assert(constraint_value <= b[j] + c_eps);                     // solution obeys upper bound of the j'th constraint
+            assert(constraint_value >= b[j] - c_eps);                     // upper bound of the j'th constraint is tight
         }
 
         cout << endl << "Expected solution: ";
@@ -221,7 +221,7 @@ namespace ilp_solver
         for (auto i = 0; i < num_vars; ++i)
         {
             cout << x[i] << " ";
-            assert(fabs(x[i] - x0[i]) <= eps);
+            assert(fabs(x[i] - x0[i]) <= c_eps);
         }
         cout << endl;
     }
