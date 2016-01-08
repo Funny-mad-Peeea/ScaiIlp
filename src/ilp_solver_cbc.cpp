@@ -4,19 +4,19 @@
 
 namespace ILPSolver
 {
-    OsiSolverInterface& ILPSolverCbc::solver()
+    OsiSolverInterface* ILPSolverCbc::solver()
     {
-        return d_clp_solver;
+        return &d_clp_solver;
     }
 
-    const OsiSolverInterface& ILPSolverCbc::solver() const
+    const OsiSolverInterface* ILPSolverCbc::solver() const
     {
-        return d_clp_solver;
+        return &d_clp_solver;
     }
 
     void ILPSolverCbc::do_solve()
     {
-        d_model = CbcModel(solver());
+        d_model = CbcModel(*solver());
         d_model.branchAndBound();
     }
 

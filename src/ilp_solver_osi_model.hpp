@@ -36,8 +36,8 @@ namespace ILPSolver
 
             void    prepare                 ();
     
-            virtual OsiSolverInterface&         solver() = 0;
-            virtual const OsiSolverInterface&   solver() const = 0;
+            virtual OsiSolverInterface*         solver() = 0;
+            virtual const OsiSolverInterface*   solver() const = 0;
             virtual void                        do_solve() = 0;     // not always implemented as solver().branchAndBound() (see ILPSolverCbc)
     };
 }

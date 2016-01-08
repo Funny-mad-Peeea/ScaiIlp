@@ -66,7 +66,7 @@ namespace ILPSolver
 
     void ILPSolverOsiModel::do_set_objective_sense(ObjectiveSense p_sense)
     {
-        solver().setObjSense(p_sense == ILPSolverInterface::ObjectiveSense::MINIMIZE ? 1 : -1);
+        solver()->setObjSense(p_sense == ILPSolverInterface::ObjectiveSense::MINIMIZE ? 1 : -1);
     }
 
 
@@ -79,36 +79,36 @@ namespace ILPSolver
 
     void ILPSolverOsiModel::prepare()
     {
-        auto& ilp_solver = solver();
+        auto ilp_solver = solver();
 
         // Add variables and constraints
-        ilp_solver.loadProblem(d_matrix,
-                               d_variable_lower.data(),
-                               d_variable_upper.data(),
-                               d_objective.data(),
-                               d_constraint_lower.data(),
-                               d_constraint_upper.data());
+        ilp_solver->loadProblem(d_matrix,
+                                d_variable_lower.data(),
+                                d_variable_upper.data(),
+                                d_objective.data(),
+                                d_constraint_lower.data(),
+                                d_constraint_upper.data());
 
         // Set variable types
         for (auto i = 0; i < (int) d_variable_type.size(); ++i)
         {
             if (d_variable_type[i] == VariableType::INTEGER)
-                ilp_solver.setInteger(i);
+                ilp_solver->setInteger(i);
             else
-                ilp_solver.setContinuous(i);
+                ilp_solver->setContinuous(i);
         }
 
         #ifdef DO_FORWARD_NAME
             // Set variable names
             for (auto i = 0; i < (int) d_variable_name.size(); ++i)
-                ilp_solver.setColName(i, d_variable_name[i]);
+                ilp_solver->setColName(i, d_variable_name[i]);
     
             // Set constraint names
             for (auto j = 0; j < (int) d_constraint_name.size(); ++j)
-                ilp_solver.setRowName(j, d_constraint_name[j]);
+                ilp_solver->setRowName(j, d_constraint_name[j]);
         #endif
 
         // Deactivate solvers console output
-        ilp_solver.setHintParam(OsiDoReducePrint, 1);
+        ilp_solver->setHintParam(OsiDoReducePrint, 1);
     }
 }
