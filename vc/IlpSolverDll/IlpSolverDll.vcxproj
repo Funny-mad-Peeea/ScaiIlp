@@ -95,7 +95,6 @@
     <ClInclude Include="..\..\src\ilp_solver_osi_model.hpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\src\dllmain.cpp" />
     <ClCompile Include="..\..\src\ilp_solver_cbc.cpp" />
     <ClCompile Include="..\..\src\ilp_solver_factory.cpp" />
     <ClCompile Include="..\..\src\ilp_solver_interface.cpp" />
