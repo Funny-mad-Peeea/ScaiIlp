@@ -161,17 +161,13 @@ namespace ilp_solver
             p_solver->add_variable_continuous(c[i], -std::numeric_limits<double>::max(), std::numeric_limits<double>::max(), "x" + std::to_string(i));
 
         // Add constraints
-        auto indices = vector<int>();
-        for (auto i = 0; i < num_vars; ++i)
-            indices.push_back(i);
-
         cout << "Constraints:" << endl;
         for (auto j = 0; j < num_dirs; ++j)
         {
             const auto values = vector<double>(a[j], a[j] + num_vars);
 
-            p_solver->add_constraint_lower(indices, values, b[j] - constraint_shift, "x*dir" + std::to_string(j) + " >= b" + std::to_string(j) + " - 10");
-            p_solver->add_constraint_upper(indices, values, b[j],                    "x*dir" + std::to_string(j) + " <= b" + std::to_string(j));
+            p_solver->add_constraint_lower(values, b[j] - constraint_shift, "x*dir" + std::to_string(j) + " >= b" + std::to_string(j) + " - 10");
+            p_solver->add_constraint_upper(values, b[j],                    "x*dir" + std::to_string(j) + " <= b" + std::to_string(j));
 
             cout << b[j] - constraint_shift << " <= ";
             for (auto i = 0; i < num_vars; ++i)
