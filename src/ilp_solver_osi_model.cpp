@@ -16,13 +16,13 @@ using std::vector;
 
 // States whether consecutive elements of each column are contiguous in memory.
 // (If not, consecutive elements of each row are contiguous in memory.)
-const auto column_ordered = false;
+const auto c_column_ordered = false;
 
-const auto test_for_duplicate_index = false;
+const auto c_test_for_duplicate_index = false;
 
 namespace ILPSolver
 {
-    ILPSolverOsiModel::ILPSolverOsiModel() : d_matrix(column_ordered, 0, 0)
+    ILPSolverOsiModel::ILPSolverOsiModel() : d_matrix(c_column_ordered, 0, 0)
     {
         d_matrix.setDimensions(0, 0);
     }
@@ -32,7 +32,7 @@ namespace ILPSolver
         const auto num_indices = (int) p_row_indices.size();
         assert((int) p_row_values.size() == num_indices);
 
-        const auto column = CoinPackedVector(num_indices, p_row_indices.data(), p_row_values.data(), test_for_duplicate_index);
+        const auto column = CoinPackedVector(num_indices, p_row_indices.data(), p_row_values.data(), c_test_for_duplicate_index);
 
         d_matrix.appendCol(column);
         d_objective.push_back(p_objective);
@@ -50,7 +50,7 @@ namespace ILPSolver
         const auto num_indices = (int) p_col_indices.size();
         assert((int) p_col_values.size() == num_indices);
 
-        const auto row = CoinPackedVector(num_indices, p_col_indices.data(), p_col_values.data(), test_for_duplicate_index);
+        const auto row = CoinPackedVector(num_indices, p_col_indices.data(), p_col_values.data(), c_test_for_duplicate_index);
 
         d_matrix.appendRow(row);
         d_constraint_lower.push_back(p_lower_bound);
