@@ -28,8 +28,8 @@ namespace ilp_solver
             std::vector<std::string> d_variable_name;
             std::vector<std::string> d_constraint_name;
 
-            void    do_add_variable         (const std::vector<int>& p_row_indices, const std::vector<double>& p_row_values, double p_objective, double p_lower_bound, double p_upper_bound, std::string p_name, VariableType p_type) override;
-            void    do_add_constraint       (const std::vector<int>& p_col_indices, const std::vector<double>& p_col_values, double p_lower_bound, double p_upper_bound, std::string p_name) override;
+            void    do_add_variable         (const std::vector<int>& p_row_indices, const std::vector<double>& p_row_values, double p_objective, double p_lower_bound, double p_upper_bound, const std::string& p_name, VariableType p_type) override;
+            void    do_add_constraint       (const std::vector<int>& p_col_indices, const std::vector<double>& p_col_values, double p_lower_bound, double p_upper_bound, const std::string& p_name) override;
             void    do_set_objective_sense  (ObjectiveSense p_sense) override;
 
             void    do_prepare_and_solve    () override;
