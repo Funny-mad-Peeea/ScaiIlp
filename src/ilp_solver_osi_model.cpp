@@ -4,6 +4,7 @@
 #include "OsiSolverInterface.hpp"
 
 using std::string;
+using std::vector;
 
 // Specify name of variable or constraint only in debug mode:
 #ifdef _DEBUG
@@ -26,7 +27,7 @@ namespace ILPSolver
         d_matrix.setDimensions(0, 0);
     }
 
-    void ILPSolverOsiModel::do_add_variable(const std::vector<int>& p_row_indices, const std::vector<double>& p_row_values, double p_objective, double p_lower_bound, double p_upper_bound, string p_name, VariableType p_type)
+    void ILPSolverOsiModel::do_add_variable(const vector<int>& p_row_indices, const vector<double>& p_row_values, double p_objective, double p_lower_bound, double p_upper_bound, string p_name, VariableType p_type)
     {
         const auto num_indices = (int) p_row_indices.size();
         assert((int) p_row_values.size() == num_indices);
@@ -44,7 +45,7 @@ namespace ILPSolver
         #endif
     }
 
-    void ILPSolverOsiModel::do_add_constraint(const std::vector<int>& p_col_indices, const std::vector<double>& p_col_values, double p_lower_bound, double p_upper_bound, string p_name)
+    void ILPSolverOsiModel::do_add_constraint(const vector<int>& p_col_indices, const vector<double>& p_col_values, double p_lower_bound, double p_upper_bound, string p_name)
     {
         const auto num_indices = (int) p_col_indices.size();
         assert((int) p_col_values.size() == num_indices);
