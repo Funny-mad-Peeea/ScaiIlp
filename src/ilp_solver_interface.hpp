@@ -13,8 +13,8 @@ namespace ILPSolver
         public:
             void            add_variable_boolean    (                                                                                double p_objective,                                             std::string p_name = "");
             void            add_variable_boolean    (const std::vector<int>& p_row_indices, const std::vector<double>& p_row_values, double p_objective,                                             std::string p_name = "");
-            void            add_variable_integer    (                                                                                double p_objective, double p_lower_bound, double p_upper_bound, std::string p_name = "");
-            void            add_variable_integer    (const std::vector<int>& p_row_indices, const std::vector<double>& p_row_values, double p_objective, double p_lower_bound, double p_upper_bound, std::string p_name = "");
+            void            add_variable_integer    (                                                                                double p_objective, int    p_lower_bound, int    p_upper_bound, std::string p_name = "");
+            void            add_variable_integer    (const std::vector<int>& p_row_indices, const std::vector<double>& p_row_values, double p_objective, int    p_lower_bound, int    p_upper_bound, std::string p_name = "");
             void            add_variable_continuous (                                                                                double p_objective, double p_lower_bound, double p_upper_bound, std::string p_name = "");
             void            add_variable_continuous (const std::vector<int>& p_row_indices, const std::vector<double>& p_row_values, double p_objective, double p_lower_bound, double p_upper_bound, std::string p_name = "");
     
