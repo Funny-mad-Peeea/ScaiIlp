@@ -34,10 +34,10 @@ namespace ILPSolver
             virtual         ~ILPSolverInterface     () {}
 
         protected:
-    
             enum class VariableType     {INTEGER, CONTINUOUS};
             enum class ObjectiveSense   {MINIMIZE, MAXIMIZE};
-    
+
+        private:
             virtual void            do_add_variable             (const std::vector<int>& p_row_indices, const std::vector<double>& p_row_values, double p_objective, double p_lower_bound, double p_upper_bound, std::string p_name, VariableType p_type) = 0;
             virtual void            do_add_constraint           (const std::vector<int>& p_col_indices, const std::vector<double>& p_col_values, double p_lower_bound, double p_upper_bound, std::string p_name) = 0;
             virtual void            do_set_objective_sense      (ObjectiveSense p_sense) = 0;

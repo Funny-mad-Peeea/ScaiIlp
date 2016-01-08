@@ -18,6 +18,7 @@ namespace ILPSolver
     {
         public:
             ILPSolverOsiModel();
+
         private:
             CoinPackedMatrix d_matrix;
             std::vector<double> d_objective;
