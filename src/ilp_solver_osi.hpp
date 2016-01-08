@@ -11,7 +11,7 @@ namespace ILPSolver
     class ILPSolverOsi: public ILPSolverOsiModel
     {
     public:
-        ILPSolverOsi(OsiSolverInterface& p_ilp_solver);
+        explicit ILPSolverOsi(OsiSolverInterface* p_ilp_solver);
 
         private:
             OsiSolverInterface& d_ilp_solver;
