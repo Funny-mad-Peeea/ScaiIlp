@@ -6,14 +6,19 @@ using std::unique_ptr;
 
 namespace ILPSolver
 {
-    template<class T>
-    unique_ptr<T> make_unique()
+    template<class T, class Deleter>
+    unique_ptr<T, Deleter> make_unique()
     {
-        return unique_ptr<T>(new T());
+        return unique_ptr<T, Deleter>(new T());
     }
 
-    unique_ptr<ILPSolverInterface> create_cbc_solver()
+    unique_ptr<ILPSolverInterface, SolverDeleter> create_cbc_solver()
     {
-        return make_unique<ILPSolverCbc>();
+        return make_unique<ILPSolverCbc, SolverDeleter>();
+    }
+
+    void destroy_solver(ILPSolverInterface* p_solver)
+    {
+        delete p_solver;
     }
 }
