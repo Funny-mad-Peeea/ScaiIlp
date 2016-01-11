@@ -8,8 +8,6 @@
 
 namespace ilp_solver
 {
-    class ILP_SOLVER_DLL_API IntVector : public std::vector<int> {};
-
     class ILP_SOLVER_DLL_API ILPSolverInterface
     {
         public:
@@ -46,23 +44,21 @@ namespace ilp_solver
             enum class VariableType     {INTEGER, CONTINUOUS};
             enum class ObjectiveSense   {MINIMIZE, MAXIMIZE};
 
+            virtual void                do_add_variable             (const std::vector<int>& p_row_indices, const std::vector<double>& p_row_values, double p_objective, double p_lower_bound, double p_upper_bound, const std::string& p_name, VariableType p_type) = 0;
+            virtual void                do_add_constraint           (const std::vector<int>& p_col_indices, const std::vector<double>& p_col_values, double p_lower_bound, double p_upper_bound, const std::string& p_name) = 0;
+
         private:
-            // When we specify row/col values, but no row/col indices, then we assume that these
-            // values specify the whole col/row. Instead of constructing the vector of all row/col
-            // indices every time again, we store it once and keep it up-to-date.
-            IntVector d_all_col_indices;
-            IntVector d_all_row_indices;
+            virtual std::vector<int>    all_col_indices() = 0;
+            virtual std::vector<int>    all_row_indices() = 0;
 
-            void                    add_variable_and_update_index_vector    (const std::vector<int>& p_row_indices, const std::vector<double>& p_row_values, double p_objective, double p_lower_bound, double p_upper_bound, const std::string& p_name, VariableType p_type);
-            void                    add_constraint_and_update_index_vector  (const std::vector<int>& p_col_indices, const std::vector<double>& p_col_values, double p_lower_bound, double p_upper_bound, const std::string& p_name);
+            virtual void                do_add_variable_and_update_index_vector    (const std::vector<int>& p_row_indices, const std::vector<double>& p_row_values, double p_objective, double p_lower_bound, double p_upper_bound, const std::string& p_name, VariableType p_type) = 0;
+            virtual void                do_add_constraint_and_update_index_vector  (const std::vector<int>& p_col_indices, const std::vector<double>& p_col_values, double p_lower_bound, double p_upper_bound, const std::string& p_name) = 0;
 
-            virtual void            do_add_variable             (const std::vector<int>& p_row_indices, const std::vector<double>& p_row_values, double p_objective, double p_lower_bound, double p_upper_bound, const std::string& p_name, VariableType p_type) = 0;
-            virtual void            do_add_constraint           (const std::vector<int>& p_col_indices, const std::vector<double>& p_col_values, double p_lower_bound, double p_upper_bound, const std::string& p_name) = 0;
-            virtual void            do_set_objective_sense      (ObjectiveSense p_sense) = 0;
-            virtual void            do_prepare_and_solve        () = 0;
-            virtual const double*   do_get_solution             () const = 0;
-            virtual double          do_get_objective            () const = 0;
-            virtual void            do_set_num_threads          (int p_num_threads) = 0;
+            virtual void                do_set_objective_sense                      (ObjectiveSense p_sense) = 0;
+            virtual void                do_prepare_and_solve                        () = 0;
+            virtual const double*       do_get_solution                             () const = 0;
+            virtual double              do_get_objective                            () const = 0;
+            virtual void                do_set_num_threads                          (int p_num_threads) = 0;
     };
 }
 

@@ -1,7 +1,7 @@
 #ifndef _ILP_SOLVER_OSI_MODEL_HPP
 #define _ILP_SOLVER_OSI_MODEL_HPP
 
-#include "ilp_solver_interface.hpp"
+#include "ilp_solver_interface_impl.hpp"
 
 #include "CoinPackedMatrix.hpp"
 
@@ -14,7 +14,7 @@ namespace ilp_solver
 {
     // Implements all methods from ILPSolverInterface that can be realized
     // via the model of the OsiSolverInterface.
-    class ILPSolverOsiModel : public ILPSolverInterface
+    class ILPSolverOsiModel : public ILPSolverInterfaceImpl
     {
         public:
             ILPSolverOsiModel();
