@@ -23,7 +23,8 @@ namespace ilp_solver
     /**********************************
     * (Logically) published interface *
     **********************************/
-    ILP_SOLVER_DLL_API std::unique_ptr<ILPSolverInterface, SolverDeleter> create_cbc_solver();
+    typedef std::unique_ptr<ILPSolverInterface, SolverDeleter> UniquePtrSolver;
+    ILP_SOLVER_DLL_API UniquePtrSolver create_cbc_solver();
 }
 
 #endif

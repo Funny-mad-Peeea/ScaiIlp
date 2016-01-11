@@ -12,7 +12,7 @@ namespace ilp_solver
         return unique_ptr<T, Deleter>(new T());
     }
 
-    unique_ptr<ILPSolverInterface, SolverDeleter> create_cbc_solver()
+    UniquePtrSolver create_cbc_solver()
     {
         return make_unique<ILPSolverCbc, SolverDeleter>();
     }
