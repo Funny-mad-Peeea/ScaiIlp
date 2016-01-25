@@ -21,4 +21,9 @@ namespace ilp_solver
     {
         delete p_solver;
     }
+
+    void create_exception(const std::string& p_exception_message)
+    {
+        throw std::exception(p_exception_message.c_str());
+    }
 }

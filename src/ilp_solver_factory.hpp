@@ -25,6 +25,8 @@ namespace ilp_solver
     **********************************/
     typedef std::unique_ptr<ILPSolverInterface, SolverDeleter> UniquePtrSolver;
     ILP_SOLVER_DLL_API UniquePtrSolver create_cbc_solver();
+    
+    ILP_SOLVER_DLL_API void create_exception(const std::string& p_exception_message);   // for testing purpose
 }
 
 #endif
