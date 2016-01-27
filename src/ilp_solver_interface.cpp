@@ -118,7 +118,10 @@ namespace ilp_solver
     const vector<double> ILPSolverInterface::get_solution() const
     {
         auto solution = do_get_solution();
-        return vector<double>(solution, solution + all_col_indices().size());
+        if (solution == nullptr)
+            return vector<double>();
+        else
+            return vector<double>(solution, solution + all_col_indices().size());
     }
     
     double ILPSolverInterface::get_objective() const
