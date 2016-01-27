@@ -11,11 +11,11 @@ namespace ilp_solver
         std::vector<int> d_all_col_indices;
         std::vector<int> d_all_row_indices;
 
-        std::vector<int> all_col_indices() override;
-        std::vector<int> all_row_indices() override;
+        const std::vector<int>& all_col_indices() const override;
+        const std::vector<int>& all_row_indices() const override;
 
-        void             do_add_variable_and_update_index_vector    (const std::vector<int>& p_row_indices, const std::vector<double>& p_row_values, double p_objective, double p_lower_bound, double p_upper_bound, const std::string& p_name, VariableType p_type) override;
-        void             do_add_constraint_and_update_index_vector  (const std::vector<int>& p_col_indices, const std::vector<double>& p_col_values, double p_lower_bound, double p_upper_bound, const std::string& p_name) override;
+        void do_add_variable_and_update_index_vector    (const std::vector<int>& p_row_indices, const std::vector<double>& p_row_values, double p_objective, double p_lower_bound, double p_upper_bound, const std::string& p_name, VariableType p_type) override;
+        void do_add_constraint_and_update_index_vector  (const std::vector<int>& p_col_indices, const std::vector<double>& p_col_values, double p_lower_bound, double p_upper_bound, const std::string& p_name) override;
     };
 }
 

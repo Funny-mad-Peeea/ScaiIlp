@@ -4,12 +4,12 @@ using std::vector;
 
 namespace ilp_solver
 {
-    vector<int> ILPSolverInterfaceImpl::all_col_indices()
+    const vector<int>& ILPSolverInterfaceImpl::all_col_indices() const
     {
         return d_all_col_indices;
     }
 
-    vector<int> ILPSolverInterfaceImpl::all_row_indices()
+    const vector<int>& ILPSolverInterfaceImpl::all_row_indices() const
     {
         return d_all_row_indices;
     }

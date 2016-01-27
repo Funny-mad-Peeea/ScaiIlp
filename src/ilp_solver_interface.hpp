@@ -11,34 +11,33 @@ namespace ilp_solver
     class ILP_SOLVER_DLL_API ILPSolverInterface
     {
         public:
-            void            add_variable_boolean    (                                                                                double p_objective,                                             const std::string& p_name = "");
-            void            add_variable_boolean    (                                       const std::vector<double>& p_row_values, double p_objective,                                             const std::string& p_name = "");
-            void            add_variable_boolean    (const std::vector<int>& p_row_indices, const std::vector<double>& p_row_values, double p_objective,                                             const std::string& p_name = "");
-            void            add_variable_integer    (                                                                                double p_objective, int    p_lower_bound, int    p_upper_bound, const std::string& p_name = "");
-            void            add_variable_integer    (                                       const std::vector<double>& p_row_values, double p_objective, int    p_lower_bound, int    p_upper_bound, const std::string& p_name = "");
-            void            add_variable_integer    (const std::vector<int>& p_row_indices, const std::vector<double>& p_row_values, double p_objective, int    p_lower_bound, int    p_upper_bound, const std::string& p_name = "");
-            void            add_variable_continuous (                                                                                double p_objective, double p_lower_bound, double p_upper_bound, const std::string& p_name = "");
-            void            add_variable_continuous (                                       const std::vector<double>& p_row_values, double p_objective, double p_lower_bound, double p_upper_bound, const std::string& p_name = "");
-            void            add_variable_continuous (const std::vector<int>& p_row_indices, const std::vector<double>& p_row_values, double p_objective, double p_lower_bound, double p_upper_bound, const std::string& p_name = "");
+            void add_variable_boolean    (                                                                                double p_objective,                                             const std::string& p_name = "");
+            void add_variable_boolean    (                                       const std::vector<double>& p_row_values, double p_objective,                                             const std::string& p_name = "");
+            void add_variable_boolean    (const std::vector<int>& p_row_indices, const std::vector<double>& p_row_values, double p_objective,                                             const std::string& p_name = "");
+            void add_variable_integer    (                                                                                double p_objective, int    p_lower_bound, int    p_upper_bound, const std::string& p_name = "");
+            void add_variable_integer    (                                       const std::vector<double>& p_row_values, double p_objective, int    p_lower_bound, int    p_upper_bound, const std::string& p_name = "");
+            void add_variable_integer    (const std::vector<int>& p_row_indices, const std::vector<double>& p_row_values, double p_objective, int    p_lower_bound, int    p_upper_bound, const std::string& p_name = "");
+            void add_variable_continuous (                                                                                double p_objective, double p_lower_bound, double p_upper_bound, const std::string& p_name = "");
+            void add_variable_continuous (                                       const std::vector<double>& p_row_values, double p_objective, double p_lower_bound, double p_upper_bound, const std::string& p_name = "");
+            void add_variable_continuous (const std::vector<int>& p_row_indices, const std::vector<double>& p_row_values, double p_objective, double p_lower_bound, double p_upper_bound, const std::string& p_name = "");
     
-            void            add_constraint          (                                       const std::vector<double>& p_col_values, double p_lower_bound, double p_upper_bound,                     const std::string& p_name = "");   // l <= a*x <= r
-            void            add_constraint          (const std::vector<int>& p_col_indices, const std::vector<double>& p_col_values, double p_lower_bound, double p_upper_bound,                     const std::string& p_name = "");   // l <= a*x <= r
-            void            add_constraint_upper    (                                       const std::vector<double>& p_col_values,                       double p_upper_bound,                     const std::string& p_name = "");   //      a*x <= r
-            void            add_constraint_upper    (const std::vector<int>& p_col_indices, const std::vector<double>& p_col_values,                       double p_upper_bound,                     const std::string& p_name = "");   //      a*x <= r
-            void            add_constraint_lower    (                                       const std::vector<double>& p_col_values, double p_lower_bound,                                           const std::string& p_name = "");   // l <= a*x
-            void            add_constraint_lower    (const std::vector<int>& p_col_indices, const std::vector<double>& p_col_values, double p_lower_bound,                                           const std::string& p_name = "");   // l <= a*x
-            void            add_constraint_equality (                                       const std::vector<double>& p_col_values,                                              double p_value,    const std::string& p_name = "");   //      a*x = v
-            void            add_constraint_equality (const std::vector<int>& p_col_indices, const std::vector<double>& p_col_values,                                              double p_value,    const std::string& p_name = "");   //      a*x = v
+            void add_constraint          (                                       const std::vector<double>& p_col_values, double p_lower_bound, double p_upper_bound,                     const std::string& p_name = "");   // l <= a*x <= r
+            void add_constraint          (const std::vector<int>& p_col_indices, const std::vector<double>& p_col_values, double p_lower_bound, double p_upper_bound,                     const std::string& p_name = "");   // l <= a*x <= r
+            void add_constraint_upper    (                                       const std::vector<double>& p_col_values,                       double p_upper_bound,                     const std::string& p_name = "");   //      a*x <= r
+            void add_constraint_upper    (const std::vector<int>& p_col_indices, const std::vector<double>& p_col_values,                       double p_upper_bound,                     const std::string& p_name = "");   //      a*x <= r
+            void add_constraint_lower    (                                       const std::vector<double>& p_col_values, double p_lower_bound,                                           const std::string& p_name = "");   // l <= a*x
+            void add_constraint_lower    (const std::vector<int>& p_col_indices, const std::vector<double>& p_col_values, double p_lower_bound,                                           const std::string& p_name = "");   // l <= a*x
+            void add_constraint_equality (                                       const std::vector<double>& p_col_values,                                              double p_value,    const std::string& p_name = "");   //      a*x = v
+            void add_constraint_equality (const std::vector<int>& p_col_indices, const std::vector<double>& p_col_values,                                              double p_value,    const std::string& p_name = "");   //      a*x = v
     
-            void            minimize                ();
-            void            maximize                ();
-    
-            const double*   get_solution            () const;
-            double          get_objective           () const;
+            void                        minimize        ();
+            void                        maximize        ();
+            const std::vector<double>   get_solution    () const;
+            double                      get_objective   () const;
 
-            void            set_num_threads         (int p_num_threads);
+            void set_num_threads(int p_num_threads);
     
-            virtual         ~ILPSolverInterface     () {}
+            virtual ~ILPSolverInterface() {}
 
         protected:
             enum class VariableType     {INTEGER, CONTINUOUS};
@@ -48,8 +47,8 @@ namespace ilp_solver
             virtual void                do_add_constraint           (const std::vector<int>& p_col_indices, const std::vector<double>& p_col_values, double p_lower_bound, double p_upper_bound, const std::string& p_name) = 0;
 
         private:
-            virtual std::vector<int>    all_col_indices() = 0;
-            virtual std::vector<int>    all_row_indices() = 0;
+            virtual const std::vector<int>& all_col_indices() const = 0;
+            virtual const std::vector<int>& all_row_indices() const = 0;
 
             virtual void                do_add_variable_and_update_index_vector    (const std::vector<int>& p_row_indices, const std::vector<double>& p_row_values, double p_objective, double p_lower_bound, double p_upper_bound, const std::string& p_name, VariableType p_type) = 0;
             virtual void                do_add_constraint_and_update_index_vector  (const std::vector<int>& p_col_indices, const std::vector<double>& p_col_values, double p_lower_bound, double p_upper_bound, const std::string& p_name) = 0;
