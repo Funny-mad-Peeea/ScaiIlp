@@ -22,8 +22,10 @@ namespace ilp_solver
         const auto exception_message = string("This is a test exception.");
         try
         {
+            const auto exception = ilp_solver::create_exception();
+            
             cout << "Throwing the following exception: " << exception_message << endl;
-            ilp_solver::create_exception(exception_message);
+            exception->throw_exception(exception_message);
             
             cout << "Error: Could not catch the exception." << endl;
             assert(false);

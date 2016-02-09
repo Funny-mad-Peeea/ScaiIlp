@@ -1,5 +1,6 @@
 #include "ilp_solver_cbc.hpp"
 
+#include "CoinMessageHandler.hpp"
 #include "OsiSolverInterface.hpp"
 
 namespace ilp_solver
@@ -17,6 +18,7 @@ namespace ilp_solver
     void ILPSolverCbc::do_solve()
     {
         d_model = CbcModel(*solver());
+        d_model.messageHandler()->setLogLevel(0);
         d_model.branchAndBound();
     }
 

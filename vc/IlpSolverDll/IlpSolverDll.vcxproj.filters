@@ -8,13 +8,15 @@
     <ClInclude Include="..\..\src\ilp_solver_osi_model.hpp" />
     <ClInclude Include="..\..\src\IlpSolverDll.hpp" />
     <ClInclude Include="..\..\src\ilp_solver_interface_impl.hpp" />
+    <ClInclude Include="..\..\src\ilp_solver_factory_impl.hpp" />
+    <ClInclude Include="..\..\src\ilp_solver_exception.hpp" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\src\ilp_solver_cbc.cpp" />
     <ClCompile Include="..\..\src\ilp_solver_factory.cpp" />
-    <ClCompile Include="..\..\src\ilp_solver_interface.cpp" />
     <ClCompile Include="..\..\src\ilp_solver_osi.cpp" />
     <ClCompile Include="..\..\src\ilp_solver_osi_model.cpp" />
     <ClCompile Include="..\..\src\ilp_solver_interface_impl.cpp" />
+    <ClCompile Include="..\..\src\ilp_solver_factory_impl.cpp" />
   </ItemGroup>
 </Project>
