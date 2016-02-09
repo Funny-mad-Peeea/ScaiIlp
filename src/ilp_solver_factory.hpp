@@ -10,7 +10,8 @@
 namespace ilp_solver
 {
     // Do not call this explicitly:
-    ILP_SOLVER_DLL_API void destroy_solver(ILPSolverInterface* p_solver);
+    extern "C" ILP_SOLVER_DLL_API ILPSolverInterface* APIENTRY create_cbc_solver_pointer();
+    extern "C" ILP_SOLVER_DLL_API void APIENTRY destroy_solver(ILPSolverInterface* p_solver);
 
     struct SolverDeleter
     {
@@ -24,7 +25,10 @@ namespace ilp_solver
     * (Logically) published interface *
     **********************************/
     typedef std::unique_ptr<ILPSolverInterface, SolverDeleter> UniquePtrSolver;
-    ILP_SOLVER_DLL_API UniquePtrSolver create_cbc_solver();
+    UniquePtrSolver create_cbc_solver()
+    {
+        return UniquePtrSolver(create_cbc_solver_pointer());
+    }
 }
 
 #endif

@@ -2,22 +2,14 @@
 
 #include "ilp_solver_cbc.hpp"
 
-using std::unique_ptr;
-
 namespace ilp_solver
 {
-    template<class T, class Deleter>
-    unique_ptr<T, Deleter> make_unique()
+    extern "C" ILP_SOLVER_DLL_API ILPSolverInterface* APIENTRY create_cbc_solver_pointer()
     {
-        return unique_ptr<T, Deleter>(new T());
+        return new ILPSolverCbc();
     }
 
-    UniquePtrSolver create_cbc_solver()
-    {
-        return make_unique<ILPSolverCbc, SolverDeleter>();
-    }
-
-    void destroy_solver(ILPSolverInterface* p_solver)
+    extern "C" ILP_SOLVER_DLL_API void APIENTRY destroy_solver(ILPSolverInterface* p_solver)
     {
         delete p_solver;
     }
