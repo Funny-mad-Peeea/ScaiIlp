@@ -4,8 +4,6 @@
 #include <string>
 #include <vector>
 
-#include "IlpSolverDll.hpp"
-
 namespace ilp_solver
 {
     class ILPSolverInterface
