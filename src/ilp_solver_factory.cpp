@@ -4,12 +4,12 @@
 
 namespace ilp_solver
 {
-    extern "C" ILP_SOLVER_DLL_API ILPSolverInterface* APIENTRY create_cbc_solver()
+    extern "C" ILPSolverInterface* __stdcall create_cbc_solver()
     {
         return new ILPSolverCbc();
     }
 
-    extern "C" ILP_SOLVER_DLL_API void APIENTRY destroy_solver(ILPSolverInterface* p_solver)
+    extern "C" void __stdcall destroy_solver(ILPSolverInterface* p_solver)
     {
         delete p_solver;
     }
