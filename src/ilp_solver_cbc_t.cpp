@@ -7,11 +7,31 @@ namespace ilp_solver
 {
     void test_sorting_cbc()
     {
-        test_sorting(create_cbc_solver().get());
+        auto solver = create_cbc_solver();
+        try
+        {
+            test_sorting(solver);
+        }
+        catch (...)
+        {
+            destroy_solver(solver);
+            throw;
+        }
+        destroy_solver(solver);
     }
 
     void test_linear_programming_cbc()
     {
-        test_linear_programming(create_cbc_solver().get());
+        auto solver = create_cbc_solver();
+        try
+        {
+            test_linear_programming(solver);
+        }
+        catch (...)
+        {
+            destroy_solver(solver);
+            throw;
+        }
+        destroy_solver(solver);
     }
 }

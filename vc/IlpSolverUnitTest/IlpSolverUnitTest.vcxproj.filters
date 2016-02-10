@@ -3,14 +3,12 @@
   <ItemGroup>
     <ClInclude Include="..\..\src\ilp_solver_cbc_t.hpp" />
     <ClInclude Include="..\..\src\ilp_solver_interface_t.hpp" />
-    <ClInclude Include="..\..\src\ilp_solver_factory.hpp" />
     <ClInclude Include="..\..\src\ilp_solver_factory_t.hpp" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\src\ilp_solver_cbc_t.cpp" />
     <ClCompile Include="..\..\src\ilp_solver_interface_t.cpp" />
     <ClCompile Include="..\..\src\unit_tests.cpp" />
-    <ClCompile Include="..\..\src\ilp_solver_factory.cpp" />
     <ClCompile Include="..\..\src\ilp_solver_factory_t.cpp" />
   </ItemGroup>
 </Project>
