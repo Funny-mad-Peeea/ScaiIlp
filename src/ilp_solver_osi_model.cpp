@@ -8,10 +8,7 @@ using std::vector;
 
 // Specify name of variable or constraint only in debug mode:
 #ifdef _DEBUG
-    #define FORWARD_NAME(name) , name
     #define DO_FORWARD_NAME true
-#else
-    #define FORWARD_NAME(name)
 #endif
 
 // States whether consecutive elements of each column are contiguous in memory.
