@@ -7,6 +7,11 @@ using std::vector;
 
 namespace ilp_solver
 {
+    ILPSolverInterfaceImpl::ILPSolverInterfaceImpl()
+    {
+        d_log_level = 0;
+    }
+
     void ILPSolverInterfaceImpl::add_variable_boolean(double p_objective, const string& p_name)
     {
         add_variable_boolean(vector<int>(), vector<double>(), p_objective, p_name);
@@ -132,6 +137,16 @@ namespace ilp_solver
     void ILPSolverInterfaceImpl::set_num_threads(int p_num_threads)
     {
         do_set_num_threads(p_num_threads);
+    }
+
+    void ILPSolverInterfaceImpl::set_log_level(int p_level)
+    {
+        d_log_level = p_level;
+    }
+
+    int ILPSolverInterfaceImpl::log_level() const
+    {
+        return d_log_level;
     }
 
     void ILPSolverInterfaceImpl::do_add_variable_and_update_index_vector(const std::vector<int>& p_row_indices, const std::vector<double>& p_row_values, double p_objective, double p_lower_bound, double p_upper_bound, const std::string& p_name, VariableType p_type)
