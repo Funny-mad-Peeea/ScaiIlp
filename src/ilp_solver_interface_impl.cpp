@@ -9,6 +9,7 @@ namespace ilp_solver
 {
     ILPSolverInterfaceImpl::ILPSolverInterfaceImpl()
     {
+        d_num_threads = 1;
         d_log_level = 0;
         d_max_seconds = std::numeric_limits<double>::max();
     }
@@ -137,7 +138,12 @@ namespace ilp_solver
 
     void ILPSolverInterfaceImpl::set_num_threads(int p_num_threads)
     {
-        do_set_num_threads(p_num_threads);
+        d_num_threads = p_num_threads;
+    }
+
+    int ILPSolverInterfaceImpl::num_threads() const
+    {
+        return d_num_threads;
     }
 
     void ILPSolverInterfaceImpl::set_log_level(int p_level)
