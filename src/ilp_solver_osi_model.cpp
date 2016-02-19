@@ -40,6 +40,8 @@ namespace ilp_solver
 
         #ifdef DO_FORWARD_NAME
             d_variable_name.push_back(p_name);
+        #else
+            p_name; // suppress warning "unreferenced variable"
         #endif
     }
 
@@ -57,6 +59,8 @@ namespace ilp_solver
 
         #ifdef DO_FORWARD_NAME
             d_constraint_name.push_back(p_name);
+        #else
+            p_name; // suppress warning "unreferenced variable"
         #endif
     }
 
