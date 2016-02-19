@@ -35,6 +35,7 @@ namespace ilp_solver
 
             virtual void set_num_threads(int p_num_threads) = 0;
             virtual void set_log_level(int p_level) = 0;            // 0: no output; verbosity increases with p_level
+            virtual void set_max_seconds(double p_seconds) = 0;
     
             virtual ~ILPSolverInterface() {}
     };

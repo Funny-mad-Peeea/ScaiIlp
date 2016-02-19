@@ -10,6 +10,7 @@ namespace ilp_solver
     ILPSolverInterfaceImpl::ILPSolverInterfaceImpl()
     {
         d_log_level = 0;
+        d_max_seconds = std::numeric_limits<double>::max();
     }
 
     void ILPSolverInterfaceImpl::add_variable_boolean(double p_objective, const string& p_name)
@@ -147,6 +148,16 @@ namespace ilp_solver
     int ILPSolverInterfaceImpl::log_level() const
     {
         return d_log_level;
+    }
+
+    void ILPSolverInterfaceImpl::set_max_seconds(double p_seconds)
+    {
+        d_max_seconds = p_seconds;
+    }
+
+    double ILPSolverInterfaceImpl::max_seconds()const
+    {
+        return d_max_seconds;
     }
 
     void ILPSolverInterfaceImpl::do_add_variable_and_update_index_vector(const std::vector<int>& p_row_indices, const std::vector<double>& p_row_values, double p_objective, double p_lower_bound, double p_upper_bound, const std::string& p_name, VariableType p_type)

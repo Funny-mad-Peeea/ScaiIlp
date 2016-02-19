@@ -32,8 +32,9 @@ namespace ilp_solver
             const std::vector<double>   get_solution    () const override;
             double                      get_objective   () const override;
 
-            void set_num_threads(int p_num_threads) override;
-            void set_log_level(int p_level) override;
+            void set_num_threads    (int p_num_threads) override;
+            void set_log_level      (int p_level)       override;
+            void set_max_seconds    (double p_seconds)  override;
 
         protected:
             enum class VariableType     {INTEGER, CONTINUOUS};
@@ -42,6 +43,7 @@ namespace ilp_solver
             ILPSolverInterfaceImpl();
 
             int                         log_level() const;
+            double                      max_seconds() const;
 
             virtual void                do_add_variable             (const std::vector<int>& p_row_indices, const std::vector<double>& p_row_values, double p_objective, double p_lower_bound, double p_upper_bound, const std::string& p_name, VariableType p_type) = 0;
             virtual void                do_add_constraint           (const std::vector<int>& p_col_indices, const std::vector<double>& p_col_values, double p_lower_bound, double p_upper_bound, const std::string& p_name) = 0;
@@ -51,6 +53,7 @@ namespace ilp_solver
             std::vector<int> d_all_row_indices;
 
             int d_log_level;
+            double d_max_seconds;
 
             void do_add_variable_and_update_index_vector    (const std::vector<int>& p_row_indices, const std::vector<double>& p_row_values, double p_objective, double p_lower_bound, double p_upper_bound, const std::string& p_name, VariableType p_type);
             void do_add_constraint_and_update_index_vector  (const std::vector<int>& p_col_indices, const std::vector<double>& p_col_values, double p_lower_bound, double p_upper_bound, const std::string& p_name);
