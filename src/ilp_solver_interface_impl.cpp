@@ -27,7 +27,7 @@ namespace ilp_solver
 
     void ILPSolverInterfaceImpl::add_variable_boolean(const vector<int>& p_row_indices, const vector<double>& p_row_values, double p_objective, const string& p_name)
     {
-        do_add_variable_and_update_index_vector(p_row_indices, p_row_values, p_objective, 0, 1, p_name, VariableType::INTEGER);
+        add_variable_and_update_index_vector(p_row_indices, p_row_values, p_objective, 0, 1, p_name, VariableType::INTEGER);
     }
     
     void ILPSolverInterfaceImpl::add_variable_integer(double p_objective, int p_lower_bound, int p_upper_bound, const string& p_name)
@@ -43,7 +43,7 @@ namespace ilp_solver
 
     void ILPSolverInterfaceImpl::add_variable_integer(const vector<int>& p_row_indices, const vector<double>& p_row_values, double p_objective, int p_lower_bound, int p_upper_bound, const string& p_name)
     {
-        do_add_variable_and_update_index_vector(p_row_indices, p_row_values, p_objective, p_lower_bound, p_upper_bound, p_name, VariableType::INTEGER);
+        add_variable_and_update_index_vector(p_row_indices, p_row_values, p_objective, p_lower_bound, p_upper_bound, p_name, VariableType::INTEGER);
     }
     
     void ILPSolverInterfaceImpl::add_variable_continuous(double p_objective, double p_lower_bound, double p_upper_bound, const string& p_name)
@@ -59,7 +59,7 @@ namespace ilp_solver
 
     void ILPSolverInterfaceImpl::add_variable_continuous(const vector<int>& p_row_indices, const vector<double>& p_row_values, double p_objective, double p_lower_bound, double p_upper_bound, const string& p_name)
     {
-        do_add_variable_and_update_index_vector(p_row_indices, p_row_values, p_objective, p_lower_bound, p_upper_bound, p_name, VariableType::CONTINUOUS);
+        add_variable_and_update_index_vector(p_row_indices, p_row_values, p_objective, p_lower_bound, p_upper_bound, p_name, VariableType::CONTINUOUS);
     }
     
     void ILPSolverInterfaceImpl::add_constraint(const vector<double>& p_col_values, double p_lower_bound, double p_upper_bound, const string& p_name)
@@ -70,7 +70,7 @@ namespace ilp_solver
 
     void ILPSolverInterfaceImpl::add_constraint(const vector<int>& p_col_indices, const vector<double>& p_col_values, double p_lower_bound, double p_upper_bound, const string& p_name)
     {
-        do_add_constraint_and_update_index_vector(p_col_indices, p_col_values, p_lower_bound, p_upper_bound, p_name);
+        add_constraint_and_update_index_vector(p_col_indices, p_col_values, p_lower_bound, p_upper_bound, p_name);
     }
 
     void ILPSolverInterfaceImpl::add_constraint_upper(const vector<double>& p_col_values, double p_upper_bound, const string& p_name)
@@ -83,7 +83,7 @@ namespace ilp_solver
     {
         if (p_upper_bound >= 0.5*std::numeric_limits<double>::max())    // no restriction
             return;
-        do_add_constraint_and_update_index_vector(p_col_indices, p_col_values, -std::numeric_limits<double>::max(), p_upper_bound, p_name);
+        add_constraint_and_update_index_vector(p_col_indices, p_col_values, -std::numeric_limits<double>::max(), p_upper_bound, p_name);
     }
 
     void ILPSolverInterfaceImpl::add_constraint_lower(const vector<double>& p_col_values, double p_lower_bound, const string& p_name)
@@ -96,7 +96,7 @@ namespace ilp_solver
     {
         if (p_lower_bound <= -0.5*std::numeric_limits<double>::max())   // no restriction
             return;
-        do_add_constraint_and_update_index_vector(p_col_indices, p_col_values, p_lower_bound, std::numeric_limits<double>::max(), p_name);
+        add_constraint_and_update_index_vector(p_col_indices, p_col_values, p_lower_bound, std::numeric_limits<double>::max(), p_name);
     }
 
     void ILPSolverInterfaceImpl::add_constraint_equality(const vector<double>& p_col_values, double p_value, const string& p_name)
@@ -107,7 +107,7 @@ namespace ilp_solver
     
     void ILPSolverInterfaceImpl::add_constraint_equality(const vector<int>& p_col_indices, const vector<double>& p_col_values, double p_value, const string& p_name)
     {
-        do_add_constraint_and_update_index_vector(p_col_indices, p_col_values, p_value, p_value, p_name);
+        add_constraint_and_update_index_vector(p_col_indices, p_col_values, p_value, p_value, p_name);
     }
     
     void ILPSolverInterfaceImpl::minimize()
@@ -166,13 +166,13 @@ namespace ilp_solver
         return d_max_seconds;
     }
 
-    void ILPSolverInterfaceImpl::do_add_variable_and_update_index_vector(const std::vector<int>& p_row_indices, const std::vector<double>& p_row_values, double p_objective, double p_lower_bound, double p_upper_bound, const std::string& p_name, VariableType p_type)
+    void ILPSolverInterfaceImpl::add_variable_and_update_index_vector(const std::vector<int>& p_row_indices, const std::vector<double>& p_row_values, double p_objective, double p_lower_bound, double p_upper_bound, const std::string& p_name, VariableType p_type)
     {
         d_all_col_indices.push_back((int) d_all_col_indices.size());    // update d_all_col_indices
         do_add_variable(p_row_indices, p_row_values, p_objective, p_lower_bound, p_upper_bound, p_name, p_type);
     }
 
-    void ILPSolverInterfaceImpl::do_add_constraint_and_update_index_vector(const std::vector<int>& p_col_indices, const std::vector<double>& p_col_values, double p_lower_bound, double p_upper_bound, const std::string& p_name)
+    void ILPSolverInterfaceImpl::add_constraint_and_update_index_vector(const std::vector<int>& p_col_indices, const std::vector<double>& p_col_values, double p_lower_bound, double p_upper_bound, const std::string& p_name)
     {
         d_all_row_indices.push_back((int) d_all_row_indices.size());    // update d_all_row_indices
         do_add_constraint(p_col_indices, p_col_values, p_lower_bound, p_upper_bound, p_name);

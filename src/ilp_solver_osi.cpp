@@ -8,16 +8,16 @@ namespace ilp_solver
 
     void ILPSolverOsi::do_solve()
     {
-        solver()->branchAndBound();
+        do_get_solver()->branchAndBound();
     }
 
     const double* ILPSolverOsi::do_get_solution() const
     {
-        return solver()->getColSolution();
+        return do_get_solver()->getColSolution();
     }
 
     double ILPSolverOsi::do_get_objective() const
     {
-        return solver()->getObjValue();
+        return do_get_solver()->getObjValue();
     }
 }
