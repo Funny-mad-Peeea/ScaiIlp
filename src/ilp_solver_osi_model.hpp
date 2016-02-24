@@ -27,6 +27,10 @@ namespace ilp_solver
             std::vector<VariableType> d_variable_type;
             std::vector<std::string>  d_variable_name;
             std::vector<std::string>  d_constraint_name;
+    
+            virtual OsiSolverInterface*       do_get_solver ()       = 0;
+            virtual const OsiSolverInterface* do_get_solver () const = 0;
+            virtual void                      do_solve      ()       = 0; // not always implemented as solver().branchAndBound() (see ILPSolverCbc)
 
             void do_add_variable   (const std::vector<int>& p_row_indices, const std::vector<double>& p_row_values, double p_objective, double p_lower_bound, double p_upper_bound, const std::string& p_name, VariableType p_type) override;
             void do_add_constraint (const std::vector<int>& p_col_indices, const std::vector<double>& p_col_values, double p_lower_bound, double p_upper_bound, const std::string& p_name)                                          override;
@@ -35,10 +39,6 @@ namespace ilp_solver
             void do_prepare_and_solve   ()                       override;
 
             void prepare();
-    
-            virtual OsiSolverInterface*       do_get_solver ()       = 0;
-            virtual const OsiSolverInterface* do_get_solver () const = 0;
-            virtual void                      do_solve      ()       = 0; // not always implemented as solver().branchAndBound() (see ILPSolverCbc)
     };
 }
 
