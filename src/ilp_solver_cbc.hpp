@@ -16,12 +16,12 @@ namespace ilp_solver
             OsiClpSolverInterface d_clp_solver;
             CbcModel d_model;
 
-            OsiSolverInterface*         do_get_solver              () override;
-            const OsiSolverInterface*   do_get_solver              () const override;
+            OsiSolverInterface*       do_get_solver    ()       override;
+            const OsiSolverInterface* do_get_solver    () const override;
 
-            void                        do_solve            () override;
-            const double*               do_get_solution     () const override;
-            double                      do_get_objective    () const override;
+            void                      do_solve         ()       override;
+            const double*             do_get_solution  () const override;
+            double                    do_get_objective () const override;
     };
 }
 
