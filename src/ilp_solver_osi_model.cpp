@@ -8,7 +8,7 @@ using std::vector;
 
 // Specify name of variable or constraint only in debug mode:
 #ifdef _DEBUG
-    #define DO_FORWARD_NAME true
+#define DO_FORWARD_NAME true
 #endif
 
 // States whether consecutive elements of each column are contiguous in memory.
@@ -38,11 +38,11 @@ namespace ilp_solver
         d_variable_upper.push_back(p_upper_bound);
         d_variable_type.push_back(p_type);
 
-        #ifdef DO_FORWARD_NAME
-            d_variable_name.push_back(p_name);
-        #else
-            p_name; // suppress warning "unreferenced variable"
-        #endif
+#ifdef DO_FORWARD_NAME
+        d_variable_name.push_back(p_name);
+#else
+        p_name; // suppress warning "unreferenced variable"
+#endif
     }
 
 
@@ -57,11 +57,11 @@ namespace ilp_solver
         d_constraint_lower.push_back(p_lower_bound);
         d_constraint_upper.push_back(p_upper_bound);
 
-        #ifdef DO_FORWARD_NAME
-            d_constraint_name.push_back(p_name);
-        #else
-            p_name; // suppress warning "unreferenced variable"
-        #endif
+#ifdef DO_FORWARD_NAME
+        d_constraint_name.push_back(p_name);
+#else
+        p_name; // suppress warning "unreferenced variable"
+#endif
     }
 
 
@@ -99,15 +99,15 @@ namespace ilp_solver
                 ilp_solver->setContinuous(i);
         }
 
-        #ifdef DO_FORWARD_NAME
-            // Set variable names
-            for (auto i = 0; i < (int) d_variable_name.size(); ++i)
-                ilp_solver->setColName(i, d_variable_name[i]);
+#ifdef DO_FORWARD_NAME
+        // Set variable names
+        for (auto i = 0; i < (int) d_variable_name.size(); ++i)
+            ilp_solver->setColName(i, d_variable_name[i]);
     
-            // Set constraint names
-            for (auto j = 0; j < (int) d_constraint_name.size(); ++j)
-                ilp_solver->setRowName(j, d_constraint_name[j]);
-        #endif
+        // Set constraint names
+        for (auto j = 0; j < (int) d_constraint_name.size(); ++j)
+            ilp_solver->setRowName(j, d_constraint_name[j]);
+#endif
 
         // Deactivate solvers console output
         ilp_solver->setHintParam(OsiDoReducePrint, 1);
