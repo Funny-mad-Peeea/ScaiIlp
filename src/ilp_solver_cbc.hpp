@@ -22,6 +22,7 @@ namespace ilp_solver
             void                      do_solve         ()       override;
             const double*             do_get_solution  () const override;
             double                    do_get_objective () const override;
+            SolutionStatus            do_get_status    () const override;
     };
 }
 

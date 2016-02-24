@@ -136,6 +136,11 @@ namespace ilp_solver
         return do_get_objective();
     }
 
+    SolutionStatus ILPSolverInterfaceImpl::get_status() const
+    {
+        return do_get_status();
+    }
+
     void ILPSolverInterfaceImpl::set_num_threads(int p_num_threads)
     {
         d_num_threads = p_num_threads;

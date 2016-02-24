@@ -70,6 +70,12 @@ namespace ilp_solver
 
         const auto obj_value = p_solver->get_objective();
         const auto permutation = p_solver->get_solution();
+        const auto status = p_solver->get_status();
+
+        // Check solution status
+        const auto optimal = status == SolutionStatus::PROVEN_OPTIMAL;
+        cout << "The solution is " << (optimal ? "" : "not ") << "optimal." << endl;
+        assert(optimal);
 
         // Check correctness of objective
         const auto expected_obj_value = num_vars*(num_vars-1)/2;
@@ -180,6 +186,12 @@ namespace ilp_solver
 
         const auto obj = p_solver->get_objective();
         const auto x = p_solver->get_solution();
+        const auto status = p_solver->get_status();
+
+        // Check solution status
+        const auto optimal = status == SolutionStatus::PROVEN_OPTIMAL;
+        cout << "The solution is " << (optimal ? "" : "not ") << "optimal." << endl;
+        assert(optimal);
 
         // Check correctness of objective
         auto obj_cmp = 0.0;

@@ -20,4 +20,16 @@ namespace ilp_solver
     {
         return do_get_solver()->getObjValue();
     }
+
+    SolutionStatus ILPSolverOsi::do_get_status() const
+    {
+        const auto solver = do_get_solver();
+        if (solver->isProvenOptimal())
+            return SolutionStatus::PROVEN_OPTIMAL;
+        else if (solver->isProvenPrimalInfeasible())
+            return SolutionStatus::PROVEN_INFEASIBLE;
+        else
+            return (do_get_solution() == nullptr ? SolutionStatus::NO_SOLUTION
+                                                 : SolutionStatus::SUBOPTIMAL);
+    }
 }

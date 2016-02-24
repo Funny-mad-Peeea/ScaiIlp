@@ -33,4 +33,15 @@ namespace ilp_solver
     {
         return d_model.getObjValue();
     }
+
+    SolutionStatus ILPSolverCbc::do_get_status() const
+    {
+        if (d_model.isProvenOptimal())
+            return SolutionStatus::PROVEN_OPTIMAL;
+        else if (d_model.isProvenInfeasible())
+            return SolutionStatus::PROVEN_INFEASIBLE;
+        else
+            return (do_get_solution() == nullptr ? SolutionStatus::NO_SOLUTION
+                                                 : SolutionStatus::SUBOPTIMAL);
+    }
 }

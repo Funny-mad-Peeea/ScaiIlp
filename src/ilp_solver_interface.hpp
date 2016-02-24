@@ -6,6 +6,8 @@
 
 namespace ilp_solver
 {
+    enum class SolutionStatus { PROVEN_OPTIMAL, PROVEN_INFEASIBLE, SUBOPTIMAL, NO_SOLUTION };
+
     class ILPSolverInterface
     {
         public:
@@ -32,6 +34,7 @@ namespace ilp_solver
             virtual void                      maximize      ()       = 0;
             virtual const std::vector<double> get_solution  () const = 0;
             virtual double                    get_objective () const = 0;
+            virtual SolutionStatus            get_status    () const = 0;
 
             virtual void set_num_threads (int p_num_threads) = 0;
             virtual void set_log_level   (int p_level)       = 0; // 0: no output; verbosity increases with p_level
