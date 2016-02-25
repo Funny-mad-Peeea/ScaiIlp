@@ -71,10 +71,10 @@ namespace ilp_solver
     }
 
 
-    void ILPSolverOsiModel::do_prepare_and_solve()
+    void ILPSolverOsiModel::do_prepare_and_solve(int p_num_threads, int p_log_level, double p_max_seconds)
     {
         prepare();        
-        do_solve();
+        do_solve(p_num_threads, p_log_level, p_max_seconds);
     }
 
 

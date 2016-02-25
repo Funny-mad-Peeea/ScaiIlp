@@ -43,10 +43,6 @@ namespace ilp_solver
 
             ILPSolverInterfaceImpl();
 
-            int    num_threads () const;
-            int    log_level   () const;
-            double max_seconds () const;
-
         private:
             std::vector<int> d_all_col_indices;
             std::vector<int> d_all_row_indices;
@@ -59,10 +55,10 @@ namespace ilp_solver
             virtual void do_add_constraint (const std::vector<int>& p_col_indices, const std::vector<double>& p_col_values, double p_lower_bound, double p_upper_bound, const std::string& p_name)                                          = 0;
 
             virtual void           do_set_objective_sense (ObjectiveSense p_sense)       = 0;
-            virtual void           do_prepare_and_solve   ()                             = 0;
-            virtual const double*  do_get_solution        ()                       const = 0;
-            virtual double         do_get_objective       ()                       const = 0;
-            virtual SolutionStatus do_get_status          ()                       const = 0;
+            virtual void           do_prepare_and_solve   (int p_num_threads, int p_log_level, double p_max_seconds)       = 0;
+            virtual const double*  do_get_solution        ()                                                         const = 0;
+            virtual double         do_get_objective       ()                                                         const = 0;
+            virtual SolutionStatus do_get_status          ()                                                         const = 0;
 
             void add_variable_and_update_index_vector   (const std::vector<int>& p_row_indices, const std::vector<double>& p_row_values, double p_objective, double p_lower_bound, double p_upper_bound, const std::string& p_name, VariableType p_type);
             void add_constraint_and_update_index_vector (const std::vector<int>& p_col_indices, const std::vector<double>& p_col_values, double p_lower_bound, double p_upper_bound, const std::string& p_name);

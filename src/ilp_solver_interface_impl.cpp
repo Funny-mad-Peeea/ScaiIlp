@@ -113,13 +113,13 @@ namespace ilp_solver
     void ILPSolverInterfaceImpl::minimize()
     {
         do_set_objective_sense(ObjectiveSense::MINIMIZE);
-        do_prepare_and_solve();
+        do_prepare_and_solve(d_num_threads, d_log_level, d_max_seconds);
     }
     
     void ILPSolverInterfaceImpl::maximize() 
     {
         do_set_objective_sense(ObjectiveSense::MAXIMIZE);
-        do_prepare_and_solve();
+        do_prepare_and_solve(d_num_threads, d_log_level, d_max_seconds);
     }
     
     const vector<double> ILPSolverInterfaceImpl::get_solution() const
@@ -146,29 +146,14 @@ namespace ilp_solver
         d_num_threads = p_num_threads;
     }
 
-    int ILPSolverInterfaceImpl::num_threads() const
-    {
-        return d_num_threads;
-    }
-
     void ILPSolverInterfaceImpl::set_log_level(int p_level)
     {
         d_log_level = p_level;
     }
 
-    int ILPSolverInterfaceImpl::log_level() const
-    {
-        return d_log_level;
-    }
-
     void ILPSolverInterfaceImpl::set_max_seconds(double p_seconds)
     {
         d_max_seconds = p_seconds;
-    }
-
-    double ILPSolverInterfaceImpl::max_seconds()const
-    {
-        return d_max_seconds;
     }
 
     void ILPSolverInterfaceImpl::add_variable_and_update_index_vector(const std::vector<int>& p_row_indices, const std::vector<double>& p_row_values, double p_objective, double p_lower_bound, double p_upper_bound, const std::string& p_name, VariableType p_type)
