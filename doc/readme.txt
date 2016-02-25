@@ -66,3 +66,47 @@ Building IlpSolverDll with VS 2012
 (2) Specify the location of Cbc by setting the environment variable CBC_DIR.
 
 (3) Build IlpSolverDll and IlpSolverUnitTest.
+
+
+Class Structure
+===============
+
+The published solver interface is ILPSolverInterface. To create a concrete solver, you must call create_XYZ_solver() from ilp_solver_factory.hpp.
+To destroy the solver later, you MUST call destroy_solver() instead of deleting the pointer yourself.
+
+Class Hierarchy:
+
+ILPSolverInterface: published Interface
+|
+|-> ILPSolverInterfaceImpl: implements all methods of ILPSolverInterface, partially by introducing private virtual methods
+    |
+    |-> ILPSolverOsiModel:  implements all modelling methods (e.g., do_add_variable) of ILPSolverInterfaceImpl and all methods that influence the
+        |                   modelling process (the prepare part of do_prepare_and_solve())
+        |
+        |-> ILPSolverCbc:   implements the remaining, solver specific methods for the Cbc solver
+        |
+        |-> ILPSolverOsi:   implements the remaining, solver specific methods for arbitrary solvers whose functionality is exposed via the
+                            OsiSolverInterface
+
+                            Currently, the run time limit and the maximum running time are ignored because the OsiSolverInterface does not provide
+                            this functionality.
+
+Adding a New Solver
+===================
+
+When you want to support a new solver, you must ask yourself at which level you want to hook into the class hierarchy.
+
+(a) If you want to communicate with the solver via the OsiSolverInterface, then you derive a class from ILPSolverOsi, construct your solver and
+    forward a pointer to this solver (its OsiSolverInterface) to the constructor of ILPSolverOsi.
+
+    Note, however, that the OsiSolverInterface does not provide all the functionality that is exposed by ILPSolverInterface. If you can access
+    the solver that is wrapped inside OsiSolverInterface, then you can overwrite* the method ILPSolverOsi::do_solve() to forward some information
+    that is ignored in this method to the solver.
+
+    *An alternative would be to modify ILPSolverOsi::do_solve() to forward the parameters that are currently ignored to a virtual function that
+     can be implemented in a derived class and has an empty default implementation. But currently, there is no need for this, so we do not extra
+     lines of code for this feature.
+
+(b) If your solver is based on an LP-Solver and obtains its model via this solver, then you should derive from ILPSolverOsiModel like Cbc does.
+
+(c) As a last option, you can derive from ILPSolverInterfaceImpl and implement all the virtual methods yourself.
