@@ -18,7 +18,7 @@ namespace ilp_solver
     void ILPSolverCbc::do_solve(int p_num_threads, int p_log_level, double p_max_seconds)
     {
         d_model = CbcModel(*do_get_solver());
-//        d_model.setNumberThreads(p_num_threads);
+        d_model.setNumberThreads(p_num_threads);
         d_model.messageHandler()->setLogLevel(std::min(std::max(p_log_level, 0), 4));   // log level must be between 0 and 4
         d_model.setMaximumSeconds(p_max_seconds);
         d_model.branchAndBound();
