@@ -1,3 +1,42 @@
+Building pthreads-win32 with VS 2012 (only if Cbc should support multi-threading)
+=================================================================================
+
+(1) Download pthreads-win32 from the Pthreads-Win32 project (https://sourceware.org/pthreads-win32/)
+
+Download: ftp://sourceware.org/pub/pthreads-win32/
+
+(2) Open pthread.dsw with VS 2012 and let it upgrade the project
+
+(3) Right-click onto the project "pthread" in the Solution Explorer and choose "Properties" -> "Configuration Properties".
+    Select "All Configurations" and use the following settings:
+
+  General / Output Directory:       $(SolutionDir)$(Configuration)\
+  General / Intermediate Directory: $(SolutionDir)obj\$(Configuration)\
+  General / Platform Toolset:       v110_xp
+
+  C/C++ / General             / Debug Information Output:       Program Database (/Zi)
+  C/C++ / Preprocessor        / Preprocessor Definitions:       prepend "_ITERATOR_DEBUG_LEVEL=0;" (without double quotes)
+  C/C++ / Precompiled Headers / Precompiled Header Output File: $(IntDir)pthread.pch
+  C/C++ / Output Files        / ASM List Location:              $(IntDir)
+  C/C++ / Output Files        / Object File Name:               $(IntDir)
+  C/C++ / Output Files        / Program Database File Name:     $(IntDir)
+
+  Linker / General   / Output File:         $(OutDir)$(TargetName)$(TargetExt)
+  Linker / Debugging / Generate Debug Info: Yes (/DEBUG)
+  Linker / Advanced  / Import Library:      $(OutDir)$(TargetName).lib
+
+  If you want multi processor compilation:
+
+  C/C++ / General         / Multi-processor Compilation: Yes (/MP)
+  C/C++ / Code Generation / Enable Minimal Rebuild:      No (/Gm-)
+
+(4) In the Solution Explorer, find the filter "Resource Files", right-click onto "version.rc" and choose "Properties".
+    Select "All Configurations" and use the following settings:
+
+  Resources / General / Preprocessor Definitions: prepend "PTW32_ARCHx86;" (without double quotes) when compiling for 32 bit platforms
+                                                  or      "PTW32_ARCHx64;" (without double quotes) otherwise.
+
+
 Building Cbc with VS 2012
 =========================
 
@@ -11,7 +50,7 @@ Wiki:     https://projects.coin-or.org/Cbc/wiki
 
 (3) Let VS update the projects
 
-(4) Right-click onto "Solution" in the solution explorer and choose "Properties". Then use the following settings:
+(4) Right-click onto "Solution" in the Solution Explorer and choose "Properties". Then use the following settings:
 
     Common Properties / Project Dependencies:
 
@@ -28,7 +67,7 @@ Wiki:     https://projects.coin-or.org/Cbc/wiki
          (4) libOsi
          (5) libOsiClp
 
-(5) In the solution explorer, mark the following 7 projects:
+(5) In the Solution Explorer, mark the following 7 projects:
 
     (1) libCbc
     (2) libCgl
@@ -52,7 +91,17 @@ Wiki:     https://projects.coin-or.org/Cbc/wiki
     C/C++   / General         / Multi-processor Compilation:  Yes
     C/C++   / Code Generation / Enable Minimal Rebuild:       No
 
-(7) Choose "Build" -> "Batch-Build" and select the following projects and configurations:
+(7) If you want to support multithreading: Ensure that you have proceeded as described in "Building pthreads-win32 with VS 2012"
+
+    Right-click onto the project "libCbc" in the Solution Explorer and choose "Properties" -> "Configuration Properties".
+    Select "All Configurations" and use the following settings:
+
+    C/C++     / General      / Additional Include Directories: <path to pthreads-win32>
+    C/C++     / Preprocessor / Preprocessor Definitions:       prepend "CBC_THREAD;" (without double quotes)
+    Librarian / General      / Additional Dependencies:        pthread.lib
+    Librarian / General      / Additional Library Directories: <path to pthreads-win32>\$(Configuration)
+
+(8) Choose "Build" -> "Batch-Build" and select the following projects and configurations:
 
     libOsiCbc  Debug    Win32
     libOsiCbc  Release  Win32
