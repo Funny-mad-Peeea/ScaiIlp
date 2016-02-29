@@ -137,7 +137,7 @@ ILPSolverInterface: published Interface
         |-> ILPSolverOsi:   implements the remaining, solver specific methods for arbitrary solvers whose functionality is exposed via the
                             OsiSolverInterface
 
-                            Currently, the run time limit and the maximum running time are ignored because the OsiSolverInterface does not provide
+                            Currently, the run time limit and the maximum number of threads are ignored because the OsiSolverInterface does not provide
                             this functionality.
 
 Adding a New Solver
@@ -156,6 +156,7 @@ When you want to support a new solver, you must ask yourself at which level you 
      can be implemented in a derived class and has an empty default implementation. But currently, there is no need for this, so we do not extra
      lines of code for this feature.
 
-(b) If your solver is based on an LP-Solver and obtains its model via this solver, then you should derive from ILPSolverOsiModel like Cbc does.
+(b) If your solver is based on an LP-Solver it communicates with via the OsiSolverInterface and if your solver obtains its model via this LP-solver,
+    then you should derive from ILPSolverOsiModel like Cbc does.
 
 (c) As a last option, you can derive from ILPSolverInterfaceImpl and implement all the virtual methods yourself.
