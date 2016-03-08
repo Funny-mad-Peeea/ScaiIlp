@@ -70,6 +70,8 @@ namespace ilp_solver
 
     void ILPSolverInterfaceImpl::add_constraint(const vector<int>& p_col_indices, const vector<double>& p_col_values, double p_lower_bound, double p_upper_bound, const string& p_name)
     {
+        if ((p_lower_bound <= -0.5*std::numeric_limits<double>::max()) && (p_upper_bound >= 0.5*std::numeric_limits<double>::max()))    // no restriction
+            return;
         add_constraint_and_update_index_vector(p_col_indices, p_col_values, p_lower_bound, p_upper_bound, p_name);
     }
 
