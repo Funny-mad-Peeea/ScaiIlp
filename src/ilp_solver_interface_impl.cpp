@@ -70,7 +70,7 @@ namespace ilp_solver
 
     void ILPSolverInterfaceImpl::add_constraint(const vector<int>& p_col_indices, const vector<double>& p_col_values, double p_lower_bound, double p_upper_bound, const string& p_name)
     {
-        if ((p_lower_bound <= -0.5*std::numeric_limits<double>::max()) && (p_upper_bound >= 0.5*std::numeric_limits<double>::max()))    // no restriction
+        if ((p_lower_bound <= 0.5*std::numeric_limits<double>::lowest()) && (p_upper_bound >= 0.5*std::numeric_limits<double>::max()))    // no restriction
             return;
         add_constraint_and_update_index_vector(p_col_indices, p_col_values, p_lower_bound, p_upper_bound, p_name);
     }
@@ -85,7 +85,7 @@ namespace ilp_solver
     {
         if (p_upper_bound >= 0.5*std::numeric_limits<double>::max())    // no restriction
             return;
-        add_constraint_and_update_index_vector(p_col_indices, p_col_values, -std::numeric_limits<double>::max(), p_upper_bound, p_name);
+        add_constraint_and_update_index_vector(p_col_indices, p_col_values, std::numeric_limits<double>::lowest(), p_upper_bound, p_name);
     }
 
     void ILPSolverInterfaceImpl::add_constraint_lower(const vector<double>& p_col_values, double p_lower_bound, const string& p_name)
@@ -96,7 +96,7 @@ namespace ilp_solver
     
     void ILPSolverInterfaceImpl::add_constraint_lower(const vector<int>& p_col_indices, const vector<double>& p_col_values, double p_lower_bound, const string& p_name)
     {
-        if (p_lower_bound <= -0.5*std::numeric_limits<double>::max())   // no restriction
+        if (p_lower_bound <= 0.5*std::numeric_limits<double>::lowest())   // no restriction
             return;
         add_constraint_and_update_index_vector(p_col_indices, p_col_values, p_lower_bound, std::numeric_limits<double>::max(), p_name);
     }

@@ -164,7 +164,7 @@ namespace ilp_solver
 
         // Add variables
         for (auto i = 0; i < num_vars; ++i)
-            p_solver->add_variable_continuous(c[i], -std::numeric_limits<double>::max(), std::numeric_limits<double>::max(), "x" + std::to_string(i));
+            p_solver->add_variable_continuous(c[i], std::numeric_limits<double>::lowest(), std::numeric_limits<double>::max(), "x" + std::to_string(i));
 
         // Add constraints
         cout << "Constraints:" << endl;
