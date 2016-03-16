@@ -217,21 +217,26 @@ static Data deserialize(void* p_memory, ResultOffset* v_result_offset)
 {
     Data data;
     Result result;
+    void* offset = p_memory;
 
-    Deserializer(p_memory) >> data.vector_2_double
-                           >> data.value_bool
-                           >> store_offset(result.vector_3_char, &(v_result_offset->offset_vectors))
-                           >> result.vector_1_int
-                           >> result.vector_2_double
-                           >> data.value_enum
-                           >> data.vector_1_int
-                           >> data.value_int
-                           >> store_offset(result.value_enum, &(v_result_offset->offset_values))
-                           >> result.value_int
-                           >> data.value_float
-                           >> data.vector_3_char
-                           >> data.value_double
-                           >> data.value_char;
+    offset = (Deserializer(offset) >> data.vector_2_double
+                                   >> data.value_bool).offset(); 
+    v_result_offset->offset_vectors = offset;
+
+    offset = (Deserializer(offset) >> result.vector_3_char
+                                   >> result.vector_1_int
+                                   >> result.vector_2_double
+                                   >> data.value_enum
+                                   >> data.vector_1_int
+                                   >> data.value_int).offset();
+    v_result_offset->offset_values = offset;
+
+    Deserializer(offset) >> result.value_enum
+                         >> result.value_int
+                         >> data.value_float
+                         >> data.vector_3_char
+                         >> data.value_double
+                         >> data.value_char;
 
     return data;
 }

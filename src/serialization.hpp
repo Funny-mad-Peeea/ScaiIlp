@@ -48,9 +48,11 @@ class Deserializer
     public:
         explicit Deserializer(void* p_memory) : d_offset(static_cast<char*>(p_memory)) {}
 
-        template<typename POD_type>             void* deserialize(POD_type* r_value);
-        template<typename POD_type>             void* deserialize(std::vector<POD_type>* r_vector);
-        template<typename POD_type_or_vector>   void* deserialize(std::vector< std::vector<POD_type_or_vector> >* r_vector_of_vectors);
+        void* offset() const { return d_offset; }
+
+        template<typename POD_type>             void deserialize(POD_type* r_value);
+        template<typename POD_type>             void deserialize(std::vector<POD_type>* r_vector);
+        template<typename POD_type_or_vector>   void deserialize(std::vector< std::vector<POD_type_or_vector> >* r_vector_of_vectors);
 
     private:
         char* d_offset;
@@ -86,7 +88,7 @@ Deserializer& operator>>(Deserializer& p_deserializer, Deserializable& p_deseria
 template<typename Serializable>
 std::pair<const Serializable*, void**> reserve(const Serializable& p_serializable, void** p_offset = nullptr)
 {
-    return std::pair<const Serializable*, void**>(&p_serializable, p_offset);
+    return std::make_pair(&p_serializable, p_offset);
 }
 
 
@@ -97,23 +99,6 @@ Serializer& operator<<(Serializer& p_serializer, const std::pair<const Serializa
     if (p_serializable_offset.second != nullptr)
         *(p_serializable_offset.second) = offset;
     return p_serializer;
-}
-
-
-// Deserialization and storing the offset: deserializer >> store_offset(xyz, offset)
-// =================================================================================
-template<typename Deserializable>
-std::pair<Deserializable*, void**> store_offset(Deserializable& p_deserializable, void** p_offset)
-{
-    return std::pair<Deserializable*, void**>(&p_deserializable, p_offset);
-}
-
-
-template<typename Deserializable>
-Deserializer& operator>>(Deserializer& p_deserializer, std::pair<Deserializable*, void**>& p_deserializable_offset)
-{
-    *(p_deserializable_offset.second) = p_deserializer.deserialize(p_deserializable_offset.first);
-    return p_deserializer;
 }
 
 
@@ -145,14 +130,12 @@ void* Serializer::reserve(const POD_type& p_value)
 
 
 template<typename POD_type>
-void* Deserializer::deserialize(POD_type* r_value)
+void Deserializer::deserialize(POD_type* r_value)
 {
-    const auto offset = static_cast<void*>(d_offset);
     const auto num_bytes = sizeof(POD_type);
-    auto pointer = static_cast<POD_type*>(offset);
+    auto pointer = static_cast<POD_type*>(static_cast<void*>(d_offset));
     *r_value = *pointer;
     d_offset += num_bytes;
-    return offset;
 }
 
 
@@ -188,9 +171,8 @@ void* Serializer::reserve(const std::vector<POD_type>& p_vector)
 
 
 template<typename POD_type>
-void* Deserializer::deserialize(std::vector<POD_type>* r_vector)
+void Deserializer::deserialize(std::vector<POD_type>* r_vector)
 {
-    const auto offset = d_offset;
     int reserved_size, vector_size;
     deserialize(&reserved_size);
     deserialize(&vector_size);
@@ -199,7 +181,6 @@ void* Deserializer::deserialize(std::vector<POD_type>* r_vector)
     std::memcpy(r_vector->data(), d_offset, num_vector_bytes);
     const auto num_reserved_bytes = reserved_size*sizeof(POD_type);
     d_offset += num_reserved_bytes;
-    return offset;
 }
 
 
@@ -232,9 +213,8 @@ void* Serializer::reserve(const std::vector< std::vector<POD_type_or_vector> >& 
 
 
 template<typename POD_type_or_vector>
-void* Deserializer::deserialize(std::vector< std::vector<POD_type_or_vector> >* r_vector_of_vectors)
+void Deserializer::deserialize(std::vector< std::vector<POD_type_or_vector> >* r_vector_of_vectors)
 {
-    const auto offset = d_offset;
     int reserved_size, vector_size;
     deserialize(&reserved_size);
     deserialize(&vector_size);
@@ -242,7 +222,6 @@ void* Deserializer::deserialize(std::vector< std::vector<POD_type_or_vector> >* 
     for (auto& vector: *r_vector_of_vectors)
         deserialize(&vector);
     r_vector_of_vectors->resize(vector_size);
-    return offset;
 }
 
 #endif
