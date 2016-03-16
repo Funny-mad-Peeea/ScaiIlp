@@ -45,11 +45,8 @@ struct Result
 
 struct ResultOffset
 {
-    int offset_value_int;
-    int offset_value_enum;
-    int offset_vector_1_int;
-    int offset_vector_2_double;
-    int offset_vector_3_char;
+    void* offset_values;
+    void* offset_vectors;
 };
 
 
@@ -187,25 +184,30 @@ static ResultOffset serialize(const Data& p_data, std::vector<char>* r_memory)
 
     ResultOffset offset;
 
-    MemoryAligner serializer;
+    for (auto i = 0; i < 2; ++i)
+    {
+        // i == 0: simulation to determine required amount of bytes
+        // i == 1: write to memory
+        Serializer serializer(i == 0 ? nullptr : r_memory->data());
 
-    serializer << p_data.vector_2_double
-               << p_data.value_bool
-               << reserve(result.vector_3_char, offset.offset_vector_3_char)
-               << reserve(result.value_enum, offset.offset_value_enum)
-               << p_data.value_enum
-               << p_data.vector_1_int
-               << p_data.value_int
-               << reserve(result.vector_1_int, offset.offset_vector_1_int)
-               << p_data.value_float
-               << p_data.vector_3_char
-               << reserve(result.vector_2_double, offset.offset_vector_2_double)
-               << p_data.value_double
-               << reserve(result.value_int, offset.offset_value_int)
-               << p_data.value_char;
+        serializer << p_data.vector_2_double
+                   << p_data.value_bool
+                   << reserve(result.vector_3_char, &(offset.offset_vectors))
+                   << reserve(result.vector_1_int)
+                   << reserve(result.vector_2_double)
+                   << p_data.value_enum
+                   << p_data.vector_1_int
+                   << p_data.value_int
+                   << reserve(result.value_enum, &(offset.offset_values))
+                   << reserve(result.value_int)
+                   << p_data.value_float
+                   << p_data.vector_3_char
+                   << p_data.value_double
+                   << p_data.value_char;
 
-    r_memory->resize(serializer.required_bytes());
-    serializer.copy_memory(r_memory->data());
+        if (i == 0)
+            r_memory->resize(serializer.required_bytes());
+    }
 
     return offset;
 }
@@ -216,36 +218,33 @@ static Data deserialize(void* p_memory, ResultOffset* v_result_offset)
     Data data;
     Result result;
 
-    MemoryAligner deserializer(p_memory);
-
-    deserializer >> data.vector_2_double
-                 >> data.value_bool
-                 >> store_offset(result.vector_3_char, v_result_offset->offset_vector_3_char)
-                 >> store_offset(result.value_enum, v_result_offset->offset_value_enum)
-                 >> data.value_enum
-                 >> data.vector_1_int
-                 >> data.value_int
-                 >> store_offset(result.vector_1_int, v_result_offset->offset_vector_1_int)
-                 >> data.value_float
-                 >> data.vector_3_char
-                 >> store_offset(result.vector_2_double, v_result_offset->offset_vector_2_double)
-                 >> data.value_double
-                 >> store_offset(result.value_int, v_result_offset->offset_value_int)
-                 >> data.value_char;
+    Deserializer(p_memory) >> data.vector_2_double
+                           >> data.value_bool
+                           >> store_offset(result.vector_3_char, &(v_result_offset->offset_vectors))
+                           >> result.vector_1_int
+                           >> result.vector_2_double
+                           >> data.value_enum
+                           >> data.vector_1_int
+                           >> data.value_int
+                           >> store_offset(result.value_enum, &(v_result_offset->offset_values))
+                           >> result.value_int
+                           >> data.value_float
+                           >> data.vector_3_char
+                           >> data.value_double
+                           >> data.value_char;
 
     return data;
 }
 
 
-static void serialize_result(const Result& p_result, void* v_memory, const ResultOffset& p_offset)
+static void serialize_result(const Result& p_result, const ResultOffset& p_offset)
 {
-    MemoryAligner serializer(v_memory);
-    
-    serializer << at_offset(p_result.vector_1_int,    p_offset.offset_vector_1_int)
-               << at_offset(p_result.value_int,       p_offset.offset_value_int)
-               << at_offset(p_result.vector_3_char,   p_offset.offset_vector_3_char)
-               << at_offset(p_result.value_enum,      p_offset.offset_value_enum)
-               << at_offset(p_result.vector_2_double, p_offset.offset_vector_2_double);
+    Serializer(p_offset.offset_values)  << p_result.value_enum
+                                        << p_result.value_int;
+
+    Serializer(p_offset.offset_vectors) << p_result.vector_3_char
+                                        << p_result.vector_1_int
+                                        << p_result.vector_2_double;
 };
 
 
@@ -253,13 +252,12 @@ static Result deserialize_result(void* p_memory, const ResultOffset& p_offset)
 {
     Result result;
 
-    MemoryAligner deserializer(p_memory);
+    Deserializer(p_offset.offset_vectors) >> result.vector_3_char
+                                          >> result.vector_1_int
+                                          >> result.vector_2_double;
 
-    deserializer >> at_offset(result.value_enum,      p_offset.offset_value_enum)
-                 >> at_offset(result.value_int,       p_offset.offset_value_int)
-                 >> at_offset(result.vector_1_int,    p_offset.offset_vector_1_int)
-                 >> at_offset(result.vector_2_double, p_offset.offset_vector_2_double)
-                 >> at_offset(result.vector_3_char,   p_offset.offset_vector_3_char);
+    Deserializer(p_offset.offset_values)  >> result.value_enum
+                                          >> result.value_int;
 
     return result;
 }
@@ -292,11 +290,8 @@ static void verify_equality(const Data& p_data_1, const Data& p_data_2)
 
 static void verify_equality(const ResultOffset& p_offset_1, const ResultOffset& p_offset_2)
 {
-    assert(p_offset_1.offset_value_int       == p_offset_2.offset_value_int);
-    assert(p_offset_1.offset_value_enum      == p_offset_2.offset_value_enum);
-    assert(p_offset_1.offset_vector_1_int    == p_offset_2.offset_vector_1_int);
-    assert(p_offset_1.offset_vector_2_double == p_offset_2.offset_vector_2_double);
-    assert(p_offset_1.offset_vector_3_char   == p_offset_2.offset_vector_3_char);
+    assert(p_offset_1.offset_values  == p_offset_2.offset_values);
+    assert(p_offset_1.offset_vectors == p_offset_2.offset_vectors);
 }
 
 
@@ -333,7 +328,7 @@ void test_serialization()
     verify_equality(offset_alice, offset_bob);
 
     const auto result_bob = generate_random_result();
-    serialize_result(result_bob, memory.data(), offset_bob);
+    serialize_result(result_bob, offset_bob);
 
     // Alice: Deserialize result
     const auto result_alice = deserialize_result(memory.data(), offset_alice);
