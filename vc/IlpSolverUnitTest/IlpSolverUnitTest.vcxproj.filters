@@ -6,6 +6,7 @@
     <ClInclude Include="..\..\src\serialization.hpp" />
     <ClInclude Include="..\..\src\serialization_t.hpp" />
     <ClInclude Include="..\..\src\shared_memory_communication.hpp" />
+    <ClInclude Include="..\..\src\ilp_solver_collect.hpp" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\src\ilp_solver_cbc_t.cpp" />
@@ -14,5 +15,6 @@
     <ClCompile Include="..\..\src\serialization_t.cpp" />
     <ClCompile Include="..\..\src\shared_memory_communication.cpp" />
     <ClCompile Include="..\..\src\serialization.cpp" />
+    <ClCompile Include="..\..\src\ilp_solver_collect.cpp" />
   </ItemGroup>
 </Project>

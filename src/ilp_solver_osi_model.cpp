@@ -3,6 +3,8 @@
 #include "CoinPackedVector.hpp"
 #include "OsiSolverInterface.hpp"
 
+#include <cassert>
+
 using std::string;
 using std::vector;
 
