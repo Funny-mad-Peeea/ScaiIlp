@@ -63,9 +63,13 @@ Building IlpSolverDll with VS 2012
 
 (1) Ensure that you have built Cbc as described above.
 
-(2) Specify the location of Cbc by setting the environment variable CBC_DIR.
+(2) Ensure that you have built Boost.
 
-(3) Build IlpSolverDll and IlpSolverUnitTest.
+(3) Specify the location of Cbc by setting the environment variable CBC_DIR.
+
+(4) Specify the location of Boost by setting the environment variable BOOST_DIR. Note that the include files must be located in $(BOOST_DIR)\include and the lib files must be located in $(BOOST_DIR)\lib.
+
+(5) Build IlpSolverDll and IlpSolverUnitTest.
 
 
 Class Structure
