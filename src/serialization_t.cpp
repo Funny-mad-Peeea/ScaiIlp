@@ -10,7 +10,7 @@ using std::cout;
 using std::endl;
 using std::vector;
 
-const auto c_result_vector_size = 4;
+const auto c_max_vector_size = 10;
 
 struct Data
 {
@@ -32,7 +32,7 @@ struct Data
 
 struct Result
 {
-    enum class Enumeration { ENUM1, ENUM2 };
+    enum class Enumeration { ENUM1, ENUM2, ENUM_NO_RESULT };
 
     int value_int;
     Enumeration value_enum;
@@ -40,13 +40,6 @@ struct Result
     vector<int>                         vector_1_int;
     vector< vector<double> >            vector_2_double;
     vector< vector< vector<char> > >    vector_3_char;
-};
-
-
-struct ResultAddress
-{
-    void* address_values;
-    void* address_vectors;
 };
 
 
@@ -77,7 +70,7 @@ static int rand_int()       { return rand(); }
 static double rand_double() { return -0.5 + (1.0*rand())/RAND_MAX; }
 static float rand_float()   { return (float) rand_double(); }
 
-static int rand_size()      { return 1 + (rand() % 4); }
+static int rand_size(int p_max_size)    { return 1 + (rand() % p_max_size); }
 
 static Data generate_random_data()
 {
@@ -94,13 +87,13 @@ static Data generate_random_data()
                       ((rand() % 2) == 0 ? Data::Enumeration::ENUM2
                                          : Data::Enumeration::ENUM1));
 
-    const auto size_1 = rand_size();
+    const auto size_1 = rand_size(c_max_vector_size);
     data.vector_1_int.resize(size_1);
     for (auto i = 0; i < size_1; ++i)
         data.vector_1_int[i] = rand_int();
 
-    const auto size_2_1 = rand_size();
-    const auto size_2_2 = rand_size();
+    const auto size_2_1 = rand_size(c_max_vector_size);
+    const auto size_2_2 = rand_size(c_max_vector_size);
     data.vector_2_double.resize(size_2_1);
     for (auto i = 0; i < size_2_1; ++i)
     {
@@ -109,9 +102,9 @@ static Data generate_random_data()
             data.vector_2_double[i][j] = rand_double();
     }
 
-    const auto size_3_1 = rand_size();
-    const auto size_3_2 = rand_size();
-    const auto size_3_3 = rand_size();
+    const auto size_3_1 = rand_size(c_max_vector_size);
+    const auto size_3_2 = rand_size(c_max_vector_size);
+    const auto size_3_3 = rand_size(c_max_vector_size);
     data.vector_3_char.resize(size_3_1);
     for (auto i = 0; i < size_3_1; ++i)
     {
@@ -136,26 +129,32 @@ static Result generate_random_result()
     result.value_enum = ((rand() % 2) == 0 ? Result::Enumeration::ENUM2
                                            : Result::Enumeration::ENUM1);
 
-    result.vector_1_int.resize(c_result_vector_size);
-    for (auto i = 0; i < c_result_vector_size; ++i)
+    const auto size_1 = rand_size(c_max_vector_size);
+    result.vector_1_int.resize(size_1);
+    for (auto i = 0; i < size_1; ++i)
         result.vector_1_int[i] = rand_int();
 
-    result.vector_2_double.resize(c_result_vector_size);
-    for (auto i = 0; i < c_result_vector_size; ++i)
+    const auto size_2_1 = rand_size(c_max_vector_size);
+    const auto size_2_2 = rand_size(c_max_vector_size);
+    result.vector_2_double.resize(size_2_1);
+    for (auto i = 0; i < size_2_1; ++i)
     {
-        result.vector_2_double[i].resize(c_result_vector_size);
-        for (auto j = 0; j < c_result_vector_size; ++j)
+        result.vector_2_double[i].resize(size_2_2);
+        for (auto j = 0; j < size_2_2; ++j)
             result.vector_2_double[i][j] = rand_double();
     }
 
-    result.vector_3_char.resize(c_result_vector_size);
-    for (auto i = 0; i < c_result_vector_size; ++i)
+    const auto size_3_1 = rand_size(c_max_vector_size);
+    const auto size_3_2 = rand_size(c_max_vector_size);
+    const auto size_3_3 = rand_size(c_max_vector_size);
+    result.vector_3_char.resize(size_3_1);
+    for (auto i = 0; i < size_3_1; ++i)
     {
-        result.vector_3_char[i].resize(c_result_vector_size);
-        for (auto j = 0; j < c_result_vector_size; ++j)
+        result.vector_3_char[i].resize(size_3_2);
+        for (auto j = 0; j < size_3_2; ++j)
         {
-            result.vector_3_char[i][j].resize(c_result_vector_size);
-            for (auto k = 0; k < c_result_vector_size; ++k)
+            result.vector_3_char[i][j].resize(size_3_3);
+            for (auto k = 0; k < size_3_3; ++k)
                 result.vector_3_char[i][j][k] = rand_char();
         }
     }
@@ -164,25 +163,25 @@ static Result generate_random_result()
 }
 
 
-static ResultAddress serialize(const Data& p_data, std::vector<char>* r_memory)
+static void* serialize(const Data& p_data, std::vector<char>* r_memory)
 {
     Result result;
 
-    result.vector_1_int.resize(c_result_vector_size);
+    result.vector_1_int.resize(c_max_vector_size);
 
-    result.vector_2_double.resize(c_result_vector_size);
+    result.vector_2_double.resize(c_max_vector_size);
     for (auto& vector: result.vector_2_double)
-        vector.resize(c_result_vector_size);
+        vector.resize(c_max_vector_size);
 
-    result.vector_3_char.resize(c_result_vector_size);
+    result.vector_3_char.resize(c_max_vector_size);
     for (auto& vectors: result.vector_3_char)
     {
-        vectors.resize(c_result_vector_size);
+        vectors.resize(c_max_vector_size);
         for (auto& vector: vectors)
-            vector.resize(c_result_vector_size);
+            vector.resize(c_max_vector_size);
     }
 
-    ResultAddress address;
+    void* result_address;
 
     for (auto i = 0; i < 2; ++i)
     {
@@ -192,89 +191,88 @@ static ResultAddress serialize(const Data& p_data, std::vector<char>* r_memory)
 
         serializer << p_data.vector_2_double
                    << p_data.value_bool
-                   >> &(address.address_vectors)
-                   << reserve(result.vector_3_char)
-                   << reserve(result.vector_1_int)
-                   << reserve(result.vector_2_double)
                    << p_data.value_enum
                    << p_data.vector_1_int
                    << p_data.value_int
-                   >> &(address.address_values)
-                   << reserve(result.value_enum)
-                   << reserve(result.value_int)
                    << p_data.value_float
                    << p_data.vector_3_char
                    << p_data.value_double
-                   << p_data.value_char;
+                   << p_data.value_char
+                   >> &result_address
+                   << result.vector_3_char
+                   << result.vector_1_int
+                   << result.vector_2_double
+                   << result.value_enum
+                   << result.value_int;
 
         if (i == 0)
+        {
             r_memory->resize(serializer.required_bytes());
+
+            // Write empty vectors and "no value" values in next round
+            result.vector_1_int.clear();
+            result.vector_2_double.clear();
+            result.vector_3_char.clear();
+            result.value_int = 0;
+            result.value_enum = Result::Enumeration::ENUM_NO_RESULT;
+        }
     }
 
-    return address;
+    return result_address;
 }
 
 
-static Data deserialize(void* p_address, ResultAddress* v_result_address)
+static Data deserialize(void* p_address, void** v_result_address)
 {
     Data data;
-    Result result;
     
     Deserializer deserializer(p_address);
 
     deserializer >> data.vector_2_double
                  >> data.value_bool
-                 >> &(v_result_address->address_vectors)
-                 >> result.vector_3_char
-                 >> result.vector_1_int
-                 >> result.vector_2_double
                  >> data.value_enum
                  >> data.vector_1_int
                  >> data.value_int
-                 >> &(v_result_address->address_values)
-                 >> result.value_enum
-                 >> result.value_int
                  >> data.value_float
                  >> data.vector_3_char
                  >> data.value_double
-                 >> data.value_char;
+                 >> data.value_char
+                 >> v_result_address;
 
     return data;
 }
 
 
-static void serialize_result(const Result& p_result, const ResultAddress& p_address)
+static void serialize_result(const Result& p_result, void* p_result_address)
 {
-    Serializer(p_address.address_values)  << p_result.value_enum
-                                          << p_result.value_int;
-
-    Serializer(p_address.address_vectors) << p_result.vector_3_char
-                                          << p_result.vector_1_int
-                                          << p_result.vector_2_double;
+    Serializer(p_result_address) << p_result.vector_3_char
+                                 << p_result.vector_1_int
+                                 << p_result.vector_2_double
+                                 << p_result.value_enum
+                                 << p_result.value_int;
 };
 
 
-static Result deserialize_result(const ResultAddress& p_result_address)
+static Result deserialize_result(void* p_result_address)
 {
     Result result;
 
-    Deserializer(p_result_address.address_vectors) >> result.vector_3_char
-                                                   >> result.vector_1_int
-                                                   >> result.vector_2_double;
-
-    Deserializer(p_result_address.address_values)  >> result.value_enum
-                                                   >> result.value_int;
+    Deserializer(p_result_address) >> result.vector_3_char
+                                   >> result.vector_1_int
+                                   >> result.vector_2_double
+                                   >> result.value_enum
+                                   >> result.value_int;
 
     return result;
 }
 
 
-static void verify_zero(const ResultAddress& p_result_address)
+static void verify_zero(void* p_result_address)
 {
     auto result = deserialize_result(p_result_address);
 
     assert(result.value_int == 0);
-    assert(static_cast<int>(result.value_enum) == 0);
+    assert(result.value_enum == Result::Enumeration::ENUM_NO_RESULT);
     assert(result.vector_1_int.size() == 0);
     assert(result.vector_2_double.size() == 0);
     assert(result.vector_3_char.size() == 0);
@@ -294,10 +292,9 @@ static void verify_equality(const Data& p_data_1, const Data& p_data_2)
 }
 
 
-static void verify_equality(const ResultAddress& p_address_1, const ResultAddress& p_address_2)
+static void verify_equality(void* p_address_1, void* p_address_2)
 {
-    assert(p_address_1.address_values  == p_address_2.address_values);
-    assert(p_address_1.address_vectors == p_address_2.address_vectors);
+    assert(p_address_1 == p_address_2);
 }
 
 
@@ -327,7 +324,7 @@ void test_serialization()
     verify_zero(result_address_alice);   // result is zero unless Bob serialized his result
 
     // Bob: Deserialize data and serialize result in the same memory
-    ResultAddress result_address_bob;
+    void* result_address_bob;
     auto data_bob = deserialize(memory.data(), &result_address_bob);
 
     verify_equality(data_alice, data_bob);
