@@ -24,13 +24,15 @@ class Serializer
             return d_current_address - d_start_address;
         }
 
+        void* current_address() const { return d_current_address; }
+
         template<typename POD_type>             void serialize(const POD_type& p_value);
         template<typename POD_type>             void serialize(const std::vector<POD_type>& p_vector);
         template<typename POD_type_or_vector>   void serialize(const std::vector< std::vector<POD_type_or_vector> >& p_vector_of_vectors);
 
-        template<typename POD_type>             void* reserve(const POD_type& p_value);
-        template<typename POD_type>             void* reserve(const std::vector<POD_type>& p_vector);
-        template<typename POD_type_or_vector>   void* reserve(const std::vector< std::vector<POD_type_or_vector> >& p_vector_of_vectors);
+        template<typename POD_type>             void reserve(const POD_type& p_value);
+        template<typename POD_type>             void reserve(const std::vector<POD_type>& p_vector);
+        template<typename POD_type_or_vector>   void reserve(const std::vector< std::vector<POD_type_or_vector> >& p_vector_of_vectors);
 
     private:
         const char* d_start_address;
@@ -73,8 +75,8 @@ Serializer& operator<<(Serializer& p_serializer, const Serializable& p_serializa
 }
 
 
-// Simple deserialization: deserializer >> xyz
-// ===========================================
+// Simple deserialization: deserializer >> xyz (does not work for void**)
+// ======================================================================
 template<typename Deserializable>
 Deserializer& operator>>(Deserializer& p_deserializer, Deserializable& p_deserializable)
 {
@@ -83,21 +85,41 @@ Deserializer& operator>>(Deserializer& p_deserializer, Deserializable& p_deseria
 }
 
 
-// Reserving space: serializer << reserve(xyz[, address])
+// Read current address: serializer >> &address and deserializer >> &address
+Serializer& operator>>(Serializer& p_serializer, void** r_address)
+{
+    *r_address = p_serializer.current_address();
+    return p_serializer;
+}
+
+
+Deserializer& operator>>(Deserializer& p_deserializer, void** r_address)
+{
+    *r_address = p_deserializer.current_address();
+    return p_deserializer;
+}
+
+
+// Reserving space: serializer << reserve(xyz)
 // =====================================================
 template<typename Serializable>
-std::pair<const Serializable*, void**> reserve(const Serializable& p_serializable, void** p_address = nullptr)
+struct Reserve
 {
-    return std::make_pair(&p_serializable, p_address);
+    Reserve(const Serializable& p_serializable) : serializable(&p_serializable) {}
+    const Serializable* const serializable;
+};
+
+template<typename Serializable>
+Reserve<Serializable> reserve(const Serializable& p_serializable)
+{
+    return Reserve<Serializable>(p_serializable);
 }
 
 
 template<typename Serializable>
-Serializer& operator<<(Serializer& p_serializer, const std::pair<const Serializable*, void**>& p_serializable_address)
+Serializer& operator<<(Serializer& p_serializer, const Reserve<Serializable>& p_to_reserve)
 {
-    auto address = p_serializer.reserve(*(p_serializable_address.first));
-    if (p_serializable_address.second != nullptr)
-        *(p_serializable_address.second) = address;
+    p_serializer.reserve(*(p_to_reserve.serializable));
     return p_serializer;
 }
 
@@ -120,12 +142,10 @@ void Serializer::serialize(const POD_type& p_value)
 
 
 template<typename POD_type>
-void* Serializer::reserve(const POD_type& p_value)
+void Serializer::reserve(const POD_type& p_value)
 {
-    const auto address = d_current_address;
     const auto num_bytes = sizeof(p_value);
     d_current_address += num_bytes;
-    return address;
 }
 
 
@@ -156,16 +176,14 @@ void Serializer::serialize(const std::vector<POD_type>& p_vector)
 
 
 template<typename POD_type>
-void* Serializer::reserve(const std::vector<POD_type>& p_vector)
+void Serializer::reserve(const std::vector<POD_type>& p_vector)
 {
-    const auto address = d_current_address;
     const auto vector_size = 0;
     const auto reserved_size = (int) p_vector.size();
     serialize(reserved_size);
     serialize(vector_size);
     const auto num_bytes = reserved_size*sizeof(POD_type);
     d_current_address += num_bytes;
-    return address;
 }
 
 
@@ -198,16 +216,14 @@ void Serializer::serialize(const std::vector< std::vector<POD_type_or_vector> >&
 
 
 template<typename POD_type_or_vector>
-void* Serializer::reserve(const std::vector< std::vector<POD_type_or_vector> >& p_vector_of_vectors)
+void Serializer::reserve(const std::vector< std::vector<POD_type_or_vector> >& p_vector_of_vectors)
 {
-    const auto address = d_current_address;
     const auto vector_size = 0;
     const auto reserved_size = (int) p_vector_of_vectors.size();
     serialize(reserved_size);
     serialize(vector_size);
     for (const auto& vector: p_vector_of_vectors)
         reserve(vector);
-    return address;
 }
 
 

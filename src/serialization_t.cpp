@@ -192,13 +192,15 @@ static ResultAddress serialize(const Data& p_data, std::vector<char>* r_memory)
 
         serializer << p_data.vector_2_double
                    << p_data.value_bool
-                   << reserve(result.vector_3_char, &(address.address_vectors))
+                   >> &(address.address_vectors)
+                   << reserve(result.vector_3_char)
                    << reserve(result.vector_1_int)
                    << reserve(result.vector_2_double)
                    << p_data.value_enum
                    << p_data.vector_1_int
                    << p_data.value_int
-                   << reserve(result.value_enum, &(address.address_values))
+                   >> &(address.address_values)
+                   << reserve(result.value_enum)
                    << reserve(result.value_int)
                    << p_data.value_float
                    << p_data.vector_3_char
@@ -221,20 +223,16 @@ static Data deserialize(void* p_address, ResultAddress* v_result_address)
     Deserializer deserializer(p_address);
 
     deserializer >> data.vector_2_double
-                 >> data.value_bool;
-                 
-    v_result_address->address_vectors = deserializer.current_address(); 
-
-    deserializer >> result.vector_3_char
+                 >> data.value_bool
+                 >> &(v_result_address->address_vectors)
+                 >> result.vector_3_char
                  >> result.vector_1_int
                  >> result.vector_2_double
                  >> data.value_enum
                  >> data.vector_1_int
-                 >> data.value_int;
-                 
-    v_result_address->address_values = deserializer.current_address();
-
-    deserializer >> result.value_enum
+                 >> data.value_int
+                 >> &(v_result_address->address_values)
+                 >> result.value_enum
                  >> result.value_int
                  >> data.value_float
                  >> data.vector_3_char
