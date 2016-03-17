@@ -43,10 +43,10 @@ struct Result
 };
 
 
-struct ResultOffset
+struct ResultAddress
 {
-    void* offset_values;
-    void* offset_vectors;
+    void* address_values;
+    void* address_vectors;
 };
 
 
@@ -164,7 +164,7 @@ static Result generate_random_result()
 }
 
 
-static ResultOffset serialize(const Data& p_data, std::vector<char>* r_memory)
+static ResultAddress serialize(const Data& p_data, std::vector<char>* r_memory)
 {
     Result result;
 
@@ -182,7 +182,7 @@ static ResultOffset serialize(const Data& p_data, std::vector<char>* r_memory)
             vector.resize(c_result_vector_size);
     }
 
-    ResultOffset offset;
+    ResultAddress address;
 
     for (auto i = 0; i < 2; ++i)
     {
@@ -192,13 +192,13 @@ static ResultOffset serialize(const Data& p_data, std::vector<char>* r_memory)
 
         serializer << p_data.vector_2_double
                    << p_data.value_bool
-                   << reserve(result.vector_3_char, &(offset.offset_vectors))
+                   << reserve(result.vector_3_char, &(address.address_vectors))
                    << reserve(result.vector_1_int)
                    << reserve(result.vector_2_double)
                    << p_data.value_enum
                    << p_data.vector_1_int
                    << p_data.value_int
-                   << reserve(result.value_enum, &(offset.offset_values))
+                   << reserve(result.value_enum, &(address.address_values))
                    << reserve(result.value_int)
                    << p_data.value_float
                    << p_data.vector_3_char
@@ -209,68 +209,71 @@ static ResultOffset serialize(const Data& p_data, std::vector<char>* r_memory)
             r_memory->resize(serializer.required_bytes());
     }
 
-    return offset;
+    return address;
 }
 
 
-static Data deserialize(void* p_memory, ResultOffset* v_result_offset)
+static Data deserialize(void* p_address, ResultAddress* v_result_address)
 {
     Data data;
     Result result;
-    void* offset = p_memory;
+    
+    Deserializer deserializer(p_address);
 
-    offset = (Deserializer(offset) >> data.vector_2_double
-                                   >> data.value_bool).offset(); 
-    v_result_offset->offset_vectors = offset;
+    deserializer >> data.vector_2_double
+                 >> data.value_bool;
+                 
+    v_result_address->address_vectors = deserializer.current_address(); 
 
-    offset = (Deserializer(offset) >> result.vector_3_char
-                                   >> result.vector_1_int
-                                   >> result.vector_2_double
-                                   >> data.value_enum
-                                   >> data.vector_1_int
-                                   >> data.value_int).offset();
-    v_result_offset->offset_values = offset;
+    deserializer >> result.vector_3_char
+                 >> result.vector_1_int
+                 >> result.vector_2_double
+                 >> data.value_enum
+                 >> data.vector_1_int
+                 >> data.value_int;
+                 
+    v_result_address->address_values = deserializer.current_address();
 
-    Deserializer(offset) >> result.value_enum
-                         >> result.value_int
-                         >> data.value_float
-                         >> data.vector_3_char
-                         >> data.value_double
-                         >> data.value_char;
+    deserializer >> result.value_enum
+                 >> result.value_int
+                 >> data.value_float
+                 >> data.vector_3_char
+                 >> data.value_double
+                 >> data.value_char;
 
     return data;
 }
 
 
-static void serialize_result(const Result& p_result, const ResultOffset& p_offset)
+static void serialize_result(const Result& p_result, const ResultAddress& p_address)
 {
-    Serializer(p_offset.offset_values)  << p_result.value_enum
-                                        << p_result.value_int;
+    Serializer(p_address.address_values)  << p_result.value_enum
+                                          << p_result.value_int;
 
-    Serializer(p_offset.offset_vectors) << p_result.vector_3_char
-                                        << p_result.vector_1_int
-                                        << p_result.vector_2_double;
+    Serializer(p_address.address_vectors) << p_result.vector_3_char
+                                          << p_result.vector_1_int
+                                          << p_result.vector_2_double;
 };
 
 
-static Result deserialize_result(void* p_memory, const ResultOffset& p_offset)
+static Result deserialize_result(const ResultAddress& p_result_address)
 {
     Result result;
 
-    Deserializer(p_offset.offset_vectors) >> result.vector_3_char
-                                          >> result.vector_1_int
-                                          >> result.vector_2_double;
+    Deserializer(p_result_address.address_vectors) >> result.vector_3_char
+                                                   >> result.vector_1_int
+                                                   >> result.vector_2_double;
 
-    Deserializer(p_offset.offset_values)  >> result.value_enum
-                                          >> result.value_int;
+    Deserializer(p_result_address.address_values)  >> result.value_enum
+                                                   >> result.value_int;
 
     return result;
 }
 
 
-static void verify_zero(void* p_memory, const ResultOffset& p_offset)
+static void verify_zero(const ResultAddress& p_result_address)
 {
-    auto result = deserialize_result(p_memory, p_offset);
+    auto result = deserialize_result(p_result_address);
 
     assert(result.value_int == 0);
     assert(static_cast<int>(result.value_enum) == 0);
@@ -293,10 +296,10 @@ static void verify_equality(const Data& p_data_1, const Data& p_data_2)
 }
 
 
-static void verify_equality(const ResultOffset& p_offset_1, const ResultOffset& p_offset_2)
+static void verify_equality(const ResultAddress& p_address_1, const ResultAddress& p_address_2)
 {
-    assert(p_offset_1.offset_values  == p_offset_2.offset_values);
-    assert(p_offset_1.offset_vectors == p_offset_2.offset_vectors);
+    assert(p_address_1.address_values  == p_address_2.address_values);
+    assert(p_address_1.address_vectors == p_address_2.address_vectors);
 }
 
 
@@ -321,22 +324,22 @@ void test_serialization()
     const auto data_alice = generate_random_data();
 
     vector<char> memory;
-    const auto offset_alice = serialize(data_alice, &memory);
+    const auto result_address_alice = serialize(data_alice, &memory);
 
-    verify_zero(memory.data(), offset_alice);   // result is zero unless Bob serialized his result
+    verify_zero(result_address_alice);   // result is zero unless Bob serialized his result
 
     // Bob: Deserialize data and serialize result in the same memory
-    ResultOffset offset_bob;
-    auto data_bob = deserialize(memory.data(), &offset_bob);
+    ResultAddress result_address_bob;
+    auto data_bob = deserialize(memory.data(), &result_address_bob);
 
     verify_equality(data_alice, data_bob);
-    verify_equality(offset_alice, offset_bob);
+    verify_equality(result_address_alice, result_address_bob);
 
     const auto result_bob = generate_random_result();
-    serialize_result(result_bob, offset_bob);
+    serialize_result(result_bob, result_address_bob);
 
     // Alice: Deserialize result
-    const auto result_alice = deserialize_result(memory.data(), offset_alice);
+    const auto result_alice = deserialize_result(result_address_alice);
 
     verify_equality(result_alice, result_bob);
 

@@ -10,18 +10,18 @@
 class Serializer
 {
     public:
-        // p_memory == nullptr simulates serialization. This allows calculating
+        // p_address == nullptr simulates serialization. This allows calculating
         // the amount of required bytes without writing the data to a temporary
         // memory location.
-        explicit Serializer(void* p_memory)
-            : d_memory(static_cast<char*>(p_memory)),
-              d_offset(static_cast<char*>(p_memory)),
-              d_simulate(d_memory == nullptr ? true : false)
+        explicit Serializer(void* p_address)
+            : d_start_address(static_cast<char*>(p_address)),
+              d_current_address(static_cast<char*>(p_address)),
+              d_simulate(d_start_address == nullptr ? true : false)
             {}
 
         int required_bytes() const
         {
-            return d_offset - d_memory;
+            return d_current_address - d_start_address;
         }
 
         template<typename POD_type>             void serialize(const POD_type& p_value);
@@ -33,8 +33,8 @@ class Serializer
         template<typename POD_type_or_vector>   void* reserve(const std::vector< std::vector<POD_type_or_vector> >& p_vector_of_vectors);
 
     private:
-        const char* d_memory;
-        char* d_offset;
+        const char* d_start_address;
+        char* d_current_address;
         const bool d_simulate;
 };
 
@@ -46,16 +46,16 @@ class Serializer
 class Deserializer
 {
     public:
-        explicit Deserializer(void* p_memory) : d_offset(static_cast<char*>(p_memory)) {}
+        explicit Deserializer(void* p_address) : d_current_address(static_cast<char*>(p_address)) {}
 
-        void* offset() const { return d_offset; }
+        void* current_address() const { return d_current_address; }
 
         template<typename POD_type>             void deserialize(POD_type* r_value);
         template<typename POD_type>             void deserialize(std::vector<POD_type>* r_vector);
         template<typename POD_type_or_vector>   void deserialize(std::vector< std::vector<POD_type_or_vector> >* r_vector_of_vectors);
 
     private:
-        char* d_offset;
+        char* d_current_address;
 };
 
 
@@ -83,21 +83,21 @@ Deserializer& operator>>(Deserializer& p_deserializer, Deserializable& p_deseria
 }
 
 
-// Reserving space: serializer << reserve(xyz[, offset])
+// Reserving space: serializer << reserve(xyz[, address])
 // =====================================================
 template<typename Serializable>
-std::pair<const Serializable*, void**> reserve(const Serializable& p_serializable, void** p_offset = nullptr)
+std::pair<const Serializable*, void**> reserve(const Serializable& p_serializable, void** p_address = nullptr)
 {
-    return std::make_pair(&p_serializable, p_offset);
+    return std::make_pair(&p_serializable, p_address);
 }
 
 
 template<typename Serializable>
-Serializer& operator<<(Serializer& p_serializer, const std::pair<const Serializable*, void**>& p_serializable_offset)
+Serializer& operator<<(Serializer& p_serializer, const std::pair<const Serializable*, void**>& p_serializable_address)
 {
-    auto offset = p_serializer.reserve(*(p_serializable_offset.first));
-    if (p_serializable_offset.second != nullptr)
-        *(p_serializable_offset.second) = offset;
+    auto address = p_serializer.reserve(*(p_serializable_address.first));
+    if (p_serializable_address.second != nullptr)
+        *(p_serializable_address.second) = address;
     return p_serializer;
 }
 
@@ -112,20 +112,20 @@ template<typename POD_type>
 void Serializer::serialize(const POD_type& p_value)
 {
     const auto num_bytes = sizeof(POD_type);
-    auto pointer = static_cast<POD_type*>(static_cast<void*>(d_offset));
+    auto address = static_cast<POD_type*>(static_cast<void*>(d_current_address));
     if (!d_simulate)
-        *pointer = p_value;
-    d_offset += num_bytes;
+        *address = p_value;
+    d_current_address += num_bytes;
 }
 
 
 template<typename POD_type>
 void* Serializer::reserve(const POD_type& p_value)
 {
-    const auto offset = d_offset;
+    const auto address = d_current_address;
     const auto num_bytes = sizeof(p_value);
-    d_offset += num_bytes;
-    return offset;
+    d_current_address += num_bytes;
+    return address;
 }
 
 
@@ -133,9 +133,9 @@ template<typename POD_type>
 void Deserializer::deserialize(POD_type* r_value)
 {
     const auto num_bytes = sizeof(POD_type);
-    auto pointer = static_cast<POD_type*>(static_cast<void*>(d_offset));
-    *r_value = *pointer;
-    d_offset += num_bytes;
+    auto address = static_cast<POD_type*>(static_cast<void*>(d_current_address));
+    *r_value = *address;
+    d_current_address += num_bytes;
 }
 
 
@@ -149,24 +149,23 @@ void Serializer::serialize(const std::vector<POD_type>& p_vector)
     serialize(reserved_size);
     serialize(vector_size);
     const auto num_bytes = vector_size*sizeof(POD_type);
-    const auto offset_data = d_offset;
-    d_offset += num_bytes;
     if (!d_simulate)
-        std::memcpy(offset_data, p_vector.data(), num_bytes);
+        std::memcpy(d_current_address, p_vector.data(), num_bytes);
+    d_current_address += num_bytes;
 }
 
 
 template<typename POD_type>
 void* Serializer::reserve(const std::vector<POD_type>& p_vector)
 {
-    const auto offset = d_offset;
+    const auto address = d_current_address;
     const auto vector_size = 0;
     const auto reserved_size = (int) p_vector.size();
     serialize(reserved_size);
     serialize(vector_size);
     const auto num_bytes = reserved_size*sizeof(POD_type);
-    d_offset += num_bytes;
-    return offset;
+    d_current_address += num_bytes;
+    return address;
 }
 
 
@@ -178,9 +177,9 @@ void Deserializer::deserialize(std::vector<POD_type>* r_vector)
     deserialize(&vector_size);
     const auto num_vector_bytes = vector_size*sizeof(POD_type);
     r_vector->resize(vector_size);
-    std::memcpy(r_vector->data(), d_offset, num_vector_bytes);
+    std::memcpy(r_vector->data(), d_current_address, num_vector_bytes);
     const auto num_reserved_bytes = reserved_size*sizeof(POD_type);
-    d_offset += num_reserved_bytes;
+    d_current_address += num_reserved_bytes;
 }
 
 
@@ -201,14 +200,14 @@ void Serializer::serialize(const std::vector< std::vector<POD_type_or_vector> >&
 template<typename POD_type_or_vector>
 void* Serializer::reserve(const std::vector< std::vector<POD_type_or_vector> >& p_vector_of_vectors)
 {
-    const auto offset = d_offset;
+    const auto address = d_current_address;
     const auto vector_size = 0;
     const auto reserved_size = (int) p_vector_of_vectors.size();
     serialize(reserved_size);
     serialize(vector_size);
     for (const auto& vector: p_vector_of_vectors)
         reserve(vector);
-    return offset;
+    return address;
 }
 
 
