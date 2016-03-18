@@ -69,7 +69,7 @@ namespace ilp_solver
 
     void ILPSolverOsiModel::do_set_objective_sense(ObjectiveSense p_sense)
     {
-        do_get_solver()->setObjSense(p_sense == ILPSolverInterfaceImpl::ObjectiveSense::MINIMIZE ? 1 : -1);
+        do_get_solver()->setObjSense(p_sense == ObjectiveSense::MINIMIZE ? 1 : -1);
     }
 
 

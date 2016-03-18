@@ -197,9 +197,11 @@ static void* serialize(const Data& p_data, std::vector<char>* r_memory)
                    << p_data.value_float
                    << p_data.vector_3_char
                    << p_data.value_double
-                   << p_data.value_char
-                   >> &result_address
-                   << result.vector_3_char
+                   << p_data.value_char;
+
+        result_address = serializer.current_address();
+                   
+        serializer << result.vector_3_char
                    << result.vector_1_int
                    << result.vector_2_double
                    << result.value_enum
@@ -236,8 +238,9 @@ static Data deserialize(void* p_address, void** v_result_address)
                  >> data.value_float
                  >> data.vector_3_char
                  >> data.value_double
-                 >> data.value_char
-                 >> v_result_address;
+                 >> data.value_char;
+
+    *v_result_address = deserializer.current_address();
 
     return data;
 }

@@ -1,6 +1,7 @@
 #ifndef _ILP_SOLVER_INTERFACE_IMPL_HPP
 #define _ILP_SOLVER_INTERFACE_IMPL_HPP
 
+#include "ilp_data.hpp"
 #include "ilp_solver_interface.hpp"
 
 namespace ilp_solver
@@ -38,9 +39,6 @@ namespace ilp_solver
             void set_max_seconds (double p_seconds)  override;
 
         protected:
-            enum class VariableType     {INTEGER, CONTINUOUS};
-            enum class ObjectiveSense   {MINIMIZE, MAXIMIZE};
-
             ILPSolverInterfaceImpl();
 
         private:

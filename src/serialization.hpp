@@ -71,20 +71,14 @@ Serializer& operator<<(Serializer& p_serializer, const Serializable& p_serializa
 }
 
 
-// Deserialization: deserializer >> xyz (does not work for void**)
-// ===============================================================
+// Deserialization: deserializer >> xyz
+// ====================================
 template<typename Deserializable>
 Deserializer& operator>>(Deserializer& p_deserializer, Deserializable& p_deserializable)
 {
     p_deserializer.deserialize(&p_deserializable);
     return p_deserializer;
 }
-
-
-// Read current address: serializer >> &address and deserializer >> &address
-// =========================================================================
-Serializer&   operator>>(Serializer&   p_serializer,   void** r_address);
-Deserializer& operator>>(Deserializer& p_deserializer, void** r_address);
 
 
 /*****************

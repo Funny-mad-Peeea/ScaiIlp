@@ -89,7 +89,9 @@
   <ItemGroup>
     <ClInclude Include="..\..\src\ilp_solver_cbc_t.hpp" />
     <ClInclude Include="..\..\src\ilp_solver_collect.hpp" />
+    <ClInclude Include="..\..\src\ilp_solver_interface_impl.hpp" />
     <ClInclude Include="..\..\src\ilp_solver_interface_t.hpp" />
+    <ClInclude Include="..\..\src\ilp_solver_stub.hpp" />
     <ClInclude Include="..\..\src\serialization.hpp" />
     <ClInclude Include="..\..\src\serialization_t.hpp" />
     <ClInclude Include="..\..\src\shared_memory_communication.hpp" />
@@ -97,8 +99,9 @@
   <ItemGroup>
     <ClCompile Include="..\..\src\ilp_solver_cbc_t.cpp" />
     <ClCompile Include="..\..\src\ilp_solver_collect.cpp" />
+    <ClCompile Include="..\..\src\ilp_solver_interface_impl.cpp" />
     <ClCompile Include="..\..\src\ilp_solver_interface_t.cpp" />
-    <ClCompile Include="..\..\src\serialization.cpp" />
+    <ClCompile Include="..\..\src\ilp_solver_stub.cpp" />
     <ClCompile Include="..\..\src\serialization_t.cpp" />
     <ClCompile Include="..\..\src\shared_memory_communication.cpp" />
     <ClCompile Include="..\..\src\unit_tests.cpp" />
