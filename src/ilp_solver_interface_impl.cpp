@@ -30,18 +30,18 @@ namespace ilp_solver
         add_variable_and_update_index_vector(p_row_indices, p_row_values, p_objective, 0, 1, p_name, VariableType::INTEGER);
     }
     
-    void ILPSolverInterfaceImpl::add_variable_integer(double p_objective, int p_lower_bound, int p_upper_bound, const string& p_name)
+    void ILPSolverInterfaceImpl::add_variable_integer(double p_objective, double p_lower_bound, double p_upper_bound, const string& p_name)
     {
         add_variable_integer(vector<int>(), vector<double>(), p_objective, p_lower_bound, p_upper_bound, p_name);
     }
 
-    void ILPSolverInterfaceImpl::add_variable_integer(const vector<double>& p_row_values, double p_objective, int p_lower_bound, int p_upper_bound, const string& p_name)
+    void ILPSolverInterfaceImpl::add_variable_integer(const vector<double>& p_row_values, double p_objective, double p_lower_bound, double p_upper_bound, const string& p_name)
     {
         assert(d_all_row_indices.size() == p_row_values.size());
         add_variable_integer(d_all_row_indices, p_row_values, p_objective, p_lower_bound, p_upper_bound, p_name);
     }
 
-    void ILPSolverInterfaceImpl::add_variable_integer(const vector<int>& p_row_indices, const vector<double>& p_row_values, double p_objective, int p_lower_bound, int p_upper_bound, const string& p_name)
+    void ILPSolverInterfaceImpl::add_variable_integer(const vector<int>& p_row_indices, const vector<double>& p_row_values, double p_objective, double p_lower_bound, double p_upper_bound, const string& p_name)
     {
         add_variable_and_update_index_vector(p_row_indices, p_row_values, p_objective, p_lower_bound, p_upper_bound, p_name, VariableType::INTEGER);
     }
