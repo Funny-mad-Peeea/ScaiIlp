@@ -87,7 +87,8 @@ namespace ilp_solver
     * Parent communication *
     ***********************/
     ParentCommunication::ParentCommunication(const std::string& p_shared_memory_name)
-        : d_shared_memory(nullptr),
+        : d_shared_memory_name(p_shared_memory_name),
+          d_shared_memory(nullptr),
           d_mapped_region(nullptr),
           d_address(nullptr),
           d_result_address(nullptr)
