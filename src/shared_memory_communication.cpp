@@ -68,10 +68,19 @@ namespace ilp_solver
     }
 
 
-    static int determine_required_size(const ILPData& p_data, const ILPSolutionData& p_solution_data)
+    // To reserve space for the solution in the shared memory
+    static ILPSolutionData dummy_solution(const ILPData& p_data)
+    {
+        ILPSolutionData dummy_solution_data(p_data.objective_sense);
+        dummy_solution_data.solution.resize(p_data.variable_type.size());
+        return dummy_solution_data;
+    }
+
+
+    static int determine_required_size(const ILPData& p_data)
     {
         Serializer serializer(nullptr);
-        serialize_ilp_data(&serializer, p_data, p_solution_data);
+        serialize_ilp_data(&serializer, p_data, dummy_solution(p_data));
         return serializer.required_bytes();
     }
 
@@ -79,7 +88,7 @@ namespace ilp_solver
     static void* serialize_ilp_data(void* p_address, const ILPData& p_data)
     {
         Serializer serializer(p_address);
-        return serialize_ilp_data(&serializer, p_data, ILPSolutionData());
+        return serialize_ilp_data(&serializer, p_data, ILPSolutionData(p_data.objective_sense));
     }
 
 
@@ -113,9 +122,9 @@ namespace ilp_solver
     }
 
 
-    void CommunicationParent::write_ilp_data(const ILPData& p_data, const ILPSolutionData& p_solution_data)
+    void CommunicationParent::write_ilp_data(const ILPData& p_data)
     {
-        const auto size = determine_required_size(p_data, p_solution_data);
+        const auto size = determine_required_size(p_data);
         create_shared_memory(size);
         d_result_address = serialize_ilp_data(d_address, p_data);
     }

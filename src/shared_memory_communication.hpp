@@ -18,7 +18,7 @@ namespace ilp_solver
             CommunicationParent(const std::string& p_shared_memory_name);
             ~CommunicationParent();
 
-            void write_ilp_data(const ILPData& p_data, const ILPSolutionData& p_solution_data);
+            void write_ilp_data(const ILPData& p_data);
             void read_solution_data(ILPSolutionData* r_solution_data);
 
         private:

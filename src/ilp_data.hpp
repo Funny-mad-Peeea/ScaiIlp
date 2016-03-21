@@ -36,8 +36,16 @@ namespace ilp_solver
         double objective;
         SolutionStatus solution_status;
 
-        ILPSolutionData() : objective(std::numeric_limits<double>::quiet_NaN()),
-                            solution_status(SolutionStatus::NO_SOLUTION) {}
+        ILPSolutionData()
+            : objective(std::numeric_limits<double>::quiet_NaN()),
+              solution_status(SolutionStatus::NO_SOLUTION)
+            {}
+
+        explicit ILPSolutionData(ObjectiveSense p_objective_sense)
+            : objective(p_objective_sense == ObjectiveSense::MINIMIZE ? std::numeric_limits<double>::max()
+                                                                      : std::numeric_limits<double>::lowest()),
+              solution_status(SolutionStatus::NO_SOLUTION)
+            {}
     };
 }
 

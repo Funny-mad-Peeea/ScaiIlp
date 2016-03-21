@@ -174,20 +174,13 @@ namespace ilp_solver
 
     void ILPSolverStub::do_solve(const ILPData& p_data)
     {
-        d_ilp_solution_data.objective = (p_data.objective_sense == ObjectiveSense::MINIMIZE
-                                                                 ? std::numeric_limits<double>::max()
-                                                                 : std::numeric_limits<double>::lowest());
         CommunicationParent communicator(d_shared_memory_name);
-
-        const auto num_variables = (int) p_data.variable_type.size();
-        d_ilp_solution_data.solution.resize(num_variables);
-
-        communicator.write_ilp_data(p_data, d_ilp_solution_data);
+        communicator.write_ilp_data(p_data);
 
         auto exit_code = execute_solver(d_executable_name, d_shared_memory_name);
         if (exit_code != 0)
         {
-            d_ilp_solution_data.solution.clear();
+            d_ilp_solution_data = ILPSolutionData(p_data.objective_sense);
             handle_error(exit_code);
         }
         else
