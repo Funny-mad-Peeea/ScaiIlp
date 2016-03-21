@@ -3,6 +3,8 @@ vc/Release/*
 vc/ipch/*
 vc/IlpSolverDll/obj/*
 vc/IlpSolverUnitTest/obj/*
+vc/ScaiCbc/Debug/*
+vc/ScaiCbc/Release/*
 *.sdf
 *.opensdf
 *.suo
