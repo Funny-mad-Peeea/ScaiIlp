@@ -1,17 +1,150 @@
 #include "ilp_solver_stub.hpp"
 
 #include "shared_memory_communication.hpp"
+#include "solver_exit_code.hpp"
+
+#include <cassert>
+#include <codecvt>      // for std::codecvt_utf8_utf16
+#include <memory>
+#include <stdexcept>
+#include <unordered_map>
+
+#define NOMINMAX
+#include <windows.h>    // for GetModuleFileNameW, CreateProcessW etc.
+
+const auto c_file_separator = L"\\";
+const auto c_max_path_length = 1 << 16;
+
+using std::string;
+using std::wstring;
 
 namespace ilp_solver
 {
-    static int execute_solver(const std::string& p_executable_name, const std::string& p_shared_memory_name)
+    static wstring utf8_to_utf16(const string& p_utf8_string)
     {
-        auto quote = [](const std::string& p_string)
+        std::wstring_convert<std::codecvt_utf8_utf16<wchar_t>> converter;
+        return converter.from_bytes(p_utf8_string);
+    }
+
+
+    static wstring quote(const wstring& p_string)
+    {
+        return L"\"" + p_string + L"\"";
+    }
+
+
+    static wstring directory_name(wstring p_filename)
+    {
+        const auto file_separator_pos = p_filename.rfind(c_file_separator);
+        assert(file_separator_pos != std::wstring::npos);
+        p_filename.erase(file_separator_pos);
+        return p_filename + c_file_separator;
+    }
+
+
+    static wstring executable_dir()
+    {
+        wchar_t exe_path[c_max_path_length];
+        GetModuleFileNameW(NULL, exe_path, c_max_path_length);
+        return directory_name(wstring(exe_path));
+    }
+
+
+    static wstring full_executable_name(const string& p_basename)
+    {
+        return executable_dir() + utf8_to_utf16(p_basename);
+    }
+
+
+    static bool file_exists(const wstring& p_filename)
+    {
+        WIN32_FIND_DATA find_data;
+        const auto handle = FindFirstFileW(p_filename.c_str(), &find_data);
+       
+        if (handle == INVALID_HANDLE_VALUE)
+            return false;
+
+        FindClose(handle);
+        return true;
+    }
+
+
+    static int execute_process(const std::wstring& p_executable, const std::wstring& p_parameter, const int p_wait_milliseconds = INFINITE)
+    {
+        if (!file_exists(p_executable))
+            throw std::exception("Could not find the solver executable");
+
+        auto command_line = quote(p_executable) + L" " + quote(p_parameter);
+
+        // CreateProcessW needs non-const command line string
+        auto non_const_command_line = std::unique_ptr<wchar_t[]>(new wchar_t[command_line.size()+1]);
+        wcscpy_s(non_const_command_line.get(), command_line.size()+1, command_line.c_str());
+
+        STARTUPINFOW startup_info;
+        PROCESS_INFORMATION process_info;
+        std::memset(&startup_info, 0, sizeof(startup_info));
+        std::memset(&process_info, 0, sizeof(process_info));
+        startup_info.cb = sizeof(startup_info);
+
+        if (!CreateProcessW(p_executable.c_str(),           // lpApplicationName
+                            non_const_command_line.get(),   // lpCommandLine
+                            0,                              // lpProcessAttributes
+                            0,                              // lpThreadAttributes
+                            false,                          // bInheritHandles
+                            CREATE_DEFAULT_ERROR_MODE ,     // dwCreationFlags
+                            0,                              // lpEnvironment
+                            0,                              // lpCurrentDirectory
+                            &startup_info, 
+                            &process_info))
+            throw std::exception(("Error executing CreateProcessW: " + std::to_string(GetLastError())).c_str());
+
+        // close handles via RAII
+        struct HandleCloser
         {
-            return '"' + p_string + '"';
-        };
-        const auto command_line = quote(p_executable_name) + ' ' + quote(p_shared_memory_name);
-        return std::system(command_line.c_str());
+            HandleCloser(PROCESS_INFORMATION* p_process_info) : process_info(p_process_info) {}
+            ~HandleCloser()
+            {
+                CloseHandle(process_info->hProcess);
+                CloseHandle(process_info->hThread);
+            }
+            
+            PROCESS_INFORMATION* process_info;
+        } handle_closer(&process_info);
+        
+        if (WaitForSingleObject(process_info.hProcess, p_wait_milliseconds) == WAIT_TIMEOUT)
+            TerminateProcess(process_info.hProcess, SolverExitCode::forced_termination);
+
+        DWORD exit_code;
+        if (GetExitCodeProcess(process_info.hProcess, &exit_code))
+            return (int) exit_code;
+        else
+            throw std::exception(("Error executing GetExitCodeProcess: " + std::to_string(GetLastError())).c_str());
+    }
+
+
+    static int execute_solver(const string& p_executable_name, const string& p_shared_memory_name)
+    {
+        return execute_process(full_executable_name(p_executable_name), utf8_to_utf16(p_shared_memory_name));
+    }
+
+
+    static void handle_error(int p_exit_code)
+    {
+        if (p_exit_code == SolverExitCode::out_of_memory)
+            return;                                         // continue and interpret as "no solution"
+
+        std::unordered_map<int, string> exit_code_to_message;
+        exit_code_to_message[SolverExitCode::command_line_error]    = "Invalid command line.";
+        exit_code_to_message[SolverExitCode::shared_memory_error]   = "Failed communicating via shared memory.";
+        exit_code_to_message[SolverExitCode::model_error]           = "Failed generating model.";
+        exit_code_to_message[SolverExitCode::solver_error]          = "Failed solving integer linear program.";
+        exit_code_to_message[SolverExitCode::unknown_error]         = "Unknown error.";
+
+        const auto exception_message = (exit_code_to_message.find(p_exit_code) == exit_code_to_message.end()
+                                        ? "External solver: Unknown exit code " + std::to_string(p_exit_code)
+                                        : "External solver: " + exit_code_to_message[p_exit_code]);
+
+        throw std::exception(exception_message.c_str());
     }
 
 
@@ -46,13 +179,17 @@ namespace ilp_solver
                                                                  : std::numeric_limits<double>::lowest());
         ParentCommunication communicator(d_shared_memory_name);
 
-        d_ilp_solution_data.solution.resize(p_data.num_variables());
+        const auto num_variables = (int) p_data.variable_type.size();
+        d_ilp_solution_data.solution.resize(num_variables);
 
         communicator.write_ilp_data(p_data, d_ilp_solution_data);
 
         auto exit_code = execute_solver(d_executable_name, d_shared_memory_name);
         if (exit_code != 0)
+        {
             d_ilp_solution_data.solution.clear();
+            handle_error(exit_code);
+        }
         else
             communicator.read_solution_data(&d_ilp_solution_data);
     }
