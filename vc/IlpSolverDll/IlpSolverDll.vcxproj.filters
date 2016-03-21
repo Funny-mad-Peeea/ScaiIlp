@@ -7,6 +7,7 @@
     <ClInclude Include="..\..\src\ilp_solver_osi.hpp" />
     <ClInclude Include="..\..\src\ilp_solver_osi_model.hpp" />
     <ClInclude Include="..\..\src\ilp_solver_interface_impl.hpp" />
+    <ClInclude Include="..\..\src\ilp_data.hpp" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\src\ilp_solver_cbc.cpp" />

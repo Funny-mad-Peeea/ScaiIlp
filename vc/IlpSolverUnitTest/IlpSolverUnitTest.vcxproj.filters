@@ -10,6 +10,7 @@
     <ClInclude Include="..\..\src\ilp_solver_stub.hpp" />
     <ClInclude Include="..\..\src\ilp_solver_interface_impl.hpp" />
     <ClInclude Include="..\..\src\ilp_solver_stub_t.hpp" />
+    <ClInclude Include="..\..\src\ilp_data.hpp" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\src\ilp_solver_cbc_t.cpp" />
