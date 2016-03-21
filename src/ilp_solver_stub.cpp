@@ -177,7 +177,7 @@ namespace ilp_solver
         d_ilp_solution_data.objective = (p_data.objective_sense == ObjectiveSense::MINIMIZE
                                                                  ? std::numeric_limits<double>::max()
                                                                  : std::numeric_limits<double>::lowest());
-        ParentCommunication communicator(d_shared_memory_name);
+        CommunicationParent communicator(d_shared_memory_name);
 
         const auto num_variables = (int) p_data.variable_type.size();
         d_ilp_solution_data.solution.resize(num_variables);

@@ -12,11 +12,11 @@
 
 namespace ilp_solver
 {
-    class ParentCommunication
+    class CommunicationParent
     {
         public:
-            ParentCommunication(const std::string& p_shared_memory_name);
-            ~ParentCommunication();
+            CommunicationParent(const std::string& p_shared_memory_name);
+            ~CommunicationParent();
 
             void write_ilp_data(const ILPData& p_data, const ILPSolutionData& p_solution_data);
             void read_solution_data(ILPSolutionData* r_solution_data);
@@ -34,10 +34,10 @@ namespace ilp_solver
     };
 
 
-    class ChildCommunication
+    class CommunicationChild
     {
         public:
-            ChildCommunication(const std::string& p_shared_memory_name);
+            CommunicationChild(const std::string& p_shared_memory_name);
 
             void read_ilp_data(ILPData* r_data);
             void write_solution_data(const ILPSolutionData& p_solution_data);

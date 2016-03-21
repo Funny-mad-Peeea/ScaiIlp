@@ -83,10 +83,10 @@ namespace ilp_solver
     }
 
 
-    /***********************
-    * Parent communication *
-    ***********************/
-    ParentCommunication::ParentCommunication(const std::string& p_shared_memory_name)
+    /******************************
+    * Communication of the parent *
+    ******************************/
+    CommunicationParent::CommunicationParent(const std::string& p_shared_memory_name)
         : d_shared_memory_name(p_shared_memory_name),
           d_shared_memory(nullptr),
           d_mapped_region(nullptr),
@@ -95,14 +95,14 @@ namespace ilp_solver
         {}
 
 
-    ParentCommunication::~ParentCommunication()
+    CommunicationParent::~CommunicationParent()
     {
         delete d_shared_memory;
         delete d_mapped_region;
     }
 
 
-    void ParentCommunication::create_shared_memory(int p_size)
+    void CommunicationParent::create_shared_memory(int p_size)
     {
         if (d_shared_memory != nullptr)
             return;
@@ -113,7 +113,7 @@ namespace ilp_solver
     }
 
 
-    void ParentCommunication::write_ilp_data(const ILPData& p_data, const ILPSolutionData& p_solution_data)
+    void CommunicationParent::write_ilp_data(const ILPData& p_data, const ILPSolutionData& p_solution_data)
     {
         const auto size = determine_required_size(p_data, p_solution_data);
         create_shared_memory(size);
@@ -121,17 +121,17 @@ namespace ilp_solver
     }
 
 
-    void ParentCommunication::read_solution_data(ILPSolutionData* r_solution_data)
+    void CommunicationParent::read_solution_data(ILPSolutionData* r_solution_data)
     {
         Deserializer deserializer(d_result_address);
         deserialize_result(&deserializer, r_solution_data);
     }
 
 
-    /**********************
-    * Child communication *
-    **********************/
-    ChildCommunication::ChildCommunication(const std::string& p_shared_memory_name)
+    /*****************************
+    * Communication of the child *
+    *****************************/
+    CommunicationChild::CommunicationChild(const std::string& p_shared_memory_name)
         : d_shared_memory(open_only, p_shared_memory_name.c_str(), read_write),
           d_mapped_region(d_shared_memory, read_write),
           d_address(d_mapped_region.get_address()),
@@ -139,14 +139,14 @@ namespace ilp_solver
         {}
 
 
-    void ChildCommunication::read_ilp_data(ILPData* r_data)
+    void CommunicationChild::read_ilp_data(ILPData* r_data)
     {
         Deserializer deserializer(d_address);
         d_result_address = deserialize_ilp_data(&deserializer, r_data);
     }
 
 
-    void ChildCommunication::write_solution_data(const ILPSolutionData& p_solution_data)
+    void CommunicationChild::write_solution_data(const ILPSolutionData& p_solution_data)
     {
         Serializer serializer(d_result_address);
         serialize_result(&serializer, p_solution_data);
