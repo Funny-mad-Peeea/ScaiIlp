@@ -27,9 +27,6 @@ namespace ilp_solver
 
         ILPData() : objective_sense(ObjectiveSense::MINIMIZE),
                     num_threads(0), log_level(0), max_seconds(std::numeric_limits<double>::max()) {}
-
-        int num_variables   () const { return (int) variable_lower.size(); }
-        int num_constraints () const { return (int) constraint_lower.size(); }
     };
 
 
