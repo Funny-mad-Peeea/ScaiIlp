@@ -69,12 +69,15 @@ namespace ilp_solver
     }
 
 
-    static int execute_process(const std::wstring& p_executable, const std::wstring& p_parameter, const int p_wait_milliseconds = INFINITE)
+    static int execute_solver(const string& p_executable_name, const string& p_shared_memory_name, const int p_wait_milliseconds = INFINITE)
     {
-        if (!file_exists(p_executable))
-            throw std::exception("Could not find the solver executable");
+        const auto executable = full_executable_name(p_executable_name);
+        const auto parameter = utf8_to_utf16(p_shared_memory_name);
 
-        auto command_line = quote(p_executable) + L" " + quote(p_parameter);
+        if (!file_exists(executable))
+            throw std::exception(("Could not find " + p_executable_name).c_str());
+
+        auto command_line = quote(executable) + L" " + quote(parameter);
 
         // CreateProcessW needs non-const command line string
         auto non_const_command_line = std::unique_ptr<wchar_t[]>(new wchar_t[command_line.size()+1]);
@@ -86,7 +89,7 @@ namespace ilp_solver
         std::memset(&process_info, 0, sizeof(process_info));
         startup_info.cb = sizeof(startup_info);
 
-        if (!CreateProcessW(p_executable.c_str(),           // lpApplicationName
+        if (!CreateProcessW(executable.c_str(),             // lpApplicationName
                             non_const_command_line.get(),   // lpCommandLine
                             0,                              // lpProcessAttributes
                             0,                              // lpThreadAttributes
@@ -119,12 +122,6 @@ namespace ilp_solver
             return (int) exit_code;
         else
             throw std::exception(("Error executing GetExitCodeProcess: " + std::to_string(GetLastError())).c_str());
-    }
-
-
-    static int execute_solver(const string& p_executable_name, const string& p_shared_memory_name)
-    {
-        return execute_process(full_executable_name(p_executable_name), utf8_to_utf16(p_shared_memory_name));
     }
 
 
