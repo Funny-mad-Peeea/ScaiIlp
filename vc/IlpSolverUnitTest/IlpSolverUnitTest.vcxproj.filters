@@ -1,26 +1,78 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <ClInclude Include="..\..\src\ilp_solver_cbc_t.hpp" />
-    <ClInclude Include="..\..\src\ilp_solver_interface_t.hpp" />
-    <ClInclude Include="..\..\src\serialization.hpp" />
-    <ClInclude Include="..\..\src\serialization_t.hpp" />
-    <ClInclude Include="..\..\src\shared_memory_communication.hpp" />
-    <ClInclude Include="..\..\src\ilp_solver_collect.hpp" />
-    <ClInclude Include="..\..\src\ilp_solver_stub.hpp" />
-    <ClInclude Include="..\..\src\ilp_solver_interface_impl.hpp" />
-    <ClInclude Include="..\..\src\ilp_solver_stub_t.hpp" />
-    <ClInclude Include="..\..\src\ilp_data.hpp" />
+    <ClInclude Include="..\..\src\production\ilp_data.hpp">
+      <Filter>production</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\production\ilp_solver_collect.hpp">
+      <Filter>production</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\production\ilp_solver_factory.hpp">
+      <Filter>production</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\production\ilp_solver_interface_impl.hpp">
+      <Filter>production</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\production\ilp_solver_stub.hpp">
+      <Filter>production</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\production\serialization.hpp">
+      <Filter>production</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\production\shared_memory_communication.hpp">
+      <Filter>production</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\production\solver_exit_code.hpp">
+      <Filter>production</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\test\ilp_solver_cbc_t.hpp">
+      <Filter>test</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\test\ilp_solver_interface_t.hpp">
+      <Filter>test</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\test\ilp_solver_stub_t.hpp">
+      <Filter>test</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\test\serialization_t.hpp">
+      <Filter>test</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\src\ilp_solver_cbc_t.cpp" />
-    <ClCompile Include="..\..\src\ilp_solver_interface_t.cpp" />
-    <ClCompile Include="..\..\src\unit_tests.cpp" />
-    <ClCompile Include="..\..\src\serialization_t.cpp" />
-    <ClCompile Include="..\..\src\shared_memory_communication.cpp" />
-    <ClCompile Include="..\..\src\ilp_solver_collect.cpp" />
-    <ClCompile Include="..\..\src\ilp_solver_stub.cpp" />
-    <ClCompile Include="..\..\src\ilp_solver_interface_impl.cpp" />
-    <ClCompile Include="..\..\src\ilp_solver_stub_t.cpp" />
+    <ClCompile Include="..\..\src\production\ilp_solver_collect.cpp">
+      <Filter>production</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\production\ilp_solver_interface_impl.cpp">
+      <Filter>production</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\production\ilp_solver_stub.cpp">
+      <Filter>production</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\production\shared_memory_communication.cpp">
+      <Filter>production</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\test\ilp_solver_cbc_t.cpp">
+      <Filter>test</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\test\ilp_solver_interface_t.cpp">
+      <Filter>test</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\test\ilp_solver_stub_t.cpp">
+      <Filter>test</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\test\serialization_t.cpp">
+      <Filter>test</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\test\unit_tests.cpp">
+      <Filter>test</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="test">
+      <UniqueIdentifier>{6746bdb6-432d-47d5-9e5b-394e3c85d306}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="production">
+      <UniqueIdentifier>{5fdf6001-8865-416a-a291-6bc47ec7e573}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
 </Project>

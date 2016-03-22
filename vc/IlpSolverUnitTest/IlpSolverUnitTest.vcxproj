@@ -54,7 +54,7 @@
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>BOOST_AUTO_LINK_TAGGED;_ITERATOR_DEBUG_LEVEL=0;WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>$(SolutionDir)\IlpSolverDll;$(CBC_DIR)\Cbc\src;$(BOOST_DIR)\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)\..\src\production;$(CBC_DIR)\Cbc\src;$(BOOST_DIR)\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <MinimalRebuild>false</MinimalRebuild>
     </ClCompile>
@@ -74,7 +74,7 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>BOOST_AUTO_LINK_TAGGED;_ITERATOR_DEBUG_LEVEL=0;WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>$(SolutionDir)\IlpSolverDll;$(CBC_DIR)\Cbc\src;$(BOOST_DIR)\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)\..\src\production;$(CBC_DIR)\Cbc\src;$(BOOST_DIR)\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
@@ -87,27 +87,29 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\src\ilp_data.hpp" />
-    <ClInclude Include="..\..\src\ilp_solver_cbc_t.hpp" />
-    <ClInclude Include="..\..\src\ilp_solver_collect.hpp" />
-    <ClInclude Include="..\..\src\ilp_solver_interface_impl.hpp" />
-    <ClInclude Include="..\..\src\ilp_solver_interface_t.hpp" />
-    <ClInclude Include="..\..\src\ilp_solver_stub.hpp" />
-    <ClInclude Include="..\..\src\ilp_solver_stub_t.hpp" />
-    <ClInclude Include="..\..\src\serialization.hpp" />
-    <ClInclude Include="..\..\src\serialization_t.hpp" />
-    <ClInclude Include="..\..\src\shared_memory_communication.hpp" />
+    <ClInclude Include="..\..\src\production\ilp_data.hpp" />
+    <ClInclude Include="..\..\src\production\ilp_solver_collect.hpp" />
+    <ClInclude Include="..\..\src\production\ilp_solver_factory.hpp" />
+    <ClInclude Include="..\..\src\production\ilp_solver_interface_impl.hpp" />
+    <ClInclude Include="..\..\src\production\ilp_solver_stub.hpp" />
+    <ClInclude Include="..\..\src\production\serialization.hpp" />
+    <ClInclude Include="..\..\src\production\shared_memory_communication.hpp" />
+    <ClInclude Include="..\..\src\production\solver_exit_code.hpp" />
+    <ClInclude Include="..\..\src\test\ilp_solver_cbc_t.hpp" />
+    <ClInclude Include="..\..\src\test\ilp_solver_interface_t.hpp" />
+    <ClInclude Include="..\..\src\test\ilp_solver_stub_t.hpp" />
+    <ClInclude Include="..\..\src\test\serialization_t.hpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\src\ilp_solver_cbc_t.cpp" />
-    <ClCompile Include="..\..\src\ilp_solver_collect.cpp" />
-    <ClCompile Include="..\..\src\ilp_solver_interface_impl.cpp" />
-    <ClCompile Include="..\..\src\ilp_solver_interface_t.cpp" />
-    <ClCompile Include="..\..\src\ilp_solver_stub.cpp" />
-    <ClCompile Include="..\..\src\ilp_solver_stub_t.cpp" />
-    <ClCompile Include="..\..\src\serialization_t.cpp" />
-    <ClCompile Include="..\..\src\shared_memory_communication.cpp" />
-    <ClCompile Include="..\..\src\unit_tests.cpp" />
+    <ClCompile Include="..\..\src\production\ilp_solver_collect.cpp" />
+    <ClCompile Include="..\..\src\production\ilp_solver_interface_impl.cpp" />
+    <ClCompile Include="..\..\src\production\ilp_solver_stub.cpp" />
+    <ClCompile Include="..\..\src\production\shared_memory_communication.cpp" />
+    <ClCompile Include="..\..\src\test\ilp_solver_cbc_t.cpp" />
+    <ClCompile Include="..\..\src\test\ilp_solver_interface_t.cpp" />
+    <ClCompile Include="..\..\src\test\ilp_solver_stub_t.cpp" />
+    <ClCompile Include="..\..\src\test\serialization_t.cpp" />
+    <ClCompile Include="..\..\src\test\unit_tests.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
