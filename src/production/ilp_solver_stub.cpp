@@ -171,15 +171,14 @@ namespace ilp_solver
 
     void ILPSolverStub::do_solve(const ILPData& p_data)
     {
+        d_ilp_solution_data = ILPSolutionData(p_data.objective_sense);
+
         CommunicationParent communicator(d_shared_memory_name);
         communicator.write_ilp_data(p_data);
 
         auto exit_code = execute_solver(d_executable_name, d_shared_memory_name);
         if (exit_code != 0)
-        {
-            d_ilp_solution_data = ILPSolutionData(p_data.objective_sense);
             handle_error(exit_code);
-        }
         else
             communicator.read_solution_data(&d_ilp_solution_data);
     }
