@@ -11,4 +11,5 @@ void main()
 
     ilp_solver::test_sorting_cbc_stub();
     ilp_solver::test_linear_programming_cbc_stub();
+    ilp_solver::test_cbc_stub_exception_handling();
 }

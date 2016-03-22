@@ -4,7 +4,10 @@
 enum SolverExitCode 
 {
     ok = 0,
-    out_of_memory       = 14142,
+
+    uncaught_exception = 3,
+
+    out_of_memory       = 14142,    // arbitrary value that is unlikely to be used by Windows for internal codes
     command_line_error,
     shared_memory_error,
     model_error,
