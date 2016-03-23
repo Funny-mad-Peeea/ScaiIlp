@@ -146,6 +146,8 @@ The Visual Studio Solution (.sln) contains three projects:
 
 3.2.1 IlpSolverDll.dll
 
+Include ilp_solver_interface.hpp and ilp_solver_factory.hpp. Link against IlpSolverDll.dll.
+
 The published solver interface is ILPSolverInterface. If you are using IlpSolverDll.dll, then you must call create_XYZ_solver() from
 ilp_solver_factory.hpp in order to create a concrete solver. To destroy the solver later, you MUST call destroy_solver() instead of
 deleting the pointer yourself.
