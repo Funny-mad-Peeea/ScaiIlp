@@ -13,10 +13,10 @@ namespace ilp_solver
     class ILPSolverStub : public ILPSolverCollect
     {
         public:
-            ILPSolverStub(const std::string& p_executable_name, const std::string& p_shared_memory_name);
+            ILPSolverStub(const std::string& p_executable_basename, const std::string& p_shared_memory_name);
 
         private:
-            std::string d_executable_name;
+            std::string d_executable_basename;
             std::string d_shared_memory_name;
 
             ILPSolutionData d_ilp_solution_data;

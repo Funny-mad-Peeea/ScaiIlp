@@ -69,13 +69,13 @@ namespace ilp_solver
     }
 
 
-    static int execute_solver(const string& p_executable_name, const string& p_shared_memory_name, const int p_wait_milliseconds = INFINITE)
+    static int execute_process(const string& p_executable_basename, const string& p_parameter, const int p_wait_milliseconds = INFINITE)
     {
-        const auto executable = full_executable_name(p_executable_name);
-        const auto parameter = utf8_to_utf16(p_shared_memory_name);
+        const auto executable = full_executable_name(p_executable_basename);
+        const auto parameter = utf8_to_utf16(p_parameter);
 
         if (!file_exists(executable))
-            throw std::exception(("Could not find " + p_executable_name).c_str());
+            throw std::exception(("Could not find " + p_executable_basename).c_str());
 
         auto command_line = quote(executable) + L" " + quote(parameter);
 
@@ -146,8 +146,8 @@ namespace ilp_solver
     }
 
 
-    ILPSolverStub::ILPSolverStub(const std::string& p_executable_name, const std::string& p_shared_memory_name)
-        : d_executable_name(p_executable_name),
+    ILPSolverStub::ILPSolverStub(const std::string& p_executable_basename, const std::string& p_shared_memory_name)
+        : d_executable_basename(p_executable_basename),
           d_shared_memory_name(p_shared_memory_name)          
         {}
 
@@ -177,7 +177,7 @@ namespace ilp_solver
         CommunicationParent communicator(d_shared_memory_name);
         communicator.write_ilp_data(p_data);
 
-        auto exit_code = execute_solver(d_executable_name, d_shared_memory_name);
+        auto exit_code = execute_process(d_executable_basename, d_shared_memory_name);
         if (exit_code != 0)
             handle_error(exit_code);
         else
