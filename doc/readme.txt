@@ -75,8 +75,14 @@ Building IlpSolverDll with VS 2012
 Class Structure
 ===============
 
-The published solver interface is ILPSolverInterface. To create a concrete solver, you must call create_XYZ_solver() from ilp_solver_factory.hpp.
-To destroy the solver later, you MUST call destroy_solver() instead of deleting the pointer yourself.
+The published solver interface is ILPSolverInterface. If you are using IlpSolverDll.dll, then you must call create_XYZ_solver() from
+ilp_solver_factory.hpp in order to create a concrete solver. To destroy the solver later, you MUST call destroy_solver() instead of
+deleting the pointer yourself.
+
+The solver ILPSolverStub can only be linked statically. For this, include the required files (ilp_solver_stub.cpp and its dependencies)
+into your project and instantiate ILPSolverStub in your code. The constructor of ILPSolverStub expects the base name of a solver executable
+(in the same directory) and a name for a shared memory segment. The ScaiCbc project creates such an executable. ILPSolverStub implements
+the ILPSolverInterface.
 
 Class Hierarchy:
 
@@ -85,15 +91,23 @@ ILPSolverInterface: published Interface
 |-> ILPSolverInterfaceImpl: implements all methods of ILPSolverInterface, partially by introducing private virtual methods
     |
     |-> ILPSolverOsiModel:  implements all modelling methods (e.g., do_add_variable) of ILPSolverInterfaceImpl and all methods that influence the
-        |                   modelling process (the prepare part of do_prepare_and_solve())
+    |   |                   modelling process (the prepare part of do_prepare_and_solve()) for arbitrary solvers whose modelling functionality is
+    |   |                   exposed via the OsiSolverInterface
+    |   |
+    |   |-> ILPSolverCbc:   implements the remaining, solver specific methods for the Cbc solver
+    |   |
+    |   |-> ILPSolverOsi:   implements the remaining, solver specific methods for arbitrary solvers whose functionality is exposed via the
+    |                       OsiSolverInterface
+    |
+    |                       Currently, the run time limit and the maximum number of threads are ignored because the OsiSolverInterface does not
+    |                       provide this functionality.
+    |
+    |-> ILPSolverCollect:   implements all modelling methods (e.g., do_add_variable) of ILPSolverInterfaceImpl and all methods that influence the
+        |                   modelling process (the prepare part of do_prepare_and_solve()) and stores these data in ILPData.
         |
-        |-> ILPSolverCbc:   implements the remaining, solver specific methods for the Cbc solver
-        |
-        |-> ILPSolverOsi:   implements the remaining, solver specific methods for arbitrary solvers whose functionality is exposed via the
-                            OsiSolverInterface
+        |-> ILPSolverStub:  do_solve() writes the ILPData to shared memory and calls an external solver. The external solver writes the result
+                            (in form of ILPSolutionData) back to the shared memory. The other methods of ILPSolverStub simply query ILPSolutionData.
 
-                            Currently, the run time limit and the maximum number of threads are ignored because the OsiSolverInterface does not provide
-                            this functionality.
 
 Adding a New Solver
 ===================
