@@ -1,5 +1,57 @@
-Building Cbc with VS 2012
-=========================
+Table of Contents
+=================
+
+1. General Information
+   1.1 About
+   1.2 Questions and Answers
+2. Building
+   2.1 Building Cbc with VS 2012
+   2.2 Building IlpSolverDll with VS 2012
+3. Code Structure
+   3.1 Projects in Visual Studio
+   3.2 Usage
+   3.3 Class Hierarchy
+   3.4 Adding a New Solver
+   
+   
+1. Genral Information
+=====================
+
+1.1 About
+---------
+
+IlpSolverDll can provide an interface to different ILP solvers.
+Currently, the only supported solver is Cbc.
+
+
+1.2 Questions and Answers
+-------------------------
+
+Q: What is the purpose of IlpSolverDll?
+A: There are two.
+   1. Provide a unified and simplified interface for different ILP solvers.
+   2. Allow dynamic linking without having to modify the sources/makefiles of solvers that do not support this natively.
+   
+Q: What about Osi? Why another interface?
+A: On the one hand, Osi is quite a complex interface. As it speads over several files with several classes, it is
+   difficult to use as the interface of a DLL.
+   On the other hand, some functions that we needed are missing in Osi.
+
+Q: When should I use IlpSolverStub and ScaiCbc?
+A: Having the solver in a separate process insulates it from your program.
+   If the solver crashes, your program can survive this.
+   On any crashes we know of, IlpSolverStub does silently the same as if the solver just found no solution.
+   On unknown crashes and unknown problems, IlpSolverStub throws an exception, which can be caught in your code.
+   
+Q: When should I use IlpSolverCbc directly?
+A: If you don't experience solver crashes, you can avoid some overhead by using IlpSolverCbc directly.
+
+
+2. Building
+===========
+
+2.1 Building Cbc with VS 2012
+-----------------------------
 
 (1) Download Cbc from the COIN project (http://www.coin-or.org/).
 
@@ -58,8 +110,8 @@ Wiki:     https://projects.coin-or.org/Cbc/wiki
     libOsiCbc  Release  Win32
 
 
-Building IlpSolverDll with VS 2012
-==================================
+2.2 Building IlpSolverDll with VS 2012
+--------------------------------------
 
 (1) Ensure that you have built Cbc as described above.
 
@@ -72,19 +124,42 @@ Building IlpSolverDll with VS 2012
 (5) Build IlpSolverDll and IlpSolverUnitTest.
 
 
-Class Structure
-===============
+3. Code Structure
+=================
+
+3.1 Projects in Visual Studio
+-----------------------------
+
+The Visual Studio Solution (.sln) contains three projects:
+
+- IlpSolverDll creates IlpSolverDll.dll
+  ilp_solver.dll contains the Cbc solver.
+  It can be linked dynamically into other programs.
+- ScaiCbc creates scaicbc.exe
+  scaicbc.exe also contains the Cbc solver.
+  scaicbc.exe can be started in a separate process and communicates via shared memory.
+- IlpSolverUnitTest demonstrates usage for both of above projects.
+
+
+3.2 Usage
+---------
+
+3.2.1 IlpSolverDll.dll
 
 The published solver interface is ILPSolverInterface. If you are using IlpSolverDll.dll, then you must call create_XYZ_solver() from
 ilp_solver_factory.hpp in order to create a concrete solver. To destroy the solver later, you MUST call destroy_solver() instead of
 deleting the pointer yourself.
 
-The solver ILPSolverStub can only be linked statically. For this, include the required files (ilp_solver_stub.cpp and its dependencies)
-into your project and instantiate ILPSolverStub in your code. The constructor of ILPSolverStub expects the base name of a solver executable
-(in the same directory) and a name for a shared memory segment. The ScaiCbc project creates such an executable. ILPSolverStub implements
-the ILPSolverInterface.
+3.2.2 ScaiCbc
 
-Class Hierarchy:
+To use scaicbc.exe, there is a class ILPSolverStub. It can only be linked statically. For this, include the required files (ilp_solver_stub.cpp
+and its dependencies - in other words all files that you find in the "production" filter in IlpSolverUnittest except for ilp_solver_factory.hpp)
+into your project and instantiate ILPSolverStub in your code. The constructor of ILPSolverStub expects the base name of a solver executable
+(in the same directory) and a name for a shared memory segment. 
+
+
+3.3 Class Hierarchy
+-------------------
 
 ILPSolverInterface: published Interface
 |
@@ -98,7 +173,6 @@ ILPSolverInterface: published Interface
     |   |
     |   |-> ILPSolverOsi:   implements the remaining, solver specific methods for arbitrary solvers whose functionality is exposed via the
     |                       OsiSolverInterface
-    |
     |                       Currently, the run time limit and the maximum number of threads are ignored because the OsiSolverInterface does not
     |                       provide this functionality.
     |
@@ -109,8 +183,8 @@ ILPSolverInterface: published Interface
                             (in form of ILPSolutionData) back to the shared memory. The other methods of ILPSolverStub simply query ILPSolutionData.
 
 
-Adding a New Solver
-===================
+3.4 Adding a New Solver
+-----------------------
 
 When you want to support a new solver, you must ask yourself at which level you want to hook into the class hierarchy.
 
