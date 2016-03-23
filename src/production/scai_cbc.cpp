@@ -8,6 +8,8 @@
 
 #include <codecvt>      // for std::codecvt_utf8_utf16
 
+#include <windows.h>    // for SetErrorMode
+
 using namespace ilp_solver;
 
 class ModelException : public std::exception {};
@@ -139,6 +141,8 @@ static SolverExitCode solve_ilp(const std::string& p_shared_memory_name)
 
 int wmain(int argc, wchar_t* argv[])
 {
+    SetErrorMode(SEM_FAILCRITICALERRORS | SEM_NOGPFAULTERRORBOX);
+
     if (argc != 2)
         return SolverExitCode::command_line_error;
 
