@@ -1,15 +1,14 @@
 #ifndef _ILP_DATA_HPP
 #define _ILP_DATA_HPP
 
+#include "ilp_solver_interface.hpp"
+#include "ilp_solver_interface_impl.hpp"
+
 #include <limits>
 #include <vector>
 
 namespace ilp_solver
 {
-    enum class VariableType   { INTEGER, CONTINUOUS };
-    enum class ObjectiveSense { MINIMIZE, MAXIMIZE };
-    enum class SolutionStatus { PROVEN_OPTIMAL, PROVEN_INFEASIBLE, SUBOPTIMAL, NO_SOLUTION };
-
     struct ILPData
     {
         std::vector< std::vector<double> > matrix;  // Note: mx0 matrices can be stored, but 0xn matrices cannot.

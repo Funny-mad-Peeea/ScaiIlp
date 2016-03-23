@@ -1,11 +1,13 @@
 #ifndef _ILP_SOLVER_INTERFACE_IMPL_HPP
 #define _ILP_SOLVER_INTERFACE_IMPL_HPP
 
-#include "ilp_data.hpp"
 #include "ilp_solver_interface.hpp"
 
 namespace ilp_solver
 {
+    enum class VariableType   { INTEGER, CONTINUOUS };
+    enum class ObjectiveSense { MINIMIZE, MAXIMIZE };
+
     class ILPSolverInterfaceImpl : public ILPSolverInterface
     {
         public:

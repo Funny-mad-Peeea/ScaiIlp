@@ -1,13 +1,13 @@
 #ifndef _ILP_SOLVER_INTERFACE_HPP
 #define _ILP_SOLVER_INTERFACE_HPP
 
-#include "ilp_data.hpp"
-
 #include <string>
 #include <vector>
 
 namespace ilp_solver
 {
+    enum class SolutionStatus { PROVEN_OPTIMAL, PROVEN_INFEASIBLE, SUBOPTIMAL, NO_SOLUTION };
+
     class ILPSolverInterface
     {
         public:
