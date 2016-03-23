@@ -99,7 +99,7 @@ namespace ilp_solver
                             0,                              // lpCurrentDirectory
                             &startup_info, 
                             &process_info))
-            throw std::exception(("Error executing CreateProcessW: " + std::to_string(GetLastError())).c_str());
+            throw std::exception(("Error executing CreateProcessW. Error code:" + std::to_string(GetLastError())).c_str());
 
         // close handles via RAII
         struct HandleCloser
@@ -121,7 +121,7 @@ namespace ilp_solver
         if (GetExitCodeProcess(process_info.hProcess, &exit_code))
             return (int) exit_code;
         else
-            throw std::exception(("Error executing GetExitCodeProcess: " + std::to_string(GetLastError())).c_str());
+            throw std::exception(("Error executing GetExitCodeProcess. Error code: " + std::to_string(GetLastError())).c_str());
     }
 
 
