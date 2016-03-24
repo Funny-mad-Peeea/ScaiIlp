@@ -37,6 +37,9 @@
     <ClInclude Include="..\..\src\test\serialization_t.hpp">
       <Filter>test</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\src\production\ilp_solver_interface.hpp">
+      <Filter>production</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\src\production\ilp_solver_collect.cpp">
