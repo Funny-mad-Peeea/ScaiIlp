@@ -46,8 +46,7 @@ namespace ilp_solver
 
     void ILPSolverCollect::do_add_variable(const vector<int>& p_row_indices, const vector<double>& p_row_values, double p_objective, double p_lower_bound, double p_upper_bound, const string& /* p_name */, VariableType p_type)
     {
-        const auto num_indices = (int) p_row_indices.size();
-        assert((int) p_row_values.size() == num_indices);
+        assert(p_row_indices.size() == p_row_values.size());
 
         append_column(&d_ilp_data.matrix, p_row_indices, p_row_values);
         d_ilp_data.objective.push_back(p_objective);
@@ -59,8 +58,7 @@ namespace ilp_solver
 
     void ILPSolverCollect::do_add_constraint(const vector<int>& p_col_indices, const vector<double>& p_col_values, double p_lower_bound, double p_upper_bound, const string& /* p_name */)
     {
-        const auto num_indices = (int) p_col_indices.size();
-        assert((int) p_col_values.size() == num_indices);
+        assert(p_col_indices.size() == p_col_values.size());
         
         const auto num_cols = (int) d_ilp_data.objective.size();
 
