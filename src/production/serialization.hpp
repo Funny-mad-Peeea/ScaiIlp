@@ -34,6 +34,8 @@ class Serializer
         const char* d_start_address;
         char* d_current_address;
         const bool d_simulate;
+
+        Serializer& operator=(const Serializer&) {}
 };
 
 
