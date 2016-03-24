@@ -20,14 +20,14 @@ Table of Contents
 1.1 About
 ---------
 
-IlpSolverDll can provide an interface to different ILP solvers.
+ScaiIlp can provide an interface to different ILP solvers.
 Currently, the only supported solver is Cbc.
 
 
 1.2 Questions and Answers
 -------------------------
 
-Q: What is the purpose of IlpSolverDll?
+Q: What is the purpose of ScaiIlp?
 A: There are two.
    1. Provide a unified and simplified interface for different ILP solvers.
    2. Allow dynamic linking without having to modify the sources/makefiles of solvers that do not support this natively.
@@ -37,7 +37,7 @@ A: On the one hand, Osi is quite a complex interface. As it spreads over several
    difficult to use as the interface of a DLL.
    On the other hand, some functions that we needed are missing in Osi.
 
-Q: When should I use IlpSolverStub and ScaiCbc?
+Q: When should I use IlpSolverStub and ScaiIlpExe?
 A: Having the solver in a separate process insulates it from your program.
    If the solver crashes, your program can survive this.
    On any crashes we know of, IlpSolverStub does silently the same as if the solver just found no solution.
@@ -121,7 +121,7 @@ Wiki:     https://projects.coin-or.org/Cbc/wiki
 
 (4) Specify the location of Boost by setting the environment variable BOOST_DIR. Note that the include files must be located in $(BOOST_DIR)\include and the lib files must be located in $(BOOST_DIR)\lib.
 
-(5) Build IlpSolverDll and IlpSolverUnitTest.
+(5) Build ScaiIlpDll, ScaiIlpExe, and UnitTest.
 
 
 3. Code Structure
@@ -132,29 +132,29 @@ Wiki:     https://projects.coin-or.org/Cbc/wiki
 
 The Visual Studio Solution (.sln) contains three projects:
 
-- IlpSolverDll creates IlpSolverDll.dll
-  ilp_solver.dll contains the Cbc solver.
+- ScaiIlpDll creates ScaiIlp.dll
+  ScaiIlp.dll contains the Cbc solver.
   It can be linked dynamically into other programs.
-- ScaiCbc creates scaicbc.exe
-  scaicbc.exe also contains the Cbc solver.
-  scaicbc.exe can be started in a separate process and communicates via shared memory.
-- IlpSolverUnitTest demonstrates usage for both of above projects.
+- ScaiIlpExe creates ScaiIlp.exe
+  ScaiIlp.exe also contains the Cbc solver.
+  ScaiIlp.exe can be started in a separate process and communicates via shared memory.
+- UnitTest demonstrates usage for both of above projects.
 
 
 3.2 Usage
 ---------
 
-3.2.1 IlpSolverDll.dll
+3.2.1 ScaiIlp.dll
 
-Include ilp_solver_interface.hpp and ilp_solver_factory.hpp. Link against IlpSolverDll.dll.
+Include ilp_solver_interface.hpp and ilp_solver_factory.hpp. Link against ScaiIlp.dll.
 
-The published solver interface is ILPSolverInterface. If you are using IlpSolverDll.dll, then you must call create_XYZ_solver() from
+The published solver interface is ILPSolverInterface. If you are using ScaiIlp.dll, then you must call create_solver_XYZ() from
 ilp_solver_factory.hpp in order to create a concrete solver. To destroy the solver later, you MUST call destroy_solver() instead of
 deleting the pointer yourself.
 
-3.2.2 ScaiCbc
+3.2.2 ScaiIlp.exe
 
-To use scaicbc.exe, there is a class ILPSolverStub that can be instantiated by calling create_stub_solver(). This function expects the
+To use ScaiIlp.exe, there is a class ILPSolverStub that can be instantiated by calling create_solver_stub(). This function expects the
 base name of a solver executable (in the same directory) and a name for a shared memory segment. 
 
 
@@ -206,7 +206,7 @@ When you want to support a new solver, you must ask yourself at which level you 
 
 If you want your solver to be accessible via the DLL, then you must declare and define a function
 
-  extern "C" ILPSolverInterface* __stdcall create_xyz_solver(<parameters>)
+  extern "C" ILPSolverInterface* __stdcall create_solver_xyz(<parameters>)
 
-in ilp_solver_factory.hpp and ilp_solver_factory.cpp, respectively, and add this function in the module definition file IlpSolverDll.def, which can be
-found in vc\IlpSolverDll.
+in ilp_solver_factory.hpp and ilp_solver_factory.cpp, respectively, and add this function in the module definition file ScaiIlpDll.def, which can be
+found in vc\ScaiIlpDll.
