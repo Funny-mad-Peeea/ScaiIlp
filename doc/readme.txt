@@ -33,7 +33,7 @@ A: There are two.
    2. Allow dynamic linking without having to modify the sources/makefiles of solvers that do not support this natively.
    
 Q: What about Osi? Why another interface?
-A: On the one hand, Osi is quite a complex interface. As it speads over several files with several classes, it is
+A: On the one hand, Osi is quite a complex interface. As it spreads over several files with several classes, it is
    difficult to use as the interface of a DLL.
    On the other hand, some functions that we needed are missing in Osi.
 
@@ -154,10 +154,8 @@ deleting the pointer yourself.
 
 3.2.2 ScaiCbc
 
-To use scaicbc.exe, there is a class ILPSolverStub. It can only be linked statically. For this, include the required files (ilp_solver_stub.cpp
-and its dependencies - in other words all files that you find in the "production" filter in IlpSolverUnittest except for ilp_solver_factory.hpp)
-into your project and instantiate ILPSolverStub in your code. The constructor of ILPSolverStub expects the base name of a solver executable
-(in the same directory) and a name for a shared memory segment. 
+To use scaicbc.exe, there is a class ILPSolverStub that can be instantiated by calling create_stub_solver(). This function expects the
+base name of a solver executable (in the same directory) and a name for a shared memory segment. 
 
 
 3.3 Class Hierarchy
@@ -205,3 +203,10 @@ When you want to support a new solver, you must ask yourself at which level you 
     then you should derive from ILPSolverOsiModel like Cbc does.
 
 (c) As a last option, you can derive from ILPSolverInterfaceImpl and implement all the virtual methods yourself.
+
+If you want your solver to be accessible via the DLL, then you must declare and define a function
+
+  extern "C" ILPSolverInterface* __stdcall create_xyz_solver(<parameters>)
+
+in ilp_solver_factory.hpp and ilp_solver_factory.cpp, respectively, and add this function in the module definition file IlpSolverDll.def, which can be
+found in vc\IlpSolverDll.
