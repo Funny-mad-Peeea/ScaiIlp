@@ -4,8 +4,8 @@
     <ClCompile Include="..\..\src\production\ilp_solver_cbc.cpp" />
     <ClCompile Include="..\..\src\production\ilp_solver_interface_impl.cpp" />
     <ClCompile Include="..\..\src\production\ilp_solver_osi_model.cpp" />
-    <ClCompile Include="..\..\src\production\scai_cbc.cpp" />
     <ClCompile Include="..\..\src\production\shared_memory_communication.cpp" />
+    <ClCompile Include="..\..\src\production\scai_ilp.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\src\production\ilp_data.hpp" />

@@ -13,7 +13,7 @@
   <PropertyGroup Label="Globals">
     <ProjectGuid>{37250A30-6839-456E-B7EF-BEA2253EA52F}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
-    <RootNamespace>ScaiCbc</RootNamespace>
+    <RootNamespace>ScaiIlpExe</RootNamespace>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -41,9 +41,11 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
+    <TargetName>ScaiIlp</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
+    <TargetName>ScaiIlp</TargetName>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -87,7 +89,7 @@
     <ClCompile Include="..\..\src\production\ilp_solver_cbc.cpp" />
     <ClCompile Include="..\..\src\production\ilp_solver_interface_impl.cpp" />
     <ClCompile Include="..\..\src\production\ilp_solver_osi_model.cpp" />
-    <ClCompile Include="..\..\src\production\scai_cbc.cpp" />
+    <ClCompile Include="..\..\src\production\scai_ilp.cpp" />
     <ClCompile Include="..\..\src\production\shared_memory_communication.cpp" />
   </ItemGroup>
   <ItemGroup>
