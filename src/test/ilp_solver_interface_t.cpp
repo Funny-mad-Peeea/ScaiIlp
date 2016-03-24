@@ -7,12 +7,16 @@
 #include <cassert>
 #include <iostream>
 
+#define NOMINMAX
+#include <windows.h>    // for GetTickCount
+
 using std::cout;
 using std::endl;
 using std::string;
 using std::vector;
 
 const auto c_eps = 0.0001;
+const auto c_num_performance_test_repetitions = 10000;
 
 namespace ilp_solver
 {
@@ -315,5 +319,51 @@ namespace ilp_solver
 
             cout << "Test failed." << endl;
         }
+    }
+
+
+    void test_performance(ILPSolverInterface* p_solver, const string& p_solver_name)
+    {
+        print_caption("Performance test", p_solver_name);
+
+        // max x+y, -1 <= x, y <= 1
+        p_solver->add_variable_continuous(1, -1, 1);
+        p_solver->add_variable_continuous(1, -1, 1);
+
+        // x+2y <= 2
+        vector<double> values_1;
+        values_1.push_back(1);
+        values_1.push_back(2);
+        p_solver->add_constraint_upper(values_1, 2);
+
+        // 2x+y <= 2
+        vector<double> values_2;
+        values_2.push_back(2);
+        values_2.push_back(1);
+        p_solver->add_constraint_upper(values_2, 2);
+
+        vector<double> expected_solution;
+        expected_solution.push_back(2.0/3.0);
+        expected_solution.push_back(2.0/3.0);
+
+        const auto one_twentieth = c_num_performance_test_repetitions/20;
+
+        const auto start_time = GetTickCount();
+        for (auto i = 1; i <= c_num_performance_test_repetitions; ++i)
+        {
+            p_solver->maximize();
+            const auto solution = p_solver->get_solution();
+
+            assert(fabs(solution[0] - expected_solution[0]) < c_eps);
+            assert(fabs(solution[1] - expected_solution[1]) < c_eps);
+
+            if ((i % one_twentieth) == 0)
+                cout << "*";
+        }
+        const auto end_time = GetTickCount();
+
+        cout << endl
+             << endl
+             << "Test took " << end_time - start_time << " ms" << endl;
     }
 }

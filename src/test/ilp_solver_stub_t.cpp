@@ -13,21 +13,23 @@ namespace ilp_solver
         return create_stub_solver(c_solver_name, c_shared_memory_name);
     }
 
-
     void test_sorting_cbc_stub()
     {
         execute_test_and_destroy_solver(create_solver(), "Cbc Stub Solver", test_sorting);
     }
-
 
     void test_linear_programming_cbc_stub()
     {
         execute_test_and_destroy_solver(create_solver(), "Cbc Stub Solver", test_linear_programming);
     }
 
-
     void test_bad_alloc_cbc_stub()
     {
         execute_test_and_destroy_solver(create_solver(), "Cbc Stub Solver", test_bad_alloc);
+    }
+
+    void test_performance_cbc_stub()
+    {
+        execute_test_and_destroy_solver(create_solver(), "Cbc Stub Solver", test_performance);
     }
 }

@@ -14,4 +14,9 @@ namespace ilp_solver
     {
         execute_test_and_destroy_solver(create_cbc_solver(), "Cbc Solver", test_linear_programming);
     }
+
+    void test_performance_cbc()
+    {
+        execute_test_and_destroy_solver(create_cbc_solver(), "Cbc Solver", test_performance);
+    }
 }

@@ -5,6 +5,7 @@ namespace ilp_solver
 {
     void test_sorting_cbc();
     void test_linear_programming_cbc();
+    void test_performance_cbc();
 }
 
 #endif

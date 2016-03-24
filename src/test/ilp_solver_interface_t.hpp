@@ -13,6 +13,7 @@ namespace ilp_solver
     void test_sorting(ILPSolverInterface* p_solver, const std::string& p_solver_name);
     void test_linear_programming(ILPSolverInterface* p_solver, const std::string& p_solver_name);
     void test_bad_alloc(ILPSolverInterface* p_solver, const std::string& p_solver_name);
+    void test_performance(ILPSolverInterface* p_solver, const std::string& p_solver_name);
 }
 
 #endif
