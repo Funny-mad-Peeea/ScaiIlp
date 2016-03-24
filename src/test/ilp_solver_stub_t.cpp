@@ -10,7 +10,7 @@ namespace ilp_solver
 {
     static ILPSolverInterface* create_solver()
     {
-        return create_stub_solver(c_solver_name, c_shared_memory_name);
+        return create_solver_stub(c_solver_name, c_shared_memory_name);
     }
 
     void test_sorting_cbc_stub()
