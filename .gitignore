@@ -1,12 +1,12 @@
 vc/Debug/*
 vc/Release/*
 vc/ipch/*
-vc/IlpSolverUnitTest/Debug/*
-vc/IlpSolverUnitTest/Release/*
 vc/ScaiIlpDll/Debug/*
 vc/ScaiIlpDll/Release/*
 vc/ScaiIlpExe/Debug/*
 vc/ScaiIlpExe/Release/*
+vc/UnitTest/Debug/*
+vc/UnitTest/Release/*
 *.sdf
 *.opensdf
 *.suo
