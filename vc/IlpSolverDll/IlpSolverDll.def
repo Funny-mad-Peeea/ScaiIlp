@@ -1,4 +1,5 @@
 EXPORTS
 
 create_cbc_solver
+create_stub_solver
 destroy_solver

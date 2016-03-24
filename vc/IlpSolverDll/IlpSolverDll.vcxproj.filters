@@ -7,6 +7,11 @@
     <ClInclude Include="..\..\src\production\ilp_solver_interface_impl.hpp" />
     <ClInclude Include="..\..\src\production\ilp_solver_osi.hpp" />
     <ClInclude Include="..\..\src\production\ilp_solver_osi_model.hpp" />
+    <ClInclude Include="..\..\src\production\ilp_solver_stub.hpp" />
+    <ClInclude Include="..\..\src\production\serialization.hpp" />
+    <ClInclude Include="..\..\src\production\shared_memory_communication.hpp" />
+    <ClInclude Include="..\..\src\production\ilp_solver_collect.hpp" />
+    <ClInclude Include="..\..\src\production\solver_exit_code.hpp" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\src\production\ilp_solver_cbc.cpp" />
@@ -14,5 +19,8 @@
     <ClCompile Include="..\..\src\production\ilp_solver_interface_impl.cpp" />
     <ClCompile Include="..\..\src\production\ilp_solver_osi.cpp" />
     <ClCompile Include="..\..\src\production\ilp_solver_osi_model.cpp" />
+    <ClCompile Include="..\..\src\production\ilp_solver_stub.cpp" />
+    <ClCompile Include="..\..\src\production\shared_memory_communication.cpp" />
+    <ClCompile Include="..\..\src\production\ilp_solver_collect.cpp" />
   </ItemGroup>
 </Project>

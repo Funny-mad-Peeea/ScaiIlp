@@ -1,29 +1,73 @@
+#include "ilp_solver_interface_t.hpp"
+
+#include "ilp_solver_factory.hpp"
 #include "ilp_solver_interface.hpp"
 
+#include <algorithm>
 #include <cassert>
-#include <cmath>
-
 #include <iostream>
 
 using std::cout;
 using std::endl;
+using std::string;
 using std::vector;
 
 const auto c_eps = 0.0001;
 
 namespace ilp_solver
 {
-    int round(double x)
+    /*********************
+    * Internal functions *
+    *********************/
+    static int round(double x)
     {
         return (int) (x+0.5);
     }
 
-    void test_sorting(ILPSolverInterface* p_solver)
+
+    static double rand_double()
+    {
+        return -0.5 + (1.0*rand())/RAND_MAX;
+    }
+
+
+    static string underline(string p_text)
+    {
+        std::fill(std::begin(p_text), std::end(p_text), '=');
+        return p_text;
+    }
+
+
+    static void print_caption(const string& p_test_name, const string& p_solver_name)
     {
         cout << endl
-             << "Sorting test" << endl
-             << "============" << endl
+             << p_test_name            << " (" << p_solver_name            << ")" << endl
+             << underline(p_test_name) << "==" << underline(p_solver_name) << "=" << endl
              << endl;
+    }
+
+
+    /**********************
+    * Published functions *
+    **********************/
+    void execute_test_and_destroy_solver(ILPSolverInterface* p_solver, const string& p_solver_name, std::function<void(ILPSolverInterface*, const string&)> p_test)
+    {
+        try
+        {
+            p_test(p_solver, p_solver_name);
+        }
+        catch (...)
+        {
+            destroy_solver(p_solver);
+            throw;
+        }
+        destroy_solver(p_solver);
+    }
+
+
+    void test_sorting(ILPSolverInterface* p_solver, const string& p_solver_name)
+    {
+        print_caption("Sorting test", p_solver_name);
 
         int number_array[] = { 62, 20, 4, 49, 97, 73, 35, 51, 18, 86};
         const auto numbers = vector<int>(std::begin(number_array), std::end(number_array));
@@ -108,12 +152,9 @@ namespace ilp_solver
         cout << endl;
     }
 
-    void test_linear_programming(ILPSolverInterface* p_solver)
+    void test_linear_programming(ILPSolverInterface* p_solver, const string& p_solver_name)
     {
-        cout << endl
-            << "LP test" << endl
-            << "=======" << endl
-            << endl;
+        print_caption("LP test", p_solver_name);
 
         const auto num_vars = 5;
         const auto num_dirs = num_vars;
@@ -232,5 +273,47 @@ namespace ilp_solver
             assert(fabs(x[i] - x0[i]) <= c_eps);
         }
         cout << endl;
+    }
+
+
+    void test_bad_alloc(ILPSolverInterface* p_solver, const string& p_solver_name)
+    {
+        print_caption("Bad alloc test", p_solver_name);
+
+        srand(3);
+
+        // It is not clear that this is sufficient to provoke a bad_alloc.
+        const auto variable_scaling = 10.0;
+        const auto num_variables = 500000;
+        for (auto j = 0; j < num_variables; ++j)
+            p_solver->add_variable_integer(rand_double(), variable_scaling*rand_double(), variable_scaling*(1.0 + rand_double()));
+
+        const auto constraint_scaling = num_variables*variable_scaling;
+        const auto num_constraints = 100;
+        std::vector<double> constraint_vector(num_variables);
+        for (auto i = 0; i < num_constraints; ++i)
+        {
+            std::generate(std::begin(constraint_vector), std::end(constraint_vector), [](){ return rand_double(); });
+            p_solver->add_constraint(constraint_vector, constraint_scaling*rand_double(), constraint_scaling*(1.0 + rand_double()));
+        }
+
+        try
+        {
+            // bad_alloc should be treated as "no solution"
+            p_solver->minimize();
+            assert(p_solver->get_status() == SolutionStatus::NO_SOLUTION);
+            assert(p_solver->get_solution().size() == 0);
+
+            if ((p_solver->get_status() == SolutionStatus::NO_SOLUTION) && (p_solver->get_solution().size() == 0))
+                cout << "Test succeeded." << endl;
+            else
+                cout << "Test failed." << endl;
+        }
+        catch (...)
+        {
+            assert(false);
+
+            cout << "Test failed." << endl;
+        }
     }
 }
