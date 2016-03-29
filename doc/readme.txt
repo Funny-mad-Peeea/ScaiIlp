@@ -133,7 +133,7 @@ Wiki:     https://projects.coin-or.org/Cbc/wiki
 The Visual Studio Solution (.sln) contains three projects:
 
 - ScaiIlpDll creates ScaiIlp.dll
-  ScaiIlp.dll contains the Cbc solver.
+  ScaiIlp.dll contains the Cbc solver and a stub to communicate with ScaiIlp.exe
   It can be linked dynamically into other programs.
 - ScaiIlpExe creates ScaiIlp.exe
   ScaiIlp.exe also contains the Cbc solver.
@@ -144,18 +144,28 @@ The Visual Studio Solution (.sln) contains three projects:
 3.2 Usage
 ---------
 
-3.2.1 ScaiIlp.dll
+The published solver interface is ILPSolverInterface.
+Include ilp_solver_interface.hpp.
 
-Include ilp_solver_interface.hpp and ilp_solver_factory.hpp. Link against ScaiIlp.dll.
+3.2.1 Use as a DLL 
 
-The published solver interface is ILPSolverInterface. If you are using ScaiIlp.dll, then you must call create_solver_XYZ() from
-ilp_solver_factory.hpp in order to create a concrete solver. To destroy the solver later, you MUST call destroy_solver() instead of
-deleting the pointer yourself.
+The recommended way to use ScaiIlp is to use it as a DLL (dynamic linking)
+- Link against ScaiIlp.dll.
+- Include ilp_solver_factory.hpp.
+- Create your objects via create_solver_cbc() from ilp_solver_factory.hpp.
+- To destroy the solver later, you MUST call destroy_solver() instead of deleting the pointer yourself.
 
-3.2.2 ScaiIlp.exe
+3.2.2. Static linking
 
-To use ScaiIlp.exe, there is a class ILPSolverStub that can be instantiated by calling create_solver_stub(). This function expects the
-base name of a solver executable (in the same directory) and a name for a shared memory segment. 
+Alternatively, you may include your ilp_solver_cbc.cpp and all its dependencies in your project.
+This way, your code gets statically linked with a part of ScaiIlp.
+
+3.2.3 ScaiIlp.exe
+
+To use ScaiIlp.exe, there is a class ILPSolverStub.
+IlpSolverStub can be used like IlpSolverCbc either as described in 3.2.1 or as described in 3.2.2.
+The constructor of IlpSolverStub and create_solver_stub() expect the base name of a solver executable (in the 
+same directory, should be ScaiIlp, unless you rename it) and a name for a shared memory segment. 
 
 
 3.3 Class Hierarchy
