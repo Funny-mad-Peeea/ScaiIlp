@@ -132,12 +132,12 @@ Wiki:     https://projects.coin-or.org/Cbc/wiki
 
 The Visual Studio Solution (.sln) contains three projects:
 
-- ScaiIlpDll creates ScaiIlp.dll
-  ScaiIlp.dll contains the Cbc solver and a stub to communicate with ScaiIlp.exe
+- ScaiIlpDll creates ScaiIlpDll.dll
+  ScaiIlpDll.dll contains the Cbc solver and a stub to communicate with ScaiIlpExe.exe
   It can be linked dynamically into other programs.
-- ScaiIlpExe creates ScaiIlp.exe
-  ScaiIlp.exe links ScaiIlp.dll dynamically to provide the Cbc solver.
-  ScaiIlp.exe can be started in a separate process and communicates via shared memory.
+- ScaiIlpExe creates ScaiIlpExe.exe
+  ScaiIlpExe.exe links ScaiIlpDll.dll dynamically to provide the Cbc solver.
+  ScaiIlpExe.exe can be started in a separate process and communicates via shared memory.
 - UnitTest demonstrates usage for both of above projects.
 
 
@@ -150,7 +150,7 @@ Include ilp_solver_interface.hpp.
 3.2.1 Use as a DLL 
 
 The recommended way to use ScaiIlp is to use it as a DLL (dynamic linking)
-- Link against ScaiIlp.dll.
+- Link against ScaiIlpDll.dll.
 - Include ilp_solver_factory.hpp.
 - Create your objects via create_solver_cbc() from ilp_solver_factory.hpp.
 - To destroy the solver later, you MUST call destroy_solver() instead of deleting the pointer yourself.
@@ -160,12 +160,12 @@ The recommended way to use ScaiIlp is to use it as a DLL (dynamic linking)
 Alternatively, you may include your ilp_solver_cbc.cpp and all its dependencies in your project.
 This way, your code gets statically linked with a part of ScaiIlp.
 
-3.2.3 ScaiIlp.exe
+3.2.3 ScaiIlpExe.exe
 
-To use ScaiIlp.exe, there is a class ILPSolverStub.
+To use ScaiIlpExe.exe, there is a class ILPSolverStub.
 IlpSolverStub can be used like IlpSolverCbc either as described in 3.2.1 or as described in 3.2.2.
 The constructor of IlpSolverStub and create_solver_stub() expect the base name of a solver executable (in the 
-same directory, should be ScaiIlp, unless you rename it) and a name for a shared memory segment. 
+same directory, should be ScaiIlpExe.exe, unless you rename it) and a name for a shared memory segment. 
 
 
 3.3 Class Hierarchy

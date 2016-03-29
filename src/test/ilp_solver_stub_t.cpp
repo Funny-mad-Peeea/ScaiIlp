@@ -3,7 +3,7 @@
 #include "ilp_solver_interface_t.hpp"
 #include "ilp_solver_factory.hpp"
 
-const auto c_solver_name = "ScaiIlp.exe";
+const auto c_solver_name = "ScaiIlpExe.exe";
 const auto c_shared_memory_name = "ILP_SOLVER_SHARED_MEMORY";
 
 namespace ilp_solver
