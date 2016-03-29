@@ -1,5 +1,6 @@
 #include "ilp_data.hpp"
-#include "ilp_solver_cbc.hpp"
+#include "ilp_solver_factory.hpp"
+#include "ilp_solver_interface.hpp"
 #include "shared_memory_communication.hpp"
 #include "solver_exit_code.hpp"
 
@@ -14,6 +15,8 @@ using namespace ilp_solver;
 
 class ModelException : public std::exception {};
 class SolverException : public std::exception {};
+
+using ilp_solver::ILPSolverInterface;
 
 
 static std::string utf16_to_utf8(const std::wstring &p_utf16_string)
@@ -81,7 +84,7 @@ static void solve_ilp(ILPSolverInterface* v_solver, ObjectiveSense p_objective_s
 }
 
 
-static ILPSolutionData solution_data(const ILPSolverCbc& p_solver)
+static ILPSolutionData solution_data(const ILPSolverInterface& p_solver)
 {
     ILPSolutionData solution_data;
 
@@ -96,21 +99,30 @@ static ILPSolutionData solution_data(const ILPSolverCbc& p_solver)
 // Throws ModelException, SolverException or std::bad_alloc
 static ILPSolutionData solve_ilp(const ILPData& p_data)
 {
-    ILPSolverCbc solver;
+    auto solver = ilp_solver::create_solver_cbc();
+
+    // RAII for deleting solver
+    struct SolverDeleter
+    {
+        SolverDeleter(ILPSolverInterface* p_solver) : solver(p_solver) {}
+        ~SolverDeleter()                                               { ilp_solver::destroy_solver(solver); }
+
+        ILPSolverInterface* solver;
+    } solver_deleter(solver);
 
     try
     {
-        generate_ilp(&solver, p_data);
-        set_solver_parameters(&solver, p_data);
+        generate_ilp(solver, p_data);
+        set_solver_parameters(solver, p_data);
     }
     catch (const std::bad_alloc&) { throw; }
     catch (...)                   { throw ModelException(); }
 
     try
     {
-        solve_ilp(&solver, p_data.objective_sense);
+        solve_ilp(solver, p_data.objective_sense);
 
-        return solution_data(solver);
+        return solution_data(*solver);
     }
     catch (const std::bad_alloc&) { throw; }
     catch (...)                   { throw SolverException(); }

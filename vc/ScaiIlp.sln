@@ -2,16 +2,17 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2012
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ScaiIlpDll", "ScaiIlpDll\ScaiIlpDll.vcxproj", "{F3E554F5-F2D5-4185-86A5-87D100CCDA78}"
-	ProjectSection(ProjectDependencies) = postProject
-		{37250A30-6839-456E-B7EF-BEA2253EA52F} = {37250A30-6839-456E-B7EF-BEA2253EA52F}
-	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "UnitTest", "UnitTest\UnitTest.vcxproj", "{F7209567-12FF-4106-B62E-ED96B1B0BAA8}"
 	ProjectSection(ProjectDependencies) = postProject
+		{37250A30-6839-456E-B7EF-BEA2253EA52F} = {37250A30-6839-456E-B7EF-BEA2253EA52F}
 		{F3E554F5-F2D5-4185-86A5-87D100CCDA78} = {F3E554F5-F2D5-4185-86A5-87D100CCDA78}
 	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ScaiIlpExe", "ScaiIlpExe\ScaiIlpExe.vcxproj", "{37250A30-6839-456E-B7EF-BEA2253EA52F}"
+	ProjectSection(ProjectDependencies) = postProject
+		{F3E554F5-F2D5-4185-86A5-87D100CCDA78} = {F3E554F5-F2D5-4185-86A5-87D100CCDA78}
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

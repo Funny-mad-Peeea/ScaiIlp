@@ -3,11 +3,13 @@
 
 #include <vector>
 
+#include <boost/utility.hpp>
+
 /**********************************
 * Serializes plain old data types *
 * (POD types) and vectors         *
 **********************************/
-class Serializer
+class Serializer : public boost::noncopyable
 {
     public:
         // p_address == nullptr simulates serialization. This allows calculating
@@ -34,8 +36,6 @@ class Serializer
         const char* d_start_address;
         char* d_current_address;
         const bool d_simulate;
-
-        Serializer& operator=(const Serializer&) {}
 };
 
 

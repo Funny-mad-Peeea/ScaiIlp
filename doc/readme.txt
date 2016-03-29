@@ -136,7 +136,7 @@ The Visual Studio Solution (.sln) contains three projects:
   ScaiIlp.dll contains the Cbc solver and a stub to communicate with ScaiIlp.exe
   It can be linked dynamically into other programs.
 - ScaiIlpExe creates ScaiIlp.exe
-  ScaiIlp.exe also contains the Cbc solver.
+  ScaiIlp.exe links ScaiIlp.dll dynamically to provide the Cbc solver.
   ScaiIlp.exe can be started in a separate process and communicates via shared memory.
 - UnitTest demonstrates usage for both of above projects.
 

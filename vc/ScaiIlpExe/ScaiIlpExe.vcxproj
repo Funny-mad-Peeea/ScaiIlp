@@ -55,13 +55,13 @@
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>BOOST_AUTO_LINK_TAGGED;_ITERATOR_DEBUG_LEVEL=0;WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>$(BOOST_DIR)\include;$(CBC_DIR)\Clp\src;$(CBC_DIR)\Osi\src\Osi;$(CBC_DIR)\CoinUtils\src;$(CBC_DIR)\Clp\src\OsiClp;$(CBC_DIR)\Cbc\src</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(BOOST_DIR)\include</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>$(BOOST_DIR)\lib;$(CBC_DIR)\Cbc\MSVisualStudio\v10\$(Configuration)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>libCbc.lib;libCoinUtils.lib;libClp.lib;libOsi.lib;libOsiClp.lib;libCgl.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)\$(Configuration);$(BOOST_DIR)\lib</AdditionalLibraryDirectories>
+      <AdditionalDependencies>ScaiIlp.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -74,30 +74,24 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>BOOST_AUTO_LINK_TAGGED;_ITERATOR_DEBUG_LEVEL=0;WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>$(BOOST_DIR)\include;$(CBC_DIR)\Clp\src;$(CBC_DIR)\Osi\src\Osi;$(CBC_DIR)\CoinUtils\src;$(CBC_DIR)\Clp\src\OsiClp;$(CBC_DIR)\Cbc\src</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(BOOST_DIR)\include</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalLibraryDirectories>$(BOOST_DIR)\lib;$(CBC_DIR)\Cbc\MSVisualStudio\v10\$(Configuration)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>libCbc.lib;libCoinUtils.lib;libClp.lib;libOsi.lib;libOsiClp.lib;libCgl.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)\$(Configuration);$(BOOST_DIR)\lib</AdditionalLibraryDirectories>
+      <AdditionalDependencies>ScaiIlp.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\src\production\ilp_solver_cbc.cpp" />
-    <ClCompile Include="..\..\src\production\ilp_solver_interface_impl.cpp" />
-    <ClCompile Include="..\..\src\production\ilp_solver_osi_model.cpp" />
     <ClCompile Include="..\..\src\production\scai_ilp.cpp" />
     <ClCompile Include="..\..\src\production\shared_memory_communication.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\src\production\ilp_data.hpp" />
-    <ClInclude Include="..\..\src\production\ilp_solver_cbc.hpp" />
     <ClInclude Include="..\..\src\production\ilp_solver_interface.hpp" />
-    <ClInclude Include="..\..\src\production\ilp_solver_interface_impl.hpp" />
-    <ClInclude Include="..\..\src\production\ilp_solver_osi_model.hpp" />
     <ClInclude Include="..\..\src\production\serialization.hpp" />
     <ClInclude Include="..\..\src\production\shared_memory_communication.hpp" />
     <ClInclude Include="..\..\src\production\solver_exit_code.hpp" />
