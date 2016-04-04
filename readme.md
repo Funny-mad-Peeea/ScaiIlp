@@ -72,26 +72,25 @@ A: If you don't experience solver crashes, you can avoid some overhead by using 
 -----------------------------
 
   1. Download Cbc from the COIN project (http://www.coin-or.org/).
-    * Download: http://www.coin-or.org/download/source/Cbc/
-    * via SVN:  svn co https://projects.coin-or.org/svn/Cbc/stable/2.8 coin-Cbc
-    * Wiki:     https://projects.coin-or.org/Cbc/wiki
+  * Download: http://www.coin-or.org/download/source/Cbc/
+  * via SVN:  svn co https://projects.coin-or.org/svn/Cbc/stable/2.8 coin-Cbc
+  * Wiki:     https://projects.coin-or.org/Cbc/wiki
 
   2. Open Cbc\MSVisualStudio\v10\Cbc.sln with VS 2012
 
   3. Let VS update the projects
 
-  4. Right-click onto "Solution" in the Solution Explorer and choose "Properties". Then use the
-  following settings:
-    * Common Properties / Project Dependencies:
-      * Choose "libOsiCbc" from "Projects" and check the following 2 projects:
-        1. libCbc
-        2. libOsi
-      * Choose "libCbc" from "Projects" and check the following 5 projects:
-        1. libCgl
-        2. libClp
-        3. libCoinUtils
-        4. libOsi
-        5. libOsiClp
+  4. Right-click onto "Solution" in the Solution Explorer and choose "Properties". Then use the following settings:
+  * Common Properties / Project Dependencies:
+    * Choose "libOsiCbc" from "Projects" and check the following 2 projects:
+      1. libCbc
+      2. libOsi
+    * Choose "libCbc" from "Projects" and check the following 5 projects:
+      1. libCgl
+      2. libClp
+      3. libCoinUtils
+      4. libOsi
+      5. libOsiClp
 
   5. In the Solution Explorer, mark the following 7 projects:
     1. libCbc
@@ -103,17 +102,16 @@ A: If you don't experience solver crashes, you can avoid some overhead by using 
     7. libOsiClp
 
   6. Right-click onto the marked projects and choose "Properties" -> "Configuration Properties".
-    * Select "All Configurations" and use the following settings:
-      * General / Output Directory:        $(SolutionDir)$(Configuration)\
-      * General / Intermediate Directory:  $(SolutionDir)obj\
-      * General / Platform Toolset:        v110_xp
-    * C/C++   / Preprocessor / Preprocessor Definitions:   prepend "_ITERATOR_DEBUG_LEVEL=0;"
-    (without double quotes)
-    * C/C++   / Output Files / Program Database File Name: $(OutDir)$(TargetName).pdb
-    
-    * For faster compilation, you can additionally use the following settings (set none or both):
-      * C/C++   / General         / Multi-processor Compilation:  Yes
-      * C/C++   / Code Generation / Enable Minimal Rebuild:       No
+  * Select "All Configurations" and use the following settings:
+    * General / Output Directory:        $(SolutionDir)$(Configuration)\
+    * General / Intermediate Directory:  $(SolutionDir)obj\
+    * General / Platform Toolset:        v110_xp
+  * C/C++   / Preprocessor / Preprocessor Definitions:   prepend "_ITERATOR_DEBUG_LEVEL=0;" (without double quotes)
+  * C/C++   / Output Files / Program Database File Name: $(OutDir)$(TargetName).pdb
+
+  * For faster compilation, you can additionally use the following settings (set none or both):
+    * C/C++   / General         / Multi-processor Compilation:  Yes
+    * C/C++   / Code Generation / Enable Minimal Rebuild:       No
 
   7. If you want to support multithreading: Build pthreads-win32 as described in section 2.2 Otherwise proceed as in step 8.
   * Right-click onto the project "libCbc" in the Solution Explorer and choose
@@ -126,46 +124,45 @@ A: If you don't experience solver crashes, you can avoid some overhead by using 
     * Librarian / General      / Additional Library Directories: <path to pthreads-win32>\$(Configuration)
 
   8. Choose "Build" -> "Batch-Build" and select the following projects and configurations:
-    * libOsiCbc  Debug    Win32
-    * libOsiCbc  Release  Win32
+  * libOsiCbc  Debug    Win32
+  * libOsiCbc  Release  Win32
 
 
 2.2 Optional: Building pthreads-win32 with VS 2012 (only if Cbc should support multi-threading)
 -----------------------------------------------------------------------------------------------
 
   1. Download pthreads-win32 from the Pthreads-Win32 project (https://sourceware.org/pthreads-win32/)
-    * Download: ftp://sourceware.org/pub/pthreads-win32/
+  * Download: ftp://sourceware.org/pub/pthreads-win32/
 
   2. Open pthread.dsw with VS 2012 and let it upgrade the project
 
   3. Right-click onto the project "pthread" in the Solution Explorer and choose
-    * "Properties" -> "Configuration Properties".
-    * Select "All Configurations" and use the following settings:
-      * General / Output Directory:       $(SolutionDir)$(Configuration)\
-      * General / Intermediate Directory: $(SolutionDir)obj\$(Configuration)\
-      * General / Platform Toolset:       v110_xp
-      
-      * C/C++ / General             / Debug Information Output:       Program Database (/Zi)
-      * C/C++ / Preprocessor        / Preprocessor Definitions:       prepend "_ITERATOR_DEBUG_LEVEL=0;"
-      (without double quotes)
-      * C/C++ / Precompiled Headers / Precompiled Header Output File: $(IntDir)pthread.pch
-      * C/C++ / Output Files        / ASM List Location:              $(IntDir)
-      * C/C++ / Output Files        / Object File Name:               $(IntDir)
-      * C/C++ / Output Files        / Program Database File Name:     $(IntDir)
-      
-    * Linker / General   / Output File:         $(OutDir)$(TargetName)$(TargetExt)
-    * Linker / Debugging / Generate Debug Info: Yes (/DEBUG)
-    * Linker / Advanced  / Import Library:      $(OutDir)$(TargetName).lib
+  * "Properties" -> "Configuration Properties".
+  * Select "All Configurations" and use the following settings:
+    * General / Output Directory:       $(SolutionDir)$(Configuration)\
+    * General / Intermediate Directory: $(SolutionDir)obj\$(Configuration)\
+    * General / Platform Toolset:       v110_xp
 
-    * If you want multi processor compilation:
-      * C/C++ / General         / Multi-processor Compilation: Yes (/MP)
-      * C/C++ / Code Generation / Enable Minimal Rebuild:      No (/Gm-)
+    * C/C++ / General             / Debug Information Output:       Program Database (/Zi)
+    * C/C++ / Preprocessor        / Preprocessor Definitions:       prepend "_ITERATOR_DEBUG_LEVEL=0;" (without double quotes)
+    * C/C++ / Precompiled Headers / Precompiled Header Output File: $(IntDir)pthread.pch
+    * C/C++ / Output Files        / ASM List Location:              $(IntDir)
+    * C/C++ / Output Files        / Object File Name:               $(IntDir)
+    * C/C++ / Output Files        / Program Database File Name:     $(IntDir)
+
+  * Linker / General   / Output File:         $(OutDir)$(TargetName)$(TargetExt)
+  * Linker / Debugging / Generate Debug Info: Yes (/DEBUG)
+  * Linker / Advanced  / Import Library:      $(OutDir)$(TargetName).lib
+
+  * If you want multi processor compilation:
+    * C/C++ / General         / Multi-processor Compilation: Yes (/MP)
+    * C/C++ / Code Generation / Enable Minimal Rebuild:      No (/Gm-)
 
   4. In the Solution Explorer, find the filter "Resource Files", right-click onto "version.rc" and choose "Properties".
   Select "All Configurations" and use the following settings:
-    * Resources / General / Preprocessor Definitions: 
-    * prepend "PTW32_ARCHx86;" (without double quotes) when compiling for 32 bit platforms
-    * or      "PTW32_ARCHx64;" (without double quotes) otherwise.
+  * Resources / General / Preprocessor Definitions: 
+  * prepend "PTW32_ARCHx86;" (without double quotes) when compiling for 32 bit platforms
+  * or      "PTW32_ARCHx64;" (without double quotes) otherwise.
 
 2.3 Building IlpSolverDll with VS 2012
 --------------------------------------
@@ -279,7 +276,7 @@ Note, however, that the OsiSolverInterface does not provide all the functionalit
     OsiSolverInterface, then you can overwrite* the method ILPSolverOsi::do_solve() to forward some
     information that is ignored in this method to the solver.
 
-    * An alternative would be to modify ILPSolverOsi::do_solve() to forward the parameters that are
+  * An alternative would be to modify ILPSolverOsi::do_solve() to forward the parameters that are
     currently ignored to a virtual function that can be implemented in a derived class and has an
     empty default implementation. But currently, there is no need for this, so we do not extra
     lines of code for this feature.
