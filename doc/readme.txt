@@ -3,7 +3,8 @@ Table of Contents
 
 1. General Information
    1.1 About
-   1.2 Questions and Answers
+   1.2 License
+   1.3 Questions and Answers
 2. Building
    2.1 Building Cbc with VS 2012
    2.2 Building IlpSolverDll with VS 2012
@@ -21,10 +22,17 @@ Table of Contents
 ---------
 
 ScaiIlp can provide an interface to different ILP solvers.
-Currently, the only supported solver is Cbc.
+Currently, the only supported solver is Cbc, see section 2.1.
 
 
-1.2 Questions and Answers
+1.2 License
+-----------
+
+ScaiIlp is licensed under the terms of the Eclipse Public License (EPL), version 1.0
+See https://opensource.org/licenses/EPL-1.0 or license.txt
+
+
+1.3 Questions and Answers
 -------------------------
 
 Q: What is the purpose of ScaiIlp?
