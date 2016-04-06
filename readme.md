@@ -16,7 +16,7 @@ Table of Contents
     4. Adding a New Solver
    
    
-1. Genral Information
+1. General Information
 =====================
 
 1.1 About
