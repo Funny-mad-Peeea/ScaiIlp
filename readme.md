@@ -83,23 +83,23 @@ A: If you don't experience solver crashes, you can avoid some overhead by using 
   4. Right-click onto "Solution" in the Solution Explorer and choose "Properties". Then use the following settings:
     * Common Properties / Project Dependencies:
       * Choose "libOsiCbc" from "Projects" and check the following 2 projects:
-        1. libCbc
-        2. libOsi
+        * libCbc
+        * libOsi
       * Choose "libCbc" from "Projects" and check the following 5 projects:
-        1. libCgl
-        2. libClp
-        3. libCoinUtils
-        4. libOsi
-        5. libOsiClp
+        * libCgl
+        * libClp
+        * libCoinUtils
+        * libOsi
+        * libOsiClp
 
   5. In the Solution Explorer, mark the following 7 projects:
-    1. libCbc
-    2. libCgl
-    3. libClp
-    4. libCoinUtils
-    5. libOsi
-    6. libOsiCbc
-    7. libOsiClp
+    * libCbc
+    * libCgl
+    * libClp
+    * libCoinUtils
+    * libOsi
+    * libOsiCbc
+    * libOsiClp
 
   6. Right-click onto the marked projects and choose "Properties" -> "Configuration Properties".
     * Select "All Configurations" and use the following settings:
