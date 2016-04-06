@@ -262,16 +262,16 @@ shared memory segment.
 When you want to support a new solver, you must ask yourself at which level you want to hook into
 the class hierarchy.
 
-1. If you want to communicate with the solver via the OsiSolverInterface, then you derive a class
-    from ILPSolverOsi, construct your solver and forward a pointer to this solver (its
-    OsiSolverInterface) to the constructor of ILPSolverOsi.
+  1. If you want to communicate with the solver via the OsiSolverInterface, then you derive a class
+     from ILPSolverOsi, construct your solver and forward a pointer to this solver (its
+     OsiSolverInterface) to the constructor of ILPSolverOsi.
 
-Note, however, that the OsiSolverInterface does not provide all the functionality that is
-    exposed by ILPSolverInterface. If you can access the solver that is wrapped inside
-    OsiSolverInterface, then you can overwrite* the method ILPSolverOsi::do_solve() to forward some
-    information that is ignored in this method to the solver.
+     Note, however, that the OsiSolverInterface does not provide all the functionality that is
+     exposed by ILPSolverInterface. If you can access the solver that is wrapped inside
+     OsiSolverInterface, then you can overwrite* the method ILPSolverOsi::do_solve() to forward some
+     information that is ignored in this method to the solver.
 
-  * An alternative would be to modify ILPSolverOsi::do_solve() to forward the parameters that are
+    * An alternative would be to modify ILPSolverOsi::do_solve() to forward the parameters that are
     currently ignored to a virtual function that can be implemented in a derived class and has an
     empty default implementation. But currently, there is no need for this, so we do not extra
     lines of code for this feature.
