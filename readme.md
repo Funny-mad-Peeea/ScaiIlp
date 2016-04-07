@@ -8,7 +8,7 @@ Table of Contents
   2. Building
     1. Building Cbc with VS 2012
     2. Optional: Building pthreads-win32
-    3. Building IlpSolverDll with VS 2012
+    3. Building ScaiIlp with VS 2012
   3. Code Structure
     1. Projects in Visual Studio
     2. Usage
@@ -159,8 +159,8 @@ A: If you don't experience solver crashes, you can avoid some overhead by using 
     * prepend "PTW32_ARCHx86;" (without double quotes) when compiling for 32 bit platforms
     * or      "PTW32_ARCHx64;" (without double quotes) otherwise.
 
-2.3 Building IlpSolverDll with VS 2012
---------------------------------------
+2.3 Building ScaiIlp with VS 2012
+---------------------------------
 
   1. Ensure that you have built Cbc as described above.
 
