@@ -212,7 +212,7 @@ The recommended way to use ScaiIlp is to use it as a DLL (dynamic linking)
 
 3.2.2. Static linking
 
-Alternatively, you may include your ilp_solver_cbc.cpp and all its dependencies in your project.
+Alternatively, you may include ilp_solver_cbc.cpp and all its dependencies in your project.
 This way, your code gets statically linked with a part of ScaiIlp.
 
 3.2.3 ScaiIlpExe.exe
