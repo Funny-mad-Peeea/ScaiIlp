@@ -21,6 +21,7 @@ namespace ilp_solver
         ObjectiveSense objective_sense;
 
         int num_threads;
+        bool deterministic;
         int log_level;
         double max_seconds;
 

@@ -12,6 +12,7 @@
     <ClInclude Include="..\..\src\production\shared_memory_communication.hpp" />
     <ClInclude Include="..\..\src\production\ilp_solver_collect.hpp" />
     <ClInclude Include="..\..\src\production\solver_exit_code.hpp" />
+    <ClInclude Include="..\..\src\production\ilp_data.hpp" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\src\production\ilp_solver_cbc.cpp" />

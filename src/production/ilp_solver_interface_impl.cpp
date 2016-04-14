@@ -1,6 +1,7 @@
 #include "ilp_solver_interface_impl.hpp"
 
 #include <cassert>
+#include <limits>
 
 using std::string;
 using std::vector;
@@ -8,11 +9,8 @@ using std::vector;
 namespace ilp_solver
 {
     ILPSolverInterfaceImpl::ILPSolverInterfaceImpl()
-    {
-        d_num_threads = 1;
-        d_log_level = 0;
-        d_max_seconds = std::numeric_limits<double>::max();
-    }
+        : d_num_threads(1), d_deterministic(true), d_log_level(0), d_max_seconds(std::numeric_limits<double>::max())
+        {}
 
     void ILPSolverInterfaceImpl::add_variable_boolean(double p_objective, const string& p_name)
     {
@@ -115,13 +113,13 @@ namespace ilp_solver
     void ILPSolverInterfaceImpl::minimize()
     {
         do_set_objective_sense(ObjectiveSense::MINIMIZE);
-        do_prepare_and_solve(d_num_threads, d_log_level, d_max_seconds);
+        do_prepare_and_solve(d_num_threads, d_deterministic, d_log_level, d_max_seconds);
     }
     
     void ILPSolverInterfaceImpl::maximize() 
     {
         do_set_objective_sense(ObjectiveSense::MAXIMIZE);
-        do_prepare_and_solve(d_num_threads, d_log_level, d_max_seconds);
+        do_prepare_and_solve(d_num_threads, d_deterministic, d_log_level, d_max_seconds);
     }
     
     const vector<double> ILPSolverInterfaceImpl::get_solution() const
@@ -146,6 +144,11 @@ namespace ilp_solver
     void ILPSolverInterfaceImpl::set_num_threads(int p_num_threads)
     {
         d_num_threads = p_num_threads;
+    }
+
+    void ILPSolverInterfaceImpl::set_deterministic_mode(bool p_deterministic)
+    {
+        d_deterministic = p_deterministic;
     }
 
     void ILPSolverInterfaceImpl::set_log_level(int p_level)
