@@ -18,7 +18,7 @@ namespace ilp_solver
     void ILPSolverCbc::do_solve(int p_num_threads, bool p_deterministic, int p_log_level, double p_max_seconds)
     {
         const auto cbc_num_threads = (p_num_threads == 1 ? 0 : p_num_threads);      // peculiarity of Cbc
-        const auto cbc_thread_mode = (p_num_threads > 1 && p_deterministic ? 1 : 0);
+        const auto cbc_thread_mode = ((p_num_threads > 1 && p_deterministic) ? 1 : 0);
 
         d_model = CbcModel(*do_get_solver());
         d_model.setNumberThreads(cbc_num_threads);
