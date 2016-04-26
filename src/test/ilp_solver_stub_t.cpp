@@ -4,13 +4,12 @@
 #include "ilp_solver_factory.hpp"
 
 const auto c_solver_name = "ScaiIlpExe.exe";
-const auto c_shared_memory_name = "ILP_SOLVER_SHARED_MEMORY";
 
 namespace ilp_solver
 {
     static ILPSolverInterface* create_solver()
     {
-        return create_solver_stub(c_solver_name, c_shared_memory_name);
+        return create_solver_stub(c_solver_name);
     }
 
     void test_sorting_cbc_stub()
