@@ -146,9 +146,8 @@ namespace ilp_solver
     }
 
 
-    ILPSolverStub::ILPSolverStub(const std::string& p_executable_basename, const std::string& p_shared_memory_name)
-        : d_executable_basename(p_executable_basename),
-          d_shared_memory_name(p_shared_memory_name)          
+    ILPSolverStub::ILPSolverStub(const std::string& p_executable_basename)
+        : d_executable_basename(p_executable_basename)
         {}
 
 
@@ -174,10 +173,10 @@ namespace ilp_solver
     {
         d_ilp_solution_data = ILPSolutionData(p_data.objective_sense);
 
-        CommunicationParent communicator(d_shared_memory_name);
-        communicator.write_ilp_data(p_data);
+        CommunicationParent communicator;
+        const auto shared_memory_name = communicator.write_ilp_data(p_data);
 
-        auto exit_code = execute_process(d_executable_basename, d_shared_memory_name);
+        auto exit_code = execute_process(d_executable_basename, shared_memory_name);
         if (exit_code != 0)
             handle_error(exit_code);
         else

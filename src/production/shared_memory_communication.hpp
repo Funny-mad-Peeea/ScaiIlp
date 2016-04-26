@@ -15,14 +15,14 @@ namespace ilp_solver
     class CommunicationParent
     {
         public:
-            CommunicationParent(const std::string& p_shared_memory_name);
+            CommunicationParent();
             ~CommunicationParent();
 
-            void write_ilp_data(const ILPData& p_data);
+            // Returns the name of the shared memory segment the data has been written to
+            std::string write_ilp_data(const ILPData& p_data);
             void read_solution_data(ILPSolutionData* r_solution_data);
 
         private:
-            std::string d_shared_memory_name;
             boost::interprocess::windows_shared_memory* d_shared_memory;
             boost::interprocess::mapped_region* d_mapped_region;
 
@@ -30,7 +30,7 @@ namespace ilp_solver
             void* d_address;
             void* d_result_address;
 
-            void create_shared_memory(int p_size);
+            std::string create_shared_memory(int p_size);
     };
 
 

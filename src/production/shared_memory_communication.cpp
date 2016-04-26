@@ -4,6 +4,9 @@
 
 using namespace boost::interprocess;
 
+static const auto c_shared_memory_base_name = "ScaiIlpSolver";
+static const auto c_num_shared_memory_name_trials = 10000;
+
 namespace ilp_solver
 {
     /***************************************
@@ -97,9 +100,29 @@ namespace ilp_solver
     /******************************
     * Communication of the parent *
     ******************************/
-    CommunicationParent::CommunicationParent(const std::string& p_shared_memory_name)
-        : d_shared_memory_name(p_shared_memory_name),
-          d_shared_memory(nullptr),
+    static windows_shared_memory* determine_free_shared_memory_name(int p_size, std::string* r_shared_memory_name)
+    {
+        windows_shared_memory* d_shared_memory = nullptr;
+        for (auto trial = 1; trial <= c_num_shared_memory_name_trials; ++trial)
+        {
+            *r_shared_memory_name = c_shared_memory_base_name + std::to_string(trial);
+            try
+            {
+                d_shared_memory = new windows_shared_memory(create_only, r_shared_memory_name->c_str(), read_write, p_size);
+                break;
+            }
+            catch (const interprocess_exception& p_e)
+            {
+                if (p_e.get_error_code() != error_code_t::already_exists_error || trial == c_num_shared_memory_name_trials)
+                    throw;
+            }
+        }
+        return d_shared_memory;
+    }
+
+
+    CommunicationParent::CommunicationParent()
+        : d_shared_memory(nullptr),
           d_mapped_region(nullptr),
           d_address(nullptr),
           d_result_address(nullptr)
@@ -113,22 +136,22 @@ namespace ilp_solver
     }
 
 
-    void CommunicationParent::create_shared_memory(int p_size)
+    std::string CommunicationParent::create_shared_memory(int p_size)
     {
-        if (d_shared_memory != nullptr)
-            return;
-
-        d_shared_memory = new windows_shared_memory(create_only, d_shared_memory_name.c_str(), read_write, p_size);
+        std::string shared_memory_name;
+        d_shared_memory = determine_free_shared_memory_name(p_size, &shared_memory_name);
         d_mapped_region = new mapped_region(*d_shared_memory, read_write);
         d_address = d_mapped_region->get_address();
+        return shared_memory_name;
     }
 
 
-    void CommunicationParent::write_ilp_data(const ILPData& p_data)
+    std::string CommunicationParent::write_ilp_data(const ILPData& p_data)
     {
         const auto size = determine_required_size(p_data);
-        create_shared_memory(size);
+        const auto shared_memory_name = create_shared_memory(size);
         d_result_address = serialize_ilp_data(d_address, p_data);
+        return shared_memory_name;
     }
 
 
