@@ -128,7 +128,8 @@ namespace ilp_solver
     static void handle_error(int p_exit_code)
     {
         if (p_exit_code == SolverExitCode::out_of_memory ||
-            p_exit_code == SolverExitCode::uncaught_exception)
+            p_exit_code == SolverExitCode::uncaught_exception_1 ||
+            p_exit_code == SolverExitCode::uncaught_exception_2)
             return;                                         // continue and interpret as "no solution"
 
         std::unordered_map<int, string> exit_code_to_message;
