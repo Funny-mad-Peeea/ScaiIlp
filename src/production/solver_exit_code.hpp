@@ -12,9 +12,7 @@ enum SolverExitCode
     shared_memory_error,
     model_error,
     solver_error,
-    forced_termination,
-
-    unknown_error       = 14200
+    forced_termination
 };
 
 #endif

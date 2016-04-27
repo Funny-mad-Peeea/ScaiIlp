@@ -136,7 +136,6 @@ namespace ilp_solver
         exit_code_to_message[SolverExitCode::shared_memory_error]   = "Failed communicating via shared memory.";
         exit_code_to_message[SolverExitCode::model_error]           = "Failed generating model.";
         exit_code_to_message[SolverExitCode::solver_error]          = "Failed solving integer linear program.";
-        exit_code_to_message[SolverExitCode::unknown_error]         = "Unknown error.";
 
         const auto exception_message = (exit_code_to_message.find(p_exit_code) == exit_code_to_message.end()
                                         ? "External solver: Unknown exit code " + std::to_string(p_exit_code)
