@@ -220,8 +220,7 @@ This way, your code gets statically linked with a part of ScaiIlp.
 To use ScaiIlpExe.exe, there is a class ILPSolverStub.
 IlpSolverStub can be used like IlpSolverCbc either as described in 3.2.1 or as described in 3.2.2.
 The constructor of IlpSolverStub and create_solver_stub() expect the base name of a solver
-executable (in the same directory, should be ScaiIlpExe.exe, unless you rename it) and a name for a
-shared memory segment. 
+executable (in the same directory, should be ScaiIlpExe.exe, unless you rename it).
 
 
 3.3 Class Hierarchy
