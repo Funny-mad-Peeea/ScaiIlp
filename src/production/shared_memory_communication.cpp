@@ -102,13 +102,13 @@ namespace ilp_solver
     ******************************/
     static windows_shared_memory* determine_free_shared_memory_name(int p_size, std::string* r_shared_memory_name)
     {
-        windows_shared_memory* d_shared_memory = nullptr;
+        windows_shared_memory* shared_memory = nullptr;
         for (auto trial = 1; trial <= c_num_shared_memory_name_trials; ++trial)
         {
             *r_shared_memory_name = c_shared_memory_base_name + std::to_string(trial);
             try
             {
-                d_shared_memory = new windows_shared_memory(create_only, r_shared_memory_name->c_str(), read_write, p_size);
+                shared_memory = new windows_shared_memory(create_only, r_shared_memory_name->c_str(), read_write, p_size);
                 break;
             }
             catch (const interprocess_exception& p_e)
@@ -117,7 +117,7 @@ namespace ilp_solver
                     throw;
             }
         }
-        return d_shared_memory;
+        return shared_memory;
     }
 
 
