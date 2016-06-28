@@ -1,18 +1,37 @@
-#include "ilp_solver_cbc_t.hpp"
-#include "ilp_solver_stub_t.hpp"
+#include "ilp_solver_factory.hpp"
+#include "ilp_solver_interface.hpp"
+#include "ilp_solver_interface_t.hpp"
 #include "serialization_t.hpp"
+
+#include <functional>
+#include <string>
+#include <vector>
+
+const auto c_solver_exe_name = "ScaiIlpExe.exe";
+
+namespace ilp_solver
+{
+    static void run_tests(std::function<ILPSolverInterface*()> p_create_solver, const std::string& p_solver_name)
+    {
+        typedef void (*SolverTest)(ILPSolverInterface* p_solver, const std::string& p_solver_name);
+        std::vector<SolverTest> tests;
+        tests.push_back(test_sorting);
+        tests.push_back(test_linear_programming);
+        tests.push_back(test_performance);
+
+        for (const auto test: tests)
+            execute_test_and_destroy_solver(p_create_solver(), p_solver_name, test);
+    }
+}
 
 void main()
 {
-    ilp_solver::test_sorting_cbc();
-    ilp_solver::test_linear_programming_cbc();
-
     test_serialization();
 
-    ilp_solver::test_sorting_cbc_stub();
-    ilp_solver::test_linear_programming_cbc_stub();
-    ilp_solver::test_bad_alloc_cbc_stub();
+    auto cbc_stub_solver_generator = []() { return ilp_solver::create_solver_stub(c_solver_exe_name); };
 
-    ilp_solver::test_performance_cbc();
-    ilp_solver::test_performance_cbc_stub();
+    ilp_solver::run_tests(ilp_solver::create_solver_cbc, "Cbc Solver");
+    ilp_solver::run_tests(cbc_stub_solver_generator, "Cbc Stub Solver");
+
+    execute_test_and_destroy_solver(cbc_stub_solver_generator(), c_solver_exe_name, ilp_solver::test_bad_alloc);
 }

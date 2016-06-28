@@ -280,48 +280,6 @@ namespace ilp_solver
     }
 
 
-    void test_bad_alloc(ILPSolverInterface* p_solver, const string& p_solver_name)
-    {
-        print_caption("Bad alloc test", p_solver_name);
-
-        srand(3);
-
-        // It is not clear that this is sufficient to provoke a bad_alloc.
-        const auto variable_scaling = 10.0;
-        const auto num_variables = 500000;
-        for (auto j = 0; j < num_variables; ++j)
-            p_solver->add_variable_integer(rand_double(), variable_scaling*rand_double(), variable_scaling*(1.0 + rand_double()));
-
-        const auto constraint_scaling = num_variables*variable_scaling;
-        const auto num_constraints = 100;
-        std::vector<double> constraint_vector(num_variables);
-        for (auto i = 0; i < num_constraints; ++i)
-        {
-            std::generate(std::begin(constraint_vector), std::end(constraint_vector), [](){ return rand_double(); });
-            p_solver->add_constraint(constraint_vector, constraint_scaling*rand_double(), constraint_scaling*(1.0 + rand_double()));
-        }
-
-        try
-        {
-            // bad_alloc should be treated as "no solution"
-            p_solver->minimize();
-            assert(p_solver->get_status() == SolutionStatus::NO_SOLUTION);
-            assert(p_solver->get_solution().size() == 0);
-
-            if ((p_solver->get_status() == SolutionStatus::NO_SOLUTION) && (p_solver->get_solution().size() == 0))
-                cout << "Test succeeded." << endl;
-            else
-                cout << "Test failed." << endl;
-        }
-        catch (...)
-        {
-            assert(false);
-
-            cout << "Test failed." << endl;
-        }
-    }
-
-
     void test_performance(ILPSolverInterface* p_solver, const string& p_solver_name)
     {
         print_caption("Performance test", p_solver_name);
@@ -365,5 +323,47 @@ namespace ilp_solver
         cout << endl
              << endl
              << "Test took " << end_time - start_time << " ms" << endl;
+    }
+
+
+    void test_bad_alloc(ILPSolverInterface* p_solver, const string& p_solver_name)
+    {
+        print_caption("Bad alloc test", p_solver_name);
+
+        srand(3);
+
+        // It is not clear that this is sufficient to provoke a bad_alloc.
+        const auto variable_scaling = 10.0;
+        const auto num_variables = 500000;
+        for (auto j = 0; j < num_variables; ++j)
+            p_solver->add_variable_integer(rand_double(), variable_scaling*rand_double(), variable_scaling*(1.0 + rand_double()));
+
+        const auto constraint_scaling = num_variables*variable_scaling;
+        const auto num_constraints = 100;
+        std::vector<double> constraint_vector(num_variables);
+        for (auto i = 0; i < num_constraints; ++i)
+        {
+            std::generate(std::begin(constraint_vector), std::end(constraint_vector), [](){ return rand_double(); });
+            p_solver->add_constraint(constraint_vector, constraint_scaling*rand_double(), constraint_scaling*(1.0 + rand_double()));
+        }
+
+        try
+        {
+            // bad_alloc should be treated as "no solution"
+            p_solver->minimize();
+            assert(p_solver->get_status() == SolutionStatus::NO_SOLUTION);
+            assert(p_solver->get_solution().size() == 0);
+
+            if ((p_solver->get_status() == SolutionStatus::NO_SOLUTION) && (p_solver->get_solution().size() == 0))
+                cout << "Test succeeded." << endl;
+            else
+                cout << "Test failed." << endl;
+        }
+        catch (...)
+        {
+            assert(false);
+
+            cout << "Test failed." << endl;
+        }
     }
 }
