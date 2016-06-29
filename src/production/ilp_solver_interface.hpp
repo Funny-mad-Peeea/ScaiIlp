@@ -29,6 +29,8 @@ namespace ilp_solver
             virtual void add_constraint_lower    (const std::vector<int>& p_col_indices, const std::vector<double>& p_col_values, double p_lower_bound,                                           const std::string& p_name = "") = 0;  // l <= a*x
             virtual void add_constraint_equality (                                       const std::vector<double>& p_col_values,                                              double p_value,    const std::string& p_name = "") = 0;  //      a*x = v
             virtual void add_constraint_equality (const std::vector<int>& p_col_indices, const std::vector<double>& p_col_values,                                              double p_value,    const std::string& p_name = "") = 0;  //      a*x = v
+
+            virtual void set_start_solution      (const std::vector<double>& p_solution, double p_value) = 0;
     
             virtual void                      minimize      ()       = 0;
             virtual void                      maximize      ()       = 0;

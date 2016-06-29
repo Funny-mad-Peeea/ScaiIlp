@@ -67,9 +67,17 @@ static void generate_ilp(ILPSolverInterface* v_solver, const ILPData& p_data)
 }
 
 
+static void set_solver_preparation_parameters(ILPSolverInterface* v_solver, const ILPData& p_data)
+{
+    if (!p_data.start_solution.empty())
+        v_solver->set_start_solution(p_data.start_solution, p_data.start_value);
+}
+
+
 static void set_solver_parameters(ILPSolverInterface* v_solver, const ILPData& p_data)
 {
     v_solver->set_num_threads(p_data.num_threads);
+    v_solver->set_deterministic_mode(p_data.deterministic);
     v_solver->set_log_level(p_data.log_level);
     v_solver->set_max_seconds(p_data.max_seconds);
 }
@@ -113,6 +121,7 @@ static ILPSolutionData solve_ilp(const ILPData& p_data)
     try
     {
         generate_ilp(solver, p_data);
+        set_solver_preparation_parameters(solver, p_data);
         set_solver_parameters(solver, p_data);
     }
     catch (const std::bad_alloc&) { throw; }
