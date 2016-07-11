@@ -30,6 +30,9 @@ namespace ilp_solver
         if (!p_start_solution.empty())
         {
             assert((int) p_start_solution.size() == d_model.getNumCols());
+            // It seems that CBC expects start_value*ObjSense for parameter objectiveValue,
+            // a strange and - as of July 2016 - undocumented "feature".
+            // Also done this way in https://projects.coin-or.org/Cbc/browser/branches/sandbox/Cbc/src/CbcSolver.cpp?rev=1404#L2626
             d_model.setBestSolution(p_start_solution.data(), p_start_solution.size(), p_start_value*solver->getObjSense(), true);
         }
         d_model.branchAndBound();
