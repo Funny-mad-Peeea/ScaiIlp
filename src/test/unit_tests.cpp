@@ -25,7 +25,7 @@ namespace ilp_solver
         {
             auto solver = p_create_solver();
             //solver->set_log_level(1);
-            execute_test_and_destroy_solver(p_create_solver(), p_solver_name, test);
+            execute_test_and_destroy_solver(solver, p_solver_name, test);
         }
     }
 }
