@@ -20,7 +20,11 @@ namespace ilp_solver
         tests.push_back(test_performance);
 
         for (const auto test: tests)
+        {
+            auto solver = p_create_solver();
+            //solver->set_log_level(1);
             execute_test_and_destroy_solver(p_create_solver(), p_solver_name, test);
+        }
     }
 }
 
