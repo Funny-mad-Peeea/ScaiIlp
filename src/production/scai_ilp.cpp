@@ -70,6 +70,7 @@ static void generate_ilp(ILPSolverInterface* v_solver, const ILPData& p_data)
 static void set_solver_parameters(ILPSolverInterface* v_solver, const ILPData& p_data)
 {
     v_solver->set_num_threads(p_data.num_threads);
+    v_solver->set_deterministic_mode(p_data.deterministic);
     v_solver->set_log_level(p_data.log_level);
     v_solver->set_max_seconds(p_data.max_seconds);
 }
