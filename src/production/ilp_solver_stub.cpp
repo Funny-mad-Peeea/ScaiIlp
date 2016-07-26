@@ -60,7 +60,7 @@ namespace ilp_solver
     {
         WIN32_FIND_DATA find_data;
         const auto handle = FindFirstFileW(p_filename.c_str(), &find_data);
-       
+
         if (handle == INVALID_HANDLE_VALUE)
             return false;
 
@@ -97,7 +97,7 @@ namespace ilp_solver
                             CREATE_DEFAULT_ERROR_MODE ,     // dwCreationFlags
                             0,                              // lpEnvironment
                             0,                              // lpCurrentDirectory
-                            &startup_info, 
+                            &startup_info,
                             &process_info))
             throw std::exception(("Error starting " + p_executable_basename + ". Error code:" + std::to_string(GetLastError())).c_str());
 
@@ -110,10 +110,10 @@ namespace ilp_solver
                 CloseHandle(process_info->hProcess);
                 CloseHandle(process_info->hThread);
             }
-            
+
             PROCESS_INFORMATION* process_info;
         } handle_closer(&process_info);
-        
+
         if (WaitForSingleObject(process_info.hProcess, p_wait_milliseconds) == WAIT_TIMEOUT)
             TerminateProcess(process_info.hProcess, SolverExitCode::forced_termination);
 

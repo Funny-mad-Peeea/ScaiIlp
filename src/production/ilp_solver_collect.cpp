@@ -59,12 +59,12 @@ namespace ilp_solver
     void ILPSolverCollect::do_add_constraint(const vector<int>& p_col_indices, const vector<double>& p_col_values, double p_lower_bound, double p_upper_bound, const string& /* p_name */)
     {
         assert(p_col_indices.size() == p_col_values.size());
-        
+
         const auto num_cols = (int) d_ilp_data.objective.size();
 
         append_row(&d_ilp_data.matrix, num_cols, p_col_indices, p_col_values);
         d_ilp_data.constraint_lower.push_back(p_lower_bound);
-        d_ilp_data.constraint_upper.push_back(p_upper_bound);    
+        d_ilp_data.constraint_upper.push_back(p_upper_bound);
     }
 
 

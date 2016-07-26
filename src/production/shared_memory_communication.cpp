@@ -27,7 +27,7 @@ namespace ilp_solver
                         >> r_solution_data->solution_status;
     }
 
-    
+
     /**********************************
     * (De-) Serialization of ILP data *
     **********************************/
@@ -45,12 +45,12 @@ namespace ilp_solver
                       << p_data.deterministic
                       << p_data.log_level
                       << p_data.max_seconds;
-                      
+
         auto result_address = v_serializer->current_address();
 
         serialize_result(v_serializer, p_solution_data);
 
-        return result_address; 
+        return result_address;
     }
 
 

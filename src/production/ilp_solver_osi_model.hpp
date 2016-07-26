@@ -27,7 +27,7 @@ namespace ilp_solver
             std::vector<VariableType> d_variable_type;
             std::vector<std::string>  d_variable_name;
             std::vector<std::string>  d_constraint_name;
-    
+
             virtual OsiSolverInterface*       do_get_solver ()       = 0;
             virtual const OsiSolverInterface* do_get_solver () const = 0;
             virtual void                      do_solve      (int p_num_threads, bool p_deterministic, int p_log_level, double p_max_seconds) = 0; // not always implemented as solver().branchAndBound() (see ILPSolverCbc)

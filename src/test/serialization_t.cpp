@@ -200,7 +200,7 @@ static void* serialize(const Data& p_data, std::vector<char>* r_memory)
                    << p_data.value_char;
 
         result_address = serializer.current_address();
-                   
+
         serializer << result.vector_3_char
                    << result.vector_1_int
                    << result.vector_2_double
@@ -227,7 +227,7 @@ static void* serialize(const Data& p_data, std::vector<char>* r_memory)
 static Data deserialize(void* p_address, void** v_result_address)
 {
     Data data;
-    
+
     Deserializer deserializer(p_address);
 
     deserializer >> data.vector_2_double

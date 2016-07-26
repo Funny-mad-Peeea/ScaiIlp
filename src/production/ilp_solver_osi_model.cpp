@@ -75,7 +75,7 @@ namespace ilp_solver
 
     void ILPSolverOsiModel::do_prepare_and_solve(int p_num_threads, bool p_deterministic, int p_log_level, double p_max_seconds)
     {
-        prepare();        
+        prepare();
         do_solve(p_num_threads, p_deterministic, p_log_level, p_max_seconds);
     }
 
@@ -105,7 +105,7 @@ namespace ilp_solver
         // Set variable names
         for (auto i = 0; i < (int) d_variable_name.size(); ++i)
             ilp_solver->setColName(i, d_variable_name[i]);
-    
+
         // Set constraint names
         for (auto j = 0; j < (int) d_constraint_name.size(); ++j)
             ilp_solver->setRowName(j, d_constraint_name[j]);
