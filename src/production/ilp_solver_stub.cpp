@@ -114,7 +114,7 @@ namespace ilp_solver
             PROCESS_INFORMATION* process_info;
         } handle_closer(&process_info);
 
-        if (WaitForSingleObject(process_info.hProcess, p_wait_milliseconds) == WAIT_TIMEOUT)
+        if (WaitForSingleObject(process_info.hProcess, 60000) == WAIT_TIMEOUT)
             TerminateProcess(process_info.hProcess, SolverExitCode::forced_termination);
 
         DWORD exit_code;
