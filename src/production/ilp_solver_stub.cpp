@@ -5,6 +5,7 @@
 
 #include <cassert>
 #include <codecvt>      // for std::codecvt_utf8_utf16
+#include <iostream>
 #include <memory>
 #include <stdexcept>
 #include <unordered_map>
@@ -125,24 +126,57 @@ namespace ilp_solver
     }
 
 
-    static void handle_error(int p_exit_code)
+    static std::string exit_code_to_message(int p_exit_code)
     {
-        if (p_exit_code == SolverExitCode::out_of_memory ||
-            p_exit_code == SolverExitCode::uncaught_exception_1 ||
-            p_exit_code == SolverExitCode::uncaught_exception_2)
-            return;                                         // continue and interpret as "no solution"
+        switch (p_exit_code)
+        {
+        case SolverExitCode::ok:
+            return "";
+        case SolverExitCode::uncaught_exception_1:
+            return "Uncaught exception (maybe out of memory).";
+        case SolverExitCode::uncaught_exception_2:
+            return "Uncaught exception, likely Out Of Memory (C++ Exception).";
+        case SolverExitCode::out_of_memory:
+            return "Out of Memory.";
+        case SolverExitCode::command_line_error:
+            return "Invalid command line.";
+        case SolverExitCode::shared_memory_error:
+            return "Failed communicating via shared memory.";
+        case SolverExitCode::model_error:
+            return "Failed generating model.";
+        case SolverExitCode::solver_error:
+            return "Failed solving (solver error).";
+        case SolverExitCode::forced_termination:
+            return "Failed solving (timeout).";
+        default:
+            return "Unknown exit code " + std::to_string(p_exit_code) + ".";
+        }
+    }
 
-        std::unordered_map<int, string> exit_code_to_message;
-        exit_code_to_message[SolverExitCode::command_line_error]    = "Invalid command line.";
-        exit_code_to_message[SolverExitCode::shared_memory_error]   = "Failed communicating via shared memory.";
-        exit_code_to_message[SolverExitCode::model_error]           = "Failed generating model.";
-        exit_code_to_message[SolverExitCode::solver_error]          = "Failed solving integer linear program.";
 
-        const auto exception_message = (exit_code_to_message.find(p_exit_code) == exit_code_to_message.end()
-                                        ? "External solver: Unknown exit code " + std::to_string(p_exit_code)
-                                        : "External solver: " + exit_code_to_message[p_exit_code]);
+    static bool exit_code_should_be_ignored_silently(int p_exit_code)
+    {
+        switch (p_exit_code)
+        {
+        case SolverExitCode::out_of_memory:
+        case SolverExitCode::uncaught_exception_1:
+        case SolverExitCode::uncaught_exception_2:
+            return true;
+        default:
+            return false;
+        }
+    }
 
-        throw std::exception(exception_message.c_str());
+
+    static void handle_error(int p_log_level, int p_exit_code)
+    {
+        if (exit_code_should_be_ignored_silently(p_exit_code))
+        {
+            if (p_log_level)
+                std::cout << exit_code_to_message(p_exit_code);
+        }
+        else
+            throw std::exception(("External ILP solver: " + exit_code_to_message(p_exit_code)).c_str());
     }
 
 
@@ -178,7 +212,7 @@ namespace ilp_solver
 
         auto exit_code = execute_process(d_executable_basename, shared_memory_name);
         if (exit_code != 0)
-            handle_error(exit_code);
+            handle_error(p_data.log_level, exit_code);
         else
             communicator.read_solution_data(&d_ilp_solution_data);
     }
