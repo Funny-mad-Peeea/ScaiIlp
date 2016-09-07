@@ -116,7 +116,7 @@ namespace ilp_solver
         } handle_closer(&process_info);
 
         if (WaitForSingleObject(process_info.hProcess, p_wait_milliseconds) == WAIT_TIMEOUT)
-            TerminateProcess(process_info.hProcess, SolverExitCode::forced_termination);
+            TerminateProcess(process_info.hProcess, static_cast<DWORD>(SolverExitCode::forced_termination));
 
         DWORD exit_code;
         if (GetExitCodeProcess(process_info.hProcess, &exit_code))
@@ -159,7 +159,7 @@ namespace ilp_solver
         case SolverExitCode::forced_termination:
             return "Failed solving (timeout).";
         default:
-            return "Unknown exit code " + std::to_string(p_exit_code) + ".";
+            return "Unknown exit code " + std::to_string(static_cast<int>(p_exit_code)) + ".";
         }
     }
 
