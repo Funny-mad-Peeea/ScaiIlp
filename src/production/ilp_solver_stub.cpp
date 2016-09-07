@@ -70,7 +70,7 @@ namespace ilp_solver
     }
 
 
-    static int execute_process(const string& p_executable_basename, const string& p_parameter, const int p_wait_milliseconds = INFINITE)
+    static int execute_process(const string& p_executable_basename, const string& p_parameter, int p_wait_milliseconds)
     {
         const auto executable = full_executable_name(p_executable_basename);
         const auto parameter = utf8_to_utf16(p_parameter);
@@ -126,6 +126,16 @@ namespace ilp_solver
     }
 
 
+    int seconds_to_milliseconds (double p_seconds)
+    {
+        p_seconds *= 1000;
+        if (p_seconds > std::numeric_limits<int>::max())
+            return std::numeric_limits<int>::max();
+        else
+            return static_cast<int>(p_seconds);
+    }
+
+
     static std::string exit_code_to_message(int p_exit_code)
     {
         switch (p_exit_code)
@@ -161,6 +171,7 @@ namespace ilp_solver
         case SolverExitCode::out_of_memory:
         case SolverExitCode::uncaught_exception_1:
         case SolverExitCode::uncaught_exception_2:
+        case SolverExitCode::forced_termination:
             return true;
         default:
             return false;
@@ -210,7 +221,7 @@ namespace ilp_solver
         CommunicationParent communicator;
         const auto shared_memory_name = communicator.write_ilp_data(p_data);
 
-        auto exit_code = execute_process(d_executable_basename, shared_memory_name);
+        auto exit_code = execute_process(d_executable_basename, shared_memory_name, seconds_to_milliseconds (1.5*p_data.max_seconds));
         if (exit_code != 0)
             handle_error(p_data.log_level, exit_code);
         else
