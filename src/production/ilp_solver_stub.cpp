@@ -72,24 +72,25 @@ namespace ilp_solver
 
     static SolverExitCode execute_process(const string& p_executable_basename, const string& p_parameter, int p_wait_milliseconds)
     {
+        // get and check executable path
         const auto executable = full_executable_name(p_executable_basename);
-        const auto parameter = utf8_to_utf16(p_parameter);
-
         if (!file_exists(executable))
             throw std::exception(("Could not find " + p_executable_basename).c_str());
 
+        // prepare command line
+        const auto parameter = utf8_to_utf16(p_parameter);
         auto command_line = quote(executable) + L" " + quote(parameter);
-
-        // CreateProcessW needs non-const command line string
-        auto non_const_command_line = std::unique_ptr<wchar_t[]>(new wchar_t[command_line.size()+1]);
+        auto non_const_command_line = std::unique_ptr<wchar_t[]>(new wchar_t[command_line.size()+1]); // CreateProcessW needs non-const command line string
         wcscpy_s(non_const_command_line.get(), command_line.size()+1, command_line.c_str());
 
+        // prepare parameters
         STARTUPINFOW startup_info;
         PROCESS_INFORMATION process_info;
         std::memset(&startup_info, 0, sizeof(startup_info));
         std::memset(&process_info, 0, sizeof(process_info));
         startup_info.cb = sizeof(startup_info);
 
+        // start process
         if (!CreateProcessW(executable.c_str(),             // lpApplicationName
                             non_const_command_line.get(),   // lpCommandLine
                             0,                              // lpProcessAttributes
@@ -115,9 +116,23 @@ namespace ilp_solver
             PROCESS_INFORMATION* process_info;
         } handle_closer(&process_info);
 
-        if (WaitForSingleObject(process_info.hProcess, p_wait_milliseconds) == WAIT_TIMEOUT)
+        // wait for the process to terminate
+        auto return_code = WaitForSingleObject(process_info.hProcess, p_wait_milliseconds);
+        switch (return_code)
+        {
+        case WAIT_OBJECT_0:
+            break;
+        case WAIT_TIMEOUT:
             TerminateProcess(process_info.hProcess, static_cast<DWORD>(SolverExitCode::forced_termination));
+            break;
+        case WAIT_ABANDONED:
+        case WAIT_FAILED:
+        default:
+            TerminateProcess(process_info.hProcess, static_cast<DWORD>(SolverExitCode::forced_termination));
+            throw std::exception (("Error running " + p_executable_basename + ". Unexpected return code of WaitForSingleObject.").c_str());
+        }
 
+        // read process exit code
         DWORD exit_code;
         if (GetExitCodeProcess(process_info.hProcess, &exit_code))
             return SolverExitCode(exit_code);
