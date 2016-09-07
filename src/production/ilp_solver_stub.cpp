@@ -70,7 +70,7 @@ namespace ilp_solver
     }
 
 
-    static int execute_process(const string& p_executable_basename, const string& p_parameter, int p_wait_milliseconds)
+    static SolverExitCode execute_process(const string& p_executable_basename, const string& p_parameter, int p_wait_milliseconds)
     {
         const auto executable = full_executable_name(p_executable_basename);
         const auto parameter = utf8_to_utf16(p_parameter);
@@ -120,7 +120,7 @@ namespace ilp_solver
 
         DWORD exit_code;
         if (GetExitCodeProcess(process_info.hProcess, &exit_code))
-            return (int) exit_code;
+            return SolverExitCode(exit_code);
         else
             throw std::exception(("Error obtaining exit code from " + p_executable_basename + ". Error code: " + std::to_string(GetLastError())).c_str());
     }
@@ -136,7 +136,7 @@ namespace ilp_solver
     }
 
 
-    static std::string exit_code_to_message(int p_exit_code)
+    static std::string exit_code_to_message(SolverExitCode p_exit_code)
     {
         switch (p_exit_code)
         {
@@ -164,7 +164,7 @@ namespace ilp_solver
     }
 
 
-    static bool exit_code_should_be_ignored_silently(int p_exit_code)
+    static bool exit_code_should_be_ignored_silently(SolverExitCode p_exit_code)
     {
         switch (p_exit_code)
         {
@@ -179,7 +179,7 @@ namespace ilp_solver
     }
 
 
-    static void handle_error(int p_log_level, int p_exit_code)
+    static void handle_error(int p_log_level, SolverExitCode p_exit_code)
     {
         if (exit_code_should_be_ignored_silently(p_exit_code))
         {
@@ -222,7 +222,7 @@ namespace ilp_solver
         const auto shared_memory_name = communicator.write_ilp_data(p_data);
 
         auto exit_code = execute_process(d_executable_basename, shared_memory_name, seconds_to_milliseconds (1.5*p_data.max_seconds));
-        if (exit_code != 0)
+        if (exit_code != SolverExitCode::ok)
             handle_error(p_data.log_level, exit_code);
         else
             communicator.read_solution_data(&d_ilp_solution_data);
