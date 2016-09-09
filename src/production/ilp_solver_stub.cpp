@@ -118,7 +118,7 @@ namespace ilp_solver
 
         // wait for the process to terminate
         auto return_code = WaitForSingleObject(process_info.hProcess, p_wait_milliseconds);
-        switch (return_code)
+        switch (return_code) // according to https://msdn.microsoft.com/de-de/library/windows/desktop/ms687032%28v=vs.85%29.aspx, WaitForSingeObject can return the 4 values listed below
         {
         case WAIT_OBJECT_0:
             break;
@@ -127,7 +127,7 @@ namespace ilp_solver
             break;
         case WAIT_ABANDONED:
         case WAIT_FAILED:
-        default:
+        default: // we also handle unexpected values, just in case
             TerminateProcess(process_info.hProcess, static_cast<DWORD>(SolverExitCode::forced_termination));
             throw std::exception (("Error running " + p_executable_basename + ". Unexpected return code of WaitForSingleObject.").c_str());
         }
@@ -160,9 +160,9 @@ namespace ilp_solver
         case SolverExitCode::uncaught_exception_1:
             return "Uncaught exception (maybe out of memory).";
         case SolverExitCode::uncaught_exception_2:
-            return "Uncaught exception, likely Out Of Memory (C++ Exception).";
+            return "Uncaught exception, likely out of memory (C++ exception).";
         case SolverExitCode::out_of_memory:
-            return "Out of Memory.";
+            return "Out of memory.";
         case SolverExitCode::command_line_error:
             return "Invalid command line.";
         case SolverExitCode::shared_memory_error:
