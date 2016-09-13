@@ -105,6 +105,7 @@
     <ClInclude Include="..\..\src\production\serialization.hpp" />
     <ClInclude Include="..\..\src\production\shared_memory_communication.hpp" />
     <ClInclude Include="..\..\src\production\solver_exit_code.hpp" />
+    <ClInclude Include="resource.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\src\production\ilp_solver_cbc.cpp" />
@@ -115,6 +116,9 @@
     <ClCompile Include="..\..\src\production\ilp_solver_osi_model.cpp" />
     <ClCompile Include="..\..\src\production\ilp_solver_stub.cpp" />
     <ClCompile Include="..\..\src\production\shared_memory_communication.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="ScaiIlpDll.rc" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

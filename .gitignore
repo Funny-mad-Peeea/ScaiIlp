@@ -10,3 +10,4 @@ vc/UnitTest/Release/*
 *.sdf
 *.opensdf
 *.suo
+*.aps

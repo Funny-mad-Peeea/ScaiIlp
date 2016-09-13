@@ -10,5 +10,18 @@
     <ClInclude Include="..\..\src\production\serialization.hpp" />
     <ClInclude Include="..\..\src\production\shared_memory_communication.hpp" />
     <ClInclude Include="..\..\src\production\solver_exit_code.hpp" />
+    <ClInclude Include="..\ScaiIlpDll\resource.h">
+      <Filter>Resource Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{e4aba764-7e45-45b5-aeab-4fb296b8ae30}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="..\ScaiIlpDll\ScaiIlpDll.rc">
+      <Filter>Resource Files</Filter>
+    </ResourceCompile>
   </ItemGroup>
 </Project>

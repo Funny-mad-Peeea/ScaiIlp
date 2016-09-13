@@ -13,6 +13,9 @@
     <ClInclude Include="..\..\src\production\ilp_solver_collect.hpp" />
     <ClInclude Include="..\..\src\production\solver_exit_code.hpp" />
     <ClInclude Include="..\..\src\production\ilp_data.hpp" />
+    <ClInclude Include="resource.h">
+      <Filter>Resource Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\src\production\ilp_solver_cbc.cpp" />
@@ -23,5 +26,15 @@
     <ClCompile Include="..\..\src\production\ilp_solver_stub.cpp" />
     <ClCompile Include="..\..\src\production\shared_memory_communication.cpp" />
     <ClCompile Include="..\..\src\production\ilp_solver_collect.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{a3ffe818-d172-4e28-be8e-85616dd6f112}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="ScaiIlpDll.rc">
+      <Filter>Resource Files</Filter>
+    </ResourceCompile>
   </ItemGroup>
 </Project>

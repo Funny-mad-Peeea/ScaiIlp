@@ -95,6 +95,10 @@
     <ClInclude Include="..\..\src\production\serialization.hpp" />
     <ClInclude Include="..\..\src\production\shared_memory_communication.hpp" />
     <ClInclude Include="..\..\src\production\solver_exit_code.hpp" />
+    <ClInclude Include="..\ScaiIlpDll\resource.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="..\ScaiIlpDll\ScaiIlpDll.rc" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
