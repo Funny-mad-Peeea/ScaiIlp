@@ -1,6 +1,6 @@
 //{{NO_DEPENDENCIES}}
 // Microsoft Visual C++ generated include file.
-// Used by ScaiIlpDll.rc
+// Used by ScaiIlp.rc
 
 // Next default values for new objects
 //
