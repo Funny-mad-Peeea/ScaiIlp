@@ -118,7 +118,7 @@
     <ClCompile Include="..\..\src\production\shared_memory_communication.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ResourceCompile Include="ScaiIlpDll.rc" />
+    <ResourceCompile Include="ScaiIlp.rc" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

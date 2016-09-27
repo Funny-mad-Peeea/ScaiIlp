@@ -20,7 +20,7 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ResourceCompile Include="..\ScaiIlpDll\ScaiIlpDll.rc">
+    <ResourceCompile Include="..\ScaiIlpDll\ScaiIlp.rc">
       <Filter>Resource Files</Filter>
     </ResourceCompile>
   </ItemGroup>
