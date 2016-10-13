@@ -1,7 +1,7 @@
 #ifndef _SOLVER_EXIT_CODE_HPP
 #define _SOLVER_EXIT_CODE_HPP
 
-enum SolverExitCode
+enum class SolverExitCode
 {
     ok = 0,
 

@@ -5,6 +5,7 @@
 
 #include <cassert>
 #include <codecvt>      // for std::codecvt_utf8_utf16
+#include <iostream>
 #include <memory>
 #include <stdexcept>
 #include <unordered_map>
@@ -69,26 +70,27 @@ namespace ilp_solver
     }
 
 
-    static int execute_process(const string& p_executable_basename, const string& p_parameter, const int p_wait_milliseconds = INFINITE)
+    static SolverExitCode execute_process(const string& p_executable_basename, const string& p_parameter, int p_wait_milliseconds)
     {
+        // get and check executable path
         const auto executable = full_executable_name(p_executable_basename);
-        const auto parameter = utf8_to_utf16(p_parameter);
-
         if (!file_exists(executable))
             throw std::exception(("Could not find " + p_executable_basename).c_str());
 
+        // prepare command line
+        const auto parameter = utf8_to_utf16(p_parameter);
         auto command_line = quote(executable) + L" " + quote(parameter);
-
-        // CreateProcessW needs non-const command line string
-        auto non_const_command_line = std::unique_ptr<wchar_t[]>(new wchar_t[command_line.size()+1]);
+        auto non_const_command_line = std::unique_ptr<wchar_t[]>(new wchar_t[command_line.size()+1]); // CreateProcessW needs non-const command line string
         wcscpy_s(non_const_command_line.get(), command_line.size()+1, command_line.c_str());
 
+        // prepare parameters
         STARTUPINFOW startup_info;
         PROCESS_INFORMATION process_info;
         std::memset(&startup_info, 0, sizeof(startup_info));
         std::memset(&process_info, 0, sizeof(process_info));
         startup_info.cb = sizeof(startup_info);
 
+        // start process
         if (!CreateProcessW(executable.c_str(),             // lpApplicationName
                             non_const_command_line.get(),   // lpCommandLine
                             0,                              // lpProcessAttributes
@@ -114,35 +116,93 @@ namespace ilp_solver
             PROCESS_INFORMATION* process_info;
         } handle_closer(&process_info);
 
-        if (WaitForSingleObject(process_info.hProcess, p_wait_milliseconds) == WAIT_TIMEOUT)
-            TerminateProcess(process_info.hProcess, SolverExitCode::forced_termination);
+        // wait for the process to terminate
+        auto return_code = WaitForSingleObject(process_info.hProcess, p_wait_milliseconds);
+        switch (return_code) // according to https://msdn.microsoft.com/de-de/library/windows/desktop/ms687032%28v=vs.85%29.aspx, WaitForSingeObject can return the 4 values listed below
+        {
+        case WAIT_OBJECT_0:
+            break;
+        case WAIT_TIMEOUT:
+            TerminateProcess(process_info.hProcess, static_cast<DWORD>(SolverExitCode::forced_termination));
+            break;
+        case WAIT_ABANDONED:
+        case WAIT_FAILED:
+        default: // we also handle unexpected values, just in case
+            TerminateProcess(process_info.hProcess, static_cast<DWORD>(SolverExitCode::forced_termination));
+            throw std::exception (("Error running " + p_executable_basename + ". Unexpected return code of WaitForSingleObject.").c_str());
+        }
 
+        // read process exit code
         DWORD exit_code;
         if (GetExitCodeProcess(process_info.hProcess, &exit_code))
-            return (int) exit_code;
+            return SolverExitCode(exit_code);
         else
             throw std::exception(("Error obtaining exit code from " + p_executable_basename + ". Error code: " + std::to_string(GetLastError())).c_str());
     }
 
 
-    static void handle_error(int p_exit_code)
+    int seconds_to_milliseconds (double p_seconds)
     {
-        if (p_exit_code == SolverExitCode::out_of_memory ||
-            p_exit_code == SolverExitCode::uncaught_exception_1 ||
-            p_exit_code == SolverExitCode::uncaught_exception_2)
-            return;                                         // continue and interpret as "no solution"
+        p_seconds *= 1000;
+        if (p_seconds > std::numeric_limits<int>::max())
+            return std::numeric_limits<int>::max();
+        else
+            return static_cast<int>(p_seconds);
+    }
 
-        std::unordered_map<int, string> exit_code_to_message;
-        exit_code_to_message[SolverExitCode::command_line_error]    = "Invalid command line.";
-        exit_code_to_message[SolverExitCode::shared_memory_error]   = "Failed communicating via shared memory.";
-        exit_code_to_message[SolverExitCode::model_error]           = "Failed generating model.";
-        exit_code_to_message[SolverExitCode::solver_error]          = "Failed solving integer linear program.";
 
-        const auto exception_message = (exit_code_to_message.find(p_exit_code) == exit_code_to_message.end()
-                                        ? "External solver: Unknown exit code " + std::to_string(p_exit_code)
-                                        : "External solver: " + exit_code_to_message[p_exit_code]);
+    static std::string exit_code_to_message(SolverExitCode p_exit_code)
+    {
+        switch (p_exit_code)
+        {
+        case SolverExitCode::ok:
+            return "";
+        case SolverExitCode::uncaught_exception_1:
+            return "Uncaught exception (maybe out of memory).";
+        case SolverExitCode::uncaught_exception_2:
+            return "Uncaught exception, likely out of memory (C++ exception).";
+        case SolverExitCode::out_of_memory:
+            return "Out of memory.";
+        case SolverExitCode::command_line_error:
+            return "Invalid command line.";
+        case SolverExitCode::shared_memory_error:
+            return "Failed communicating via shared memory.";
+        case SolverExitCode::model_error:
+            return "Failed generating model.";
+        case SolverExitCode::solver_error:
+            return "Failed solving (solver error).";
+        case SolverExitCode::forced_termination:
+            return "Failed solving (timeout).";
+        default:
+            return "Unknown exit code " + std::to_string(static_cast<int>(p_exit_code)) + ".";
+        }
+    }
 
-        throw std::exception(exception_message.c_str());
+
+    static bool exit_code_should_be_ignored_silently(SolverExitCode p_exit_code)
+    {
+        switch (p_exit_code)
+        {
+        case SolverExitCode::out_of_memory:
+        case SolverExitCode::uncaught_exception_1:
+        case SolverExitCode::uncaught_exception_2:
+        case SolverExitCode::forced_termination:
+            return true;
+        default:
+            return false;
+        }
+    }
+
+
+    static void handle_error(int p_log_level, SolverExitCode p_exit_code)
+    {
+        if (exit_code_should_be_ignored_silently(p_exit_code))
+        {
+            if (p_log_level)
+                std::cout << exit_code_to_message(p_exit_code);
+        }
+        else
+            throw std::exception(("External ILP solver: " + exit_code_to_message(p_exit_code)).c_str());
     }
 
 
@@ -176,9 +236,9 @@ namespace ilp_solver
         CommunicationParent communicator;
         const auto shared_memory_name = communicator.write_ilp_data(p_data);
 
-        auto exit_code = execute_process(d_executable_basename, shared_memory_name);
-        if (exit_code != 0)
-            handle_error(exit_code);
+        auto exit_code = execute_process(d_executable_basename, shared_memory_name, seconds_to_milliseconds (1.5*p_data.max_seconds));
+        if (exit_code != SolverExitCode::ok)
+            handle_error(p_data.log_level, exit_code);
         else
             communicator.read_solution_data(&d_ilp_solution_data);
     }

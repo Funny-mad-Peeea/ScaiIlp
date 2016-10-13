@@ -152,14 +152,17 @@ static SolverExitCode solve_ilp(const std::string& p_shared_memory_name)
 }
 
 
-int wmain(int argc, wchar_t* argv[])
+SolverExitCode my_main (int argc, wchar_t* argv[])
 {
     SetErrorMode(SEM_FAILCRITICALERRORS | SEM_NOGPFAULTERRORBOX);
-
     if (argc != 2)
         return SolverExitCode::command_line_error;
-
     const auto shared_memory_name = std::wstring(argv[1]);
-
     return solve_ilp(utf16_to_utf8(shared_memory_name));
+}
+
+
+int wmain(int argc, wchar_t* argv[])
+{
+    return static_cast<int>(my_main (argc, argv));
 }
