@@ -50,10 +50,25 @@ namespace ilp_solver
 
     void ILPSolverOsiModel::do_add_constraint(const vector<int>& p_col_indices, const vector<double>& p_col_values, double p_lower_bound, double p_upper_bound, const string& p_name)
     {
-        const auto num_indices = (int) p_col_indices.size();
-        assert((int) p_col_values.size() == num_indices);
+        assert((int) p_col_values.size() == (int) p_col_indices.size());
 
-        const auto row = CoinPackedVector(num_indices, p_col_indices.data(), p_col_values.data(), c_test_for_duplicate_index);
+        // reduce row to indices with values!=0
+        vector<int> reduced_indices;
+        vector<double> reduced_values;
+        for (int i=0; i<(int)p_col_indices.size(); ++i)
+        {
+            if (p_col_values[i] != 0)
+            {
+                reduced_indices.push_back(p_col_indices[i]);
+                reduced_values.push_back(p_col_values[i]);
+            }
+        }
+        const int num_reduced_indices = reduced_indices.size();
+
+        if (num_reduced_indices == 0 && p_lower_bound <= 0 && p_upper_bound >= 0)
+            return;
+
+        const auto row = CoinPackedVector(num_reduced_indices, reduced_indices.data(), reduced_values.data(), c_test_for_duplicate_index);
 
         d_matrix.appendRow(row);
         d_constraint_lower.push_back(p_lower_bound);
