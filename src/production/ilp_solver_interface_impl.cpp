@@ -169,6 +169,20 @@ namespace ilp_solver
 
     void ILPSolverInterfaceImpl::add_constraint_and_update_index_vector(const std::vector<int>& p_col_indices, const std::vector<double>& p_col_values, double p_lower_bound, double p_upper_bound, const std::string& p_name)
     {
+        // check for zero rows, they don't have to be added
+        bool all_values_zero = true;
+        for (int i=0; i<(int)p_col_indices.size(); ++i)
+        {
+            if (p_col_values[i] != 0)
+            {
+                all_values_zero = false;
+                break;
+            }
+        }
+
+        if (all_values_zero && p_lower_bound <= 0 && p_upper_bound >= 0)
+            return;
+
         d_all_row_indices.push_back((int) d_all_row_indices.size());    // update d_all_row_indices
         do_add_constraint(p_col_indices, p_col_values, p_lower_bound, p_upper_bound, p_name);
     }

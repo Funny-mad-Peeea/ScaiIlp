@@ -65,9 +65,6 @@ namespace ilp_solver
         }
         const int num_reduced_indices = reduced_indices.size();
 
-        if (num_reduced_indices == 0 && p_lower_bound <= 0 && p_upper_bound >= 0)
-            return;
-
         const auto row = CoinPackedVector(num_reduced_indices, reduced_indices.data(), reduced_values.data(), c_test_for_duplicate_index);
 
         d_matrix.appendRow(row);
