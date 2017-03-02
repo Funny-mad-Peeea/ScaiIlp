@@ -15,7 +15,7 @@ namespace ilp_solver
         return &d_clp_solver;
     }
 
-    void ILPSolverCbc::do_solve(const std::vector<double>& p_start_solution, double p_start_value,
+    void ILPSolverCbc::do_solve(const std::vector<double>& p_start_solution,
                                 int p_num_threads, bool p_deterministic, int p_log_level, double p_max_seconds)
     {
         const auto cbc_num_threads = (p_num_threads == 1 ? 0 : p_num_threads);      // peculiarity of Cbc
@@ -30,11 +30,7 @@ namespace ilp_solver
         if (!p_start_solution.empty())
         {
             assert((int) p_start_solution.size() == d_model.getNumCols());
-            // It seems that CBC expects start_value*ObjSense for parameter objectiveValue,
-            // a strange and - as of July 2016 - undocumented "feature".
-            // Also done this way in https://projects.coin-or.org/Cbc/browser/branches/sandbox/Cbc/src/CbcSolver.cpp?rev=1404#L2626
-            // Note that d_model.getObjSense() is not yet set, so we have to use solver->getObjSense().
-            d_model.setBestSolution(p_start_solution.data(), p_start_solution.size(), p_start_value*solver->getObjSense(), true);
+            d_model.setBestSolution(p_start_solution.data(), p_start_solution.size(), COIN_DBL_MAX, true);
         }
         d_model.branchAndBound();
     }

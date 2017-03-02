@@ -6,7 +6,7 @@ namespace ilp_solver
 {
     ILPSolverOsi::ILPSolverOsi(OsiSolverInterface* p_ilp_solver) : d_ilp_solver(p_ilp_solver) {}
 
-    void ILPSolverOsi::do_solve(const std::vector<double>& p_start_solution, double /* p_start_value */,
+    void ILPSolverOsi::do_solve(const std::vector<double>& p_start_solution,
                                 int /* p_num_threads */, bool /* p_deterministic */, int p_log_level, double /* p_max_seconds */)
     {
         auto solver = do_get_solver();

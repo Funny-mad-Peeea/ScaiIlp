@@ -70,7 +70,7 @@ static void generate_ilp(ILPSolverInterface* v_solver, const ILPData& p_data)
 static void set_solver_preparation_parameters(ILPSolverInterface* v_solver, const ILPData& p_data)
 {
     if (!p_data.start_solution.empty())
-        v_solver->set_start_solution(p_data.start_solution, p_data.start_value);
+        v_solver->set_start_solution(p_data.start_solution);
 }
 
 

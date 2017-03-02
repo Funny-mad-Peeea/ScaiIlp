@@ -355,7 +355,7 @@ namespace ilp_solver
         auto success = true;
         for (auto i = 0; i < 3; ++i)
         {
-            p_solver->set_start_solution(expected_solution, 4.0*p_sense);
+            p_solver->set_start_solution(expected_solution);
             if (p_sense > 0)
                 p_solver->maximize();
             else

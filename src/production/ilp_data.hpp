@@ -21,7 +21,6 @@ namespace ilp_solver
         ObjectiveSense objective_sense;
 
         std::vector<double> start_solution;
-        double start_value;
 
         int num_threads;
         bool deterministic;
@@ -29,7 +28,6 @@ namespace ilp_solver
         double max_seconds;
 
         ILPData() : objective_sense(ObjectiveSense::MINIMIZE),
-                    start_value(std::numeric_limits<double>::quiet_NaN()),
                     num_threads(0), log_level(0), max_seconds(std::numeric_limits<double>::max()) {}
     };
 

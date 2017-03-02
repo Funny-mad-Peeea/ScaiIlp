@@ -59,12 +59,12 @@ namespace ilp_solver
     void ILPSolverCollect::do_add_constraint(const vector<int>& p_col_indices, const vector<double>& p_col_values, double p_lower_bound, double p_upper_bound, const string& /* p_name */)
     {
         assert(p_col_indices.size() == p_col_values.size());
-        
+
         const auto num_cols = (int) d_ilp_data.objective.size();
 
         append_row(&d_ilp_data.matrix, num_cols, p_col_indices, p_col_values);
         d_ilp_data.constraint_lower.push_back(p_lower_bound);
-        d_ilp_data.constraint_upper.push_back(p_upper_bound);    
+        d_ilp_data.constraint_upper.push_back(p_upper_bound);
     }
 
 
@@ -74,11 +74,10 @@ namespace ilp_solver
     }
 
 
-    void ILPSolverCollect::do_prepare_and_solve(const std::vector<double>& p_start_solution, double p_start_value,
+    void ILPSolverCollect::do_prepare_and_solve(const std::vector<double>& p_start_solution,
                                                 int p_num_threads, bool p_deterministic, int p_log_level, double p_max_seconds)
     {
         d_ilp_data.start_solution = p_start_solution;
-        d_ilp_data.start_value    = p_start_value;
 
         d_ilp_data.num_threads   = p_num_threads;
         d_ilp_data.deterministic = p_deterministic;
