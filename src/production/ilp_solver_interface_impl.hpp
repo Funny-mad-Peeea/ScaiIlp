@@ -32,7 +32,6 @@ namespace ilp_solver
 
             void set_start_solution      (const std::vector<double>& p_solution) override;
 
-
             void                      minimize      ()       override;
             void                      maximize      ()       override;
             const std::vector<double> get_solution  () const override;
