@@ -136,8 +136,8 @@ A: If you don't experience solver crashes, you can avoid some overhead by using 
 2.2 Optional: Building pthreads-win32 with VS 2012 (only if Cbc should support multi-threading)
 -----------------------------------------------------------------------------------------------
 
-1. Download [pthreads-win32](ftp://sourceware.org/pub/pthreads-win32/)
-   from the [Pthreads-Win32 project](https://sourceware.org/pthreads-win32/)
+1. Download pthreads-win32 from the [Pthreads-Win32 project](https://sourceware.org/pthreads-win32/)
+    * Download: ftp://sourceware.org/pub/pthreads-win32/
 
 2. Open pthread.dsw with VS 2012 and let it upgrade the project.
 
