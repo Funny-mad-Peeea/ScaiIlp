@@ -6,21 +6,21 @@ Table of Contents
     1. About
     2. License
     3. Questions and Answers
-    
+
 2. Building
 
     1. Building Cbc with VS 2012
     2. Optional: Building pthreads-win32
     3. Building ScaiIlp with VS 2012
-    
+
 3. Code Structure
 
     1. Projects in Visual Studio
     2. Usage
     3. Class Hierarchy
     4. Adding a New Solver
-   
-   
+
+
 1 General Information
 =====================
 
@@ -49,7 +49,7 @@ A: There are two.
 1. Provide a unified and simplified interface for different ILP solvers.
 2. Allow dynamic linking without having to modify the sources/makefiles of solvers that do not
    support this natively.
-   
+
 ### Q: What about Osi? Why another interface?
 
 A: On the one hand, Osi is quite a complex interface. As it spreads over several files with several
@@ -64,7 +64,7 @@ A: Having the solver in a separate process insulates it from your program.
    solution.
    On unknown crashes and unknown problems, IlpSolverStub throws an exception, which can be caught
    in your code.
-   
+
 ### Q: When should I use IlpSolverCbc directly?
 
 A: If you don't experience solver crashes, you can avoid some overhead by using IlpSolverCbc
@@ -161,7 +161,7 @@ A: If you don't experience solver crashes, you can avoid some overhead by using 
         * C/C++ / Code Generation / Enable Minimal Rebuild:      No (/Gm-)
 
 4. In the Solution Explorer, find the filter "Resource Files", right-click onto "version.rc" and choose "Properties". Select "All Configurations" and use the following settings:
-    * Resources / General / Preprocessor Definitions: 
+    * Resources / General / Preprocessor Definitions:
     * prepend "PTW32_ARCHx86;" (without double quotes) when compiling for 32 bit platforms
     * or      "PTW32_ARCHx64;" (without double quotes) otherwise.
 
@@ -206,7 +206,7 @@ The Visual Studio Solution (.sln) contains three projects:
 The published solver interface is ILPSolverInterface.
 Include ilp_solver_interface.hpp.
 
-### 3.2.1 Use as a DLL 
+### 3.2.1 Use as a DLL
 
 The recommended way to use ScaiIlp is to use it as a DLL (dynamic linking)
 
