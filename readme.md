@@ -2,14 +2,19 @@ Table of Contents
 =================
 
 1. General Information
+
     1. About
     2. License
     3. Questions and Answers
+    
 2. Building
+
     1. Building Cbc with VS 2012
     2. Optional: Building pthreads-win32
     3. Building ScaiIlp with VS 2012
+    
 3. Code Structure
+
     1. Projects in Visual Studio
     2. Usage
     3. Class Hierarchy
@@ -37,20 +42,21 @@ See https://opensource.org/licenses/EPL-1.0 or license.txt
 1.3 Questions and Answers
 -------------------------
 
-Q: What is the purpose of ScaiIlp?
+### Q: What is the purpose of ScaiIlp?
 
 A: There are two.
-  1. Provide a unified and simplified interface for different ILP solvers.
-  2. Allow dynamic linking without having to modify the sources/makefiles of solvers that do not
-  support this natively.
+
+1. Provide a unified and simplified interface for different ILP solvers.
+2. Allow dynamic linking without having to modify the sources/makefiles of solvers that do not
+   support this natively.
    
-Q: What about Osi? Why another interface?
+### Q: What about Osi? Why another interface?
 
 A: On the one hand, Osi is quite a complex interface. As it spreads over several files with several
    classes, it is difficult to use as the interface of a DLL.
    On the other hand, some functions that we needed are missing in Osi.
 
-Q: When should I use IlpSolverStub and ScaiIlpExe?
+### Q: When should I use IlpSolverStub and ScaiIlpExe?
 
 A: Having the solver in a separate process insulates it from your program.
    If the solver crashes, your program can survive this.
@@ -59,7 +65,7 @@ A: Having the solver in a separate process insulates it from your program.
    On unknown crashes and unknown problems, IlpSolverStub throws an exception, which can be caught
    in your code.
    
-Q: When should I use IlpSolverCbc directly?
+### Q: When should I use IlpSolverCbc directly?
 
 A: If you don't experience solver crashes, you can avoid some overhead by using IlpSolverCbc
    directly.
@@ -71,7 +77,7 @@ A: If you don't experience solver crashes, you can avoid some overhead by using 
 2.1 Building Cbc with VS 2012
 -----------------------------
 
-1. Download Cbc from the COIN project (http://www.coin-or.org/).
+1. Download Cbc from the [COIN project](http://www.coin-or.org/).
     * Download: http://www.coin-or.org/download/source/Cbc/
     * via SVN:  svn co https://projects.coin-or.org/svn/Cbc/stable/2.8 coin-Cbc
     * Wiki:     https://projects.coin-or.org/Cbc/wiki
@@ -106,8 +112,8 @@ A: If you don't experience solver crashes, you can avoid some overhead by using 
         * General / Output Directory:        $(SolutionDir)$(Configuration)\
         * General / Intermediate Directory:  $(SolutionDir)obj\
         * General / Platform Toolset:        v110_xp
-    * C/C++   / Preprocessor / Preprocessor Definitions:   prepend "_ITERATOR_DEBUG_LEVEL=0;" (without double quotes)
-    * C/C++   / Output Files / Program Database File Name: $(OutDir)$(TargetName).pdb
+        * C/C++   / Preprocessor / Preprocessor Definitions:   prepend "_ITERATOR_DEBUG_LEVEL=0;" (without double quotes)
+        * C/C++   / Output Files / Program Database File Name: $(OutDir)$(TargetName).pdb
 
     * For faster compilation, you can additionally use the following settings (set none or both):
         * C/C++   / General         / Multi-processor Compilation:  Yes
@@ -130,8 +136,8 @@ A: If you don't experience solver crashes, you can avoid some overhead by using 
 2.2 Optional: Building pthreads-win32 with VS 2012 (only if Cbc should support multi-threading)
 -----------------------------------------------------------------------------------------------
 
-1. Download pthreads-win32 from the Pthreads-Win32 project (https://sourceware.org/pthreads-win32/)
-    * Download: ftp://sourceware.org/pub/pthreads-win32/
+1. Download [pthreads-win32](ftp://sourceware.org/pub/pthreads-win32/)
+   from the [Pthreads-Win32 project](https://sourceware.org/pthreads-win32/)
 
 2. Open pthread.dsw with VS 2012 and let it upgrade the project.
 
@@ -200,7 +206,7 @@ The Visual Studio Solution (.sln) contains three projects:
 The published solver interface is ILPSolverInterface.
 Include ilp_solver_interface.hpp.
 
-3.2.1 Use as a DLL 
+### 3.2.1 Use as a DLL 
 
 The recommended way to use ScaiIlp is to use it as a DLL (dynamic linking)
 * Link against ScaiIlpDll.dll.
@@ -209,12 +215,12 @@ The recommended way to use ScaiIlp is to use it as a DLL (dynamic linking)
 * To destroy the solver later, you MUST call destroy_solver() instead of deleting the pointer
   yourself.
 
-3.2.2 Static linking
+### 3.2.2 Static linking
 
 Alternatively, you may include ilp_solver_cbc.cpp and all its dependencies in your project.
 This way, your code gets statically linked with a part of ScaiIlp.
 
-3.2.3 ScaiIlpExe.exe
+### 3.2.3 ScaiIlpExe.exe
 
 To use ScaiIlpExe.exe, there is a class ILPSolverStub.
 IlpSolverStub can be used like IlpSolverCbc either as described in 3.2.1 or as described in 3.2.2.
