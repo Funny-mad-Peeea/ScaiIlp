@@ -209,6 +209,7 @@ Include ilp_solver_interface.hpp.
 ### 3.2.1 Use as a DLL 
 
 The recommended way to use ScaiIlp is to use it as a DLL (dynamic linking)
+
 * Link against ScaiIlpDll.dll.
 * Include ilp_solver_factory.hpp.
 * Create your objects via create_solver_cbc() from ilp_solver_factory.hpp.
