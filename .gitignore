@@ -1,5 +1,7 @@
 vc/Debug/*
 vc/Release/*
+vc/x64_Debug/*
+vc/x64_Release/*
 vc/ipch/*
 vc/ScaiIlpDll/Debug/*
 vc/ScaiIlpDll/Release/*
