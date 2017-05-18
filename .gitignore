@@ -3,10 +3,16 @@ vc/Release/*
 vc/ipch/*
 vc/ScaiIlpDll/Debug/*
 vc/ScaiIlpDll/Release/*
+vc/ScaiIlpDll/x64_Debug/*
+vc/ScaiIlpDll/x64_Release/*
 vc/ScaiIlpExe/Debug/*
 vc/ScaiIlpExe/Release/*
+vc/ScaiIlpExe/x64_Debug/*
+vc/ScaiIlpExe/x64_Release/*
 vc/UnitTest/Debug/*
 vc/UnitTest/Release/*
+vc/UnitTest/x64_Debug/*
+vc/UnitTest/x64_Release/*
 *.sdf
 *.opensdf
 *.suo
