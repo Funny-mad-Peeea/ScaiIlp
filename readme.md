@@ -160,10 +160,14 @@ A: If you don't experience solver crashes, you can avoid some overhead by using 
         * C/C++ / General         / Multi-processor Compilation: Yes (/MP)
         * C/C++ / Code Generation / Enable Minimal Rebuild:      No (/Gm-)
 
-4. In the Solution Explorer, find the filter "Resource Files", right-click onto "version.rc" and choose "Properties". Select "All Configurations" and use the following settings:
+4. In the Solution Explorer
+    * Find the filter "Resource Files"
+    * Right-click onto "version.rc"
+    * Choose "Properties".
+    * Select "All Configurations"
     * Resources / General / Preprocessor Definitions:
-    * prepend "PTW32_ARCHx86;" (without double quotes) when compiling for 32 bit platforms
-    * or      "PTW32_ARCHx64;" (without double quotes) otherwise.
+        * prepend "PTW32_ARCHx86;" (without double quotes) when compiling for 32 bit platforms
+        * or      "PTW32_ARCHx64;" (without double quotes) otherwise.
 
 2.3 Building ScaiIlp with VS 2012
 ---------------------------------
