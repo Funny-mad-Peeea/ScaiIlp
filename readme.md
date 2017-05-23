@@ -123,10 +123,10 @@ A: If you don't experience solver crashes, you can avoid some overhead by using 
     * Right-click onto the project "libCbc" in the Solution Explorer and choose
     * "Properties" -> "Configuration Properties".
     * Select "All Configurations" and use the following settings:
-        * C/C++     / General      / Additional Include Directories: <path to pthreads-win32>
+        * C/C++     / General      / Additional Include Directories: path to pthreads-win32
         * C/C++     / Preprocessor / Preprocessor Definitions:       prepend "CBC_THREAD;" (without double quotes)
         * Librarian / General      / Additional Dependencies:        pthread.lib
-        * Librarian / General      / Additional Library Directories: <path to pthreads-win32>\$(Configuration)
+        * Librarian / General      / Additional Library Directories: (path to pthreads-win32)\ $(Configuration) (without space)
 
 8. Choose "Build" -> "Batch-Build" and select the following projects and configurations:
     * libOsiCbc  Debug    Win32
@@ -145,7 +145,7 @@ A: If you don't experience solver crashes, you can avoid some overhead by using 
     * "Properties" -> "Configuration Properties".
     * Select "All Configurations" and use the following settings:
         * General / Output Directory:       $(SolutionDir)$(Configuration)\
-        * General / Intermediate Directory: $(SolutionDir)obj\$(Configuration)\
+        * General / Intermediate Directory: $(SolutionDir)obj\ $(Configuration)\ (without space)
         * General / Platform Toolset:       v110_xp
         * C/C++ / General             / Debug Information Output:       Program Database (/Zi)
         * C/C++ / Preprocessor        / Preprocessor Definitions:       prepend "_ITERATOR_DEBUG_LEVEL=0;" (without double quotes)
@@ -160,10 +160,14 @@ A: If you don't experience solver crashes, you can avoid some overhead by using 
         * C/C++ / General         / Multi-processor Compilation: Yes (/MP)
         * C/C++ / Code Generation / Enable Minimal Rebuild:      No (/Gm-)
 
-4. In the Solution Explorer, find the filter "Resource Files", right-click onto "version.rc" and choose "Properties". Select "All Configurations" and use the following settings:
+4. In the Solution Explorer
+    * Find the filter "Resource Files"
+    * Right-click onto "version.rc"
+    * Choose "Properties".
+    * Select "All Configurations"
     * Resources / General / Preprocessor Definitions:
-    * prepend "PTW32_ARCHx86;" (without double quotes) when compiling for 32 bit platforms
-    * or      "PTW32_ARCHx64;" (without double quotes) otherwise.
+        * prepend "PTW32_ARCHx86;" (without double quotes) when compiling for 32 bit platforms
+        * or      "PTW32_ARCHx64;" (without double quotes) otherwise.
 
 2.3 Building ScaiIlp with VS 2012
 ---------------------------------
@@ -290,7 +294,7 @@ the class hierarchy.
 
 If you want your solver to be accessible via the DLL, then you must declare and define a function
 
-    extern "C" ILPSolverInterface* __stdcall create_solver_xyz(<parameters>)
+    extern "C" ILPSolverInterface* __stdcall create_solver_xyz(parameters)
 
 in ilp_solver_factory.hpp and ilp_solver_factory.cpp, respectively, and add this function in the
 module definition file ScaiIlpDll.def, which can be found in vc\ScaiIlpDll.
