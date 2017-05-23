@@ -98,7 +98,11 @@ A: If you don't experience solver crashes, you can avoid some overhead by using 
             * libOsi
             * libOsiClp
 
-5. In the Solution Explorer, mark the following 7 projects:
+5. Choose "Build" -> "Configuration Manager". Choose the "Active solution platform" depending on your needs:
+    * Choose "Win32" when compiling for 32 bit platforms
+    * Choose "x64" when compiling for 64 bit platforms
+
+6. In the Solution Explorer, mark the following 7 projects:
     * libCbc
     * libCgl
     * libClp
@@ -107,10 +111,14 @@ A: If you don't experience solver crashes, you can avoid some overhead by using 
     * libOsiCbc
     * libOsiClp
 
-6. Right-click onto the marked projects and choose "Properties" -> "Configuration Properties".
+7. Right-click onto the marked projects and choose "Properties" -> "Configuration Properties".
     * Select "All Configurations" and use the following settings:
-        * General / Output Directory:        $(SolutionDir)$(Configuration)\
-        * General / Intermediate Directory:  $(SolutionDir)obj\
+        * General / Output Directory:
+            * for 32 bit: $(SolutionDir)$(Configuration)\
+            * for 64 bit: $(SolutionDir)$(Platform)_$(Configuration)\
+        * General / Intermediate Directory:
+            * for 32 bit: $(SolutionDir)obj\
+            * for 64 bit: $(SolutionDir)$(Platform)_obj\
         * General / Platform Toolset:        v110_xp
         * C/C++   / Preprocessor / Preprocessor Definitions:   prepend "_ITERATOR_DEBUG_LEVEL=0;" (without double quotes)
         * C/C++   / Output Files / Program Database File Name: $(OutDir)$(TargetName).pdb
@@ -119,18 +127,24 @@ A: If you don't experience solver crashes, you can avoid some overhead by using 
         * C/C++   / General         / Multi-processor Compilation:  Yes
         * C/C++   / Code Generation / Enable Minimal Rebuild:       No
 
-7. If you want to support multithreading: Build pthreads-win32 as described in section 2.2 Otherwise proceed as in step 8.
+8. If you want to support multithreading: Build pthreads-win32 as described in section 2.2 Otherwise proceed as in step 8.
     * Right-click onto the project "libCbc" in the Solution Explorer and choose
     * "Properties" -> "Configuration Properties".
     * Select "All Configurations" and use the following settings:
         * C/C++     / General      / Additional Include Directories: path to pthreads-win32
         * C/C++     / Preprocessor / Preprocessor Definitions:       prepend "CBC_THREAD;" (without double quotes)
         * Librarian / General      / Additional Dependencies:        pthread.lib
-        * Librarian / General      / Additional Library Directories: (path to pthreads-win32)\ $(Configuration) (without space)
+        * Librarian / General      / Additional Library Directories:
+            * for 32 bit: (path to pthreads-win32)\ $(Configuration) (without space)
+            * for 64 bit: (path to pthreads-win32)\ $(Platform)_$(Configuration) (without space)
 
-8. Choose "Build" -> "Batch-Build" and select the following projects and configurations:
-    * libOsiCbc  Debug    Win32
-    * libOsiCbc  Release  Win32
+9. Choose "Build" -> "Batch-Build" and select the following projects and configurations:
+    * for 32 bit:
+        * libOsiCbc  Debug    Win32
+        * libOsiCbc  Release  Win32
+    * for 64 bit:
+        * libOsiCbc  Debug    x64
+        * libOsiCbc  Release  x64
 
 
 2.2 Optional: Building pthreads-win32 with VS 2012 (only if Cbc should support multi-threading)
@@ -141,11 +155,24 @@ A: If you don't experience solver crashes, you can avoid some overhead by using 
 
 2. Open pthread.dsw with VS 2012 and let it upgrade the project.
 
-3. Right-click onto the project "pthread" in the Solution Explorer and choose
+3. When you want to compile for 64 bit platforms:
+    * Choose "Build" -> "Configuration Manager".
+    * In the "Active solution platform" dropdown menu, select "New" and choose "x64" as new platform.
+    * Make sure that "Copy settings from: Win32" is chosen and "Create new project platforms" is checked.
+
+4. Choose "Build" -> "Configuration Manager". Choose the "Active solution platform" depending on your needs:
+    * Choose "Win32" when compiling for 32 bit platforms
+    * Choose "x64" when compiling for 64 bit platforms
+
+5. Right-click onto the project "pthread" in the Solution Explorer and choose
     * "Properties" -> "Configuration Properties".
     * Select "All Configurations" and use the following settings:
-        * General / Output Directory:       $(SolutionDir)$(Configuration)\
-        * General / Intermediate Directory: $(SolutionDir)obj\ $(Configuration)\ (without space)
+        * General / Output Directory:
+            * for 32 bit: $(SolutionDir)$(Configuration)\
+            * for 64 bit: $(SolutionDir)$(Platform)_$(Configuration)\
+        * General / Intermediate Directory:
+            * for 32 bit: $(SolutionDir)obj\ $(Configuration)\ (without space)
+            * for 64 bit: $(SolutionDir)obj\ $(Platform)_$(Configuration)\ (without space)
         * General / Platform Toolset:       v110_xp
         * C/C++ / General             / Debug Information Output:       Program Database (/Zi)
         * C/C++ / Preprocessor        / Preprocessor Definitions:       prepend "_ITERATOR_DEBUG_LEVEL=0;" (without double quotes)
@@ -160,7 +187,7 @@ A: If you don't experience solver crashes, you can avoid some overhead by using 
         * C/C++ / General         / Multi-processor Compilation: Yes (/MP)
         * C/C++ / Code Generation / Enable Minimal Rebuild:      No (/Gm-)
 
-4. In the Solution Explorer
+6. In the Solution Explorer
     * Find the filter "Resource Files"
     * Right-click onto "version.rc"
     * Choose "Properties".
