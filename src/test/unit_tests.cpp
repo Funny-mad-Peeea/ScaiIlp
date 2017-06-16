@@ -1,4 +1,6 @@
+#include "ilp_solver_exception.hpp"
 #include "ilp_solver_factory.hpp"
+#include "ilp_solver_factory_t.hpp"
 #include "ilp_solver_interface.hpp"
 #include "ilp_solver_interface_t.hpp"
 #include "serialization_t.hpp"
@@ -40,4 +42,5 @@ void main()
     ilp_solver::run_tests(cbc_stub_solver_generator, "Cbc Stub Solver");
 
     execute_test_and_destroy_solver(cbc_stub_solver_generator(), c_solver_exe_name, ilp_solver::test_bad_alloc);
+    ilp_solver::test_create_exception();
 }

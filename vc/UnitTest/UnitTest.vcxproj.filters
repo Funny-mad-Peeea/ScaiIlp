@@ -16,6 +16,12 @@
     <ClInclude Include="..\..\src\production\serialization.hpp">
       <Filter>production</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\src\production\ilp_solver_exception.hpp">
+      <Filter>production</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\test\ilp_solver_factory_t.hpp">
+      <Filter>test</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\src\test\ilp_solver_interface_t.cpp">
@@ -25,6 +31,9 @@
       <Filter>test</Filter>
     </ClCompile>
     <ClCompile Include="..\..\src\test\unit_tests.cpp">
+      <Filter>test</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\test\ilp_solver_factory_t.cpp">
       <Filter>test</Filter>
     </ClCompile>
   </ItemGroup>
