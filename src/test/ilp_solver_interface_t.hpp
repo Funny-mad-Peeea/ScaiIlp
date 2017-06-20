@@ -10,7 +10,6 @@ namespace ilp_solver
 
     void execute_test_and_destroy_solver(ILPSolverInterface* p_solver, const std::string& p_solver_name, std::function<void(ILPSolverInterface*, const std::string&)> p_test);
 
-    void test_sorting(ILPSolverInterface* p_solver, const std::string& p_solver_name);
     void test_linear_programming(ILPSolverInterface* p_solver, const std::string& p_solver_name);
     void test_performance(ILPSolverInterface* p_solver, const std::string& p_solver_name);
     void test_start_solution_minimization(ILPSolverInterface* p_solver, const std::string& p_solver_name);

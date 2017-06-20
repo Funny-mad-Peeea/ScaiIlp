@@ -7,6 +7,15 @@
 #include <cassert>
 #include <iostream>
 
+// BOOST_AUTO_LINK_TAGGED = Namen der Boost-Libraries enthalten NICHT Toolkit und Boost-Version
+#ifndef BOOST_AUTO_LINK_TAGGED
+#define BOOST_AUTO_LINK_TAGGED
+#endif
+
+#define _ITERATOR_DEBUG_LEVEL 0
+
+#include <boost/test/unit_test.hpp>
+
 #define NOMINMAX
 #include <windows.h>    // for GetTickCount
 
@@ -69,92 +78,106 @@ namespace ilp_solver
     }
 
 
-    void test_sorting(ILPSolverInterface* p_solver, const string& p_solver_name)
+    BOOST_AUTO_TEST_SUITE( Ilp_SolverT );
+
+    BOOST_AUTO_TEST_CASE ( Sorting )
     {
-        print_caption("Sorting test", p_solver_name);
-
-        int number_array[] = { 62, 20, 4, 49, 97, 73, 35, 51, 18, 86};
-        const auto numbers = vector<int>(std::begin(number_array), std::end(number_array));
-        const auto num_vars = (int) numbers.size();
-
-        // xi - target position of numbers[i]
-        //
-        // min x0 + ... + x9
-        // s.t. xk - xl >= 0.1 for every (k,l) for which numbers[k] > numbers[l] (Note: If we set the rhs to 1.0, then the integrality constraint is superfluous.)
-        //      xi >= 0 integral
-
-        // Add variables
-        for (auto i = 0; i < num_vars; ++i)
-            p_solver->add_variable_integer(1, 0, std::numeric_limits<int>::max(), "x" + std::to_string(i));
-
-        // Add constraints
-        cout << "Initial array: ";
-        for (auto i = 0; i < num_vars; ++i)
+        for (int i_solver = 0; i_solver < 2; ++i_solver)
         {
-            for (auto j = i+1; j < num_vars; ++j)
+            // set solver
+            ILPSolverInterface* solver;
+            std::string solver_name;
+            if (i_solver == 0)
             {
-                // Reorder i and j (naming them k and l) s.t. numbers[k] > numbers[l]
-                auto k = i;
-                auto l = j;
-                if (numbers[k] < numbers[l])
-                    std::swap(k, l);
-
-                vector<int> indices;
-                vector<double> values;
-
-                indices.push_back(k);
-                values.push_back(1);
-
-                indices.push_back(l);
-                values.push_back(-1);
-
-                p_solver->add_constraint_lower(indices, values, 1.0, "x" + std::to_string(k) + ">x" + std::to_string(l));
+                solver = ilp_solver::create_solver_cbc();
+                solver_name = "Cbc Solver";
             }
-            cout << numbers[i] << " ";
+            else
+            {
+                solver = ilp_solver::create_solver_stub("ScaiIlpExe.exe");
+                solver_name = "Cbc Stub Solver";
+            }
+            cout << solver_name << endl;
+
+            int number_array[] = { 62, 20, 4, 49, 97, 73, 35, 51, 18, 86};
+            const auto numbers = vector<int>(std::begin(number_array), std::end(number_array));
+            const auto num_vars = (int) numbers.size();
+
+            // xi - target position of numbers[i]
+            //
+            // min x0 + ... + x9
+            // s.t. xk - xl >= 0.1 for every (k,l) for which numbers[k] > numbers[l] (Note: If we set the rhs to 1.0, then the integrality constraint is superfluous.)
+            //      xi >= 0 integral
+
+            // Add variables
+            for (auto i = 0; i < num_vars; ++i)
+                solver->add_variable_integer(1, 0, std::numeric_limits<int>::max(), "x" + std::to_string(i));
+
+            // Add constraints
+            cout << "    Initial array: ";
+            for (auto i = 0; i < num_vars; ++i)
+            {
+                for (auto j = i+1; j < num_vars; ++j)
+                {
+                    // Reorder i and j (naming them k and l) s.t. numbers[k] > numbers[l]
+                    auto k = i;
+                    auto l = j;
+                    if (numbers[k] < numbers[l])
+                        std::swap(k, l);
+
+                    vector<int> indices;
+                    vector<double> values;
+
+                    indices.push_back(k);
+                    values.push_back(1);
+
+                    indices.push_back(l);
+                    values.push_back(-1);
+
+                    solver->add_constraint_lower(indices, values, 1.0, "x" + std::to_string(k) + ">x" + std::to_string(l));
+                }
+                cout << numbers[i] << " ";
+            }
+            cout << endl;
+
+            solver->minimize();
+
+            const auto obj_value = solver->get_objective();
+            const auto permutation = solver->get_solution();
+            const auto status = solver->get_status();
+
+            // Check solution status
+            BOOST_REQUIRE (status == SolutionStatus::PROVEN_OPTIMAL);
+
+            // Check correctness of objective
+            const auto expected_obj_value = num_vars*(num_vars-1)/2;
+            BOOST_REQUIRE_GT(c_eps, fabs(obj_value - expected_obj_value));  // objective should be 0+1+...+(num_numbers-1)
+
+            // Check correctness of solution
+            auto sorted = vector<int>(num_vars, INT_MIN);       // sort according solution
+
+            for (auto i = 0; i < num_vars; ++i)
+            {
+                const auto pos = round(permutation[i]);
+                BOOST_REQUIRE_GT (c_eps, fabs(pos - permutation[i]));    // solution must be integral
+                sorted[pos] = numbers[i];
+            }
+
+            cout << "    Sorted array: ";
+            for (auto i = 0; i < num_vars; ++i)
+            {
+                cout << sorted[i] << " ";
+
+                BOOST_REQUIRE_NE(sorted[i], INT_MIN);                   // solution must be a permutation
+                if (i > 0)
+                    BOOST_REQUIRE_GT (sorted[i], sorted[i-1]);            // solution must sort
+            }
+            cout << endl;
+            destroy_solver(solver);
         }
-        cout << endl << endl;
+    } // End of BOOST_AUTO_TEST_CASE ( Sorting )
 
-        p_solver->minimize();
-
-        const auto obj_value = p_solver->get_objective();
-        const auto permutation = p_solver->get_solution();
-        const auto status = p_solver->get_status();
-
-        // Check solution status
-        const auto optimal = status == SolutionStatus::PROVEN_OPTIMAL;
-        cout << "Solution is " << (optimal ? "" : "not ") << "optimal" << endl;
-        assert(optimal);
-
-        // Check correctness of objective
-        const auto expected_obj_value = num_vars*(num_vars-1)/2;
-        assert(fabs(obj_value - expected_obj_value) < c_eps);  // objective should be 0+1+...+(num_numbers-1)
-
-        // Check correctness of solution
-        auto sorted = vector<int>(num_vars, INT_MIN);       // sort according solution
-
-        cout << endl << "Resulting permutation: ";
-        for (auto i = 0; i < num_vars; ++i)
-        {
-            const auto pos = round(permutation[i]);
-
-            cout << pos << " ";
-
-            assert(fabs(pos - permutation[i]) < c_eps);    // solution must be integral
-            sorted[pos] = numbers[i];
-        }
-        cout << endl;
-
-        cout << "Sorted array: ";
-        for (auto i = 0; i < num_vars; ++i)
-        {
-            cout << sorted[i] << " ";
-
-            assert(sorted[i] != INT_MIN);                   // solution must be a permutation
-            if (i > 0)
-                assert(sorted[i-1] < sorted[i]);            // solution must sort
-        }
-        cout << endl;
-    }
+    BOOST_AUTO_TEST_SUITE_END();
 
     void test_linear_programming(ILPSolverInterface* p_solver, const string& p_solver_name)
     {

@@ -1,3 +1,9 @@
+// definiert Funktion init_unit_test bzw init_unit_test_suite
+// #define BOOST_TEST_MAIN muss vor #include <boost/test/unit_test.hpp> stehen.
+// Deshalb darf diese Datei nicht mit Precompiled Header uebersetzt werden.
+#define BOOST_TEST_MAIN
+
+
 #include "ilp_solver_exception.hpp"
 #include "ilp_solver_factory.hpp"
 #include "ilp_solver_factory_t.hpp"
@@ -5,11 +11,20 @@
 #include "ilp_solver_interface_t.hpp"
 #include "serialization_t.hpp"
 
+// BOOST_AUTO_LINK_TAGGED = Namen der Boost-Libraries enthalten NICHT Toolkit und Boost-Version
+#ifndef BOOST_AUTO_LINK_TAGGED
+#define BOOST_AUTO_LINK_TAGGED
+#endif
+
+#define _ITERATOR_DEBUG_LEVEL 0
+
+#include <boost/test/unit_test.hpp>
 #include <functional>
 #include <string>
 #include <vector>
 
 const auto c_solver_exe_name = "ScaiIlpExe.exe";
+
 
 namespace ilp_solver
 {
@@ -17,7 +32,6 @@ namespace ilp_solver
     {
         typedef void (*SolverTest)(ILPSolverInterface* p_solver, const std::string& p_solver_name);
         std::vector<SolverTest> tests;
-        tests.push_back(test_sorting);
         tests.push_back(test_linear_programming);
         tests.push_back(test_start_solution_minimization);
         tests.push_back(test_start_solution_maximization);
@@ -32,8 +46,13 @@ namespace ilp_solver
     }
 }
 
-void main()
+
+int main()
 {
+    int argc = 0;
+    char* argv[] = {"dummy", nullptr}; // empty command line
+    auto ret = unit_test_main(init_unit_test_suite, argc, argv );
+
     test_serialization();
 
     auto cbc_stub_solver_generator = []() { return ilp_solver::create_solver_stub(c_solver_exe_name); };
@@ -43,4 +62,6 @@ void main()
 
     execute_test_and_destroy_solver(cbc_stub_solver_generator(), c_solver_exe_name, ilp_solver::test_bad_alloc);
     ilp_solver::test_create_exception();
+
+    return ret;
 }
