@@ -1,4 +1,4 @@
-#include "ilp_solver_interface_t.hpp"
+#include "ilp_solver_interface_t.hpp"pefo
 
 #include "ilp_solver_factory.hpp"
 #include "ilp_solver_interface.hpp"
@@ -43,15 +43,6 @@ namespace ilp_solver
     {
         std::fill(std::begin(p_text), std::end(p_text), '=');
         return p_text;
-    }
-
-
-    static void print_caption(const string& p_test_name, const string& p_solver_name)
-    {
-        cout << endl
-             << p_test_name            << " (" << p_solver_name            << ")" << endl
-             << underline(p_test_name) << "==" << underline(p_solver_name) << "=" << endl
-             << endl;
     }
 
 
@@ -292,8 +283,6 @@ namespace ilp_solver
 
     void test_performance(ILPSolverInterface* p_solver, const string& p_solver_name)
     {
-        print_caption("Performance test", p_solver_name);
-
         // max x+y, -1 <= x, y <= 1
         p_solver->add_variable_continuous(1, -1, 1);
         p_solver->add_variable_continuous(1, -1, 1);
@@ -388,24 +377,18 @@ namespace ilp_solver
 
     void test_start_solution_minimization(ILPSolverInterface* p_solver, const string& p_solver_name)
     {
-        print_caption("Start solution test (minimization)", p_solver_name);
-
         test_start_solution(p_solver, p_solver_name, -1.0);
     }
 
 
     void test_start_solution_maximization(ILPSolverInterface* p_solver, const string& p_solver_name)
     {
-        print_caption("Start solution test (maximization)", p_solver_name);
-
         test_start_solution(p_solver, p_solver_name, 1.0);
     }
 
 
     void test_bad_alloc(ILPSolverInterface* p_solver, const string& p_solver_name)
     {
-        print_caption("Bad alloc test", p_solver_name);
-
         srand(3);
 
         // It is not clear that this is sufficient to provoke a bad_alloc.
@@ -454,6 +437,46 @@ BOOST_AUTO_TEST_CASE ( SortingCbcSolver )
 BOOST_AUTO_TEST_CASE ( SortingCbcStubSolver )
 {
     test_sorting (ilp_solver::create_solver_stub("ScaiIlpExe.exe"), "Cbc StubSolver");
+}
+
+BOOST_AUTO_TEST_CASE ( LinProgrCbcSolver )
+{
+    test_linear_programming (ilp_solver::create_solver_cbc(), "Cbc Solver");
+}
+
+BOOST_AUTO_TEST_CASE ( LinProgrCbcStubSolver )
+{
+    test_linear_programming (ilp_solver::create_solver_stub("ScaiIlpExe.exe"), "Cbc StubSolver");
+}
+
+BOOST_AUTO_TEST_CASE ( StartSolutionMinCbcSolver )
+{
+    test_start_solution_minimization (ilp_solver::create_solver_cbc(), "Cbc Solver");
+}
+
+BOOST_AUTO_TEST_CASE ( StartSolutionMinCbcStubSolver )
+{
+    test_start_solution_minimization (ilp_solver::create_solver_stub("ScaiIlpExe.exe"), "Cbc StubSolver");
+}
+
+BOOST_AUTO_TEST_CASE ( StartSolutionMaxCbcSolver )
+{
+    test_start_solution_maximization (ilp_solver::create_solver_cbc(), "Cbc Solver");
+}
+
+BOOST_AUTO_TEST_CASE ( StartSolutionMaxCbcStubSolver )
+{
+    test_start_solution_maximization (ilp_solver::create_solver_stub("ScaiIlpExe.exe"), "Cbc StubSolver");
+}
+
+BOOST_AUTO_TEST_CASE ( PerformanceCbcSolver )
+{
+    test_performance (ilp_solver::create_solver_cbc(), "Cbc Solver");
+}
+
+BOOST_AUTO_TEST_CASE ( PerformanceCbcStubSolver )
+{
+    test_performance (ilp_solver::create_solver_stub("ScaiIlpExe.exe"), "Cbc StubSolver");
 }
 
 BOOST_AUTO_TEST_SUITE_END();
