@@ -19,7 +19,7 @@
     <ClInclude Include="..\..\src\production\ilp_solver_exception.hpp">
       <Filter>production</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\src\test\ilp_solver_factory_t.hpp">
+    <ClInclude Include="..\..\src\test\ilp_solver_exception_t.hpp">
       <Filter>test</Filter>
     </ClInclude>
   </ItemGroup>
@@ -33,8 +33,11 @@
     <ClCompile Include="..\..\src\test\unit_tests.cpp">
       <Filter>test</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\src\test\ilp_solver_factory_t.cpp">
+    <ClCompile Include="..\..\src\test\ilp_solver_exception_t.cpp">
       <Filter>test</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\production\ilp_solver_exception.cpp">
+      <Filter>production</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

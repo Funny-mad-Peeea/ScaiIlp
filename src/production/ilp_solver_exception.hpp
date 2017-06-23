@@ -13,14 +13,8 @@ namespace ilp_solver
         virtual ~ILPSolverException() {}
     };
 
-
-    struct ILPSolverExceptionImpl : ILPSolverException
-    {
-        void throw_exception(const std::string& p_message) const override
-        {
-            throw std::exception(p_message.c_str());
-        }
-    };
+    extern "C" ILPSolverException* __stdcall create_exception();
+    extern "C" void                __stdcall destroy_exception(ILPSolverException* p_exception);
 }
 
 #endif

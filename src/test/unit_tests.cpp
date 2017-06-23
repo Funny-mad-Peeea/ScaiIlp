@@ -6,7 +6,7 @@
 
 #include "ilp_solver_exception.hpp"
 #include "ilp_solver_factory.hpp"
-#include "ilp_solver_factory_t.hpp"
+#include "ilp_solver_exception_t.hpp"
 #include "ilp_solver_interface.hpp"
 #include "ilp_solver_interface_t.hpp"
 #include "serialization_t.hpp"

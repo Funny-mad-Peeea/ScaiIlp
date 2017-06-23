@@ -178,6 +178,7 @@
     <ClInclude Include="..\..\src\production\ilp_data.hpp" />
     <ClInclude Include="..\..\src\production\ilp_solver_cbc.hpp" />
     <ClInclude Include="..\..\src\production\ilp_solver_collect.hpp" />
+    <ClInclude Include="..\..\src\production\ilp_solver_exception.hpp" />
     <ClInclude Include="..\..\src\production\ilp_solver_factory.hpp" />
     <ClInclude Include="..\..\src\production\ilp_solver_interface.hpp" />
     <ClInclude Include="..\..\src\production\ilp_solver_interface_impl.hpp" />
@@ -192,6 +193,7 @@
   <ItemGroup>
     <ClCompile Include="..\..\src\production\ilp_solver_cbc.cpp" />
     <ClCompile Include="..\..\src\production\ilp_solver_collect.cpp" />
+    <ClCompile Include="..\..\src\production\ilp_solver_exception.cpp" />
     <ClCompile Include="..\..\src\production\ilp_solver_factory.cpp" />
     <ClCompile Include="..\..\src\production\ilp_solver_interface_impl.cpp" />
     <ClCompile Include="..\..\src\production\ilp_solver_osi.cpp" />

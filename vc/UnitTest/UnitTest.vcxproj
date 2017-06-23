@@ -167,12 +167,13 @@
     <ClInclude Include="..\..\src\production\ilp_solver_factory.hpp" />
     <ClInclude Include="..\..\src\production\ilp_solver_interface.hpp" />
     <ClInclude Include="..\..\src\production\serialization.hpp" />
-    <ClInclude Include="..\..\src\test\ilp_solver_factory_t.hpp" />
+    <ClInclude Include="..\..\src\test\ilp_solver_exception_t.hpp" />
     <ClInclude Include="..\..\src\test\ilp_solver_interface_t.hpp" />
     <ClInclude Include="..\..\src\test\serialization_t.hpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\src\test\ilp_solver_factory_t.cpp" />
+    <ClCompile Include="..\..\src\production\ilp_solver_exception.cpp" />
+    <ClCompile Include="..\..\src\test\ilp_solver_exception_t.cpp" />
     <ClCompile Include="..\..\src\test\ilp_solver_interface_t.cpp" />
     <ClCompile Include="..\..\src\test\serialization_t.cpp" />
     <ClCompile Include="..\..\src\test\unit_tests.cpp" />
