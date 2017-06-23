@@ -40,11 +40,9 @@ namespace ilp_solver
 }
 
 
-int main()
+int main(int p_argc, char* p_argv[])
 {
-    int argc = 0;
-    char* argv[] = {"dummy", nullptr}; // empty command line
-    auto ret = unit_test_main(init_unit_test_suite, argc, argv );
+    auto ret = unit_test_main(init_unit_test_suite, p_argc, p_argv );
 
     test_serialization();
 
