@@ -1,10 +1,9 @@
-#include "ilp_solver_interface_t.hpp"pefo
+#include "ilp_solver_interface_t.hpp"
 
 #include "ilp_solver_factory.hpp"
 #include "ilp_solver_interface.hpp"
 
 #include <algorithm>
-#include <cassert>
 #include <iostream>
 
 #include <boost/test/unit_test.hpp>
@@ -36,13 +35,6 @@ namespace ilp_solver
     static double rand_double()
     {
         return -0.5 + (1.0*rand())/RAND_MAX;
-    }
-
-
-    static string underline(string p_text)
-    {
-        std::fill(std::begin(p_text), std::end(p_text), '=');
-        return p_text;
     }
 
 
@@ -118,11 +110,11 @@ namespace ilp_solver
         // Check solution status
         const auto optimal = status == SolutionStatus::PROVEN_OPTIMAL;
         logging << "Solution is " << (optimal ? "" : "not ") << "optimal" << endl;
-        assert(optimal);
+        BOOST_REQUIRE(optimal);
 
         // Check correctness of objective
         const auto expected_obj_value = num_vars*(num_vars-1)/2;
-        assert(fabs(obj_value - expected_obj_value) < c_eps);  // objective should be 0+1+...+(num_numbers-1)
+        BOOST_REQUIRE_LT(fabs(obj_value - expected_obj_value), c_eps);  // objective should be 0+1+...+(num_numbers-1)
 
         // Check correctness of solution
         auto sorted = vector<int>(num_vars, INT_MIN);       // sort according solution
@@ -134,7 +126,7 @@ namespace ilp_solver
 
             logging << pos << " ";
 
-            assert(fabs(pos - permutation[i]) < c_eps);    // solution must be integral
+            BOOST_REQUIRE_LT(fabs(pos - permutation[i]), c_eps);    // solution must be integral
             sorted[pos] = numbers[i];
         }
         logging << endl;
@@ -144,9 +136,9 @@ namespace ilp_solver
         {
             logging << sorted[i] << " ";
 
-            assert(sorted[i] != INT_MIN);                   // solution must be a permutation
+            BOOST_REQUIRE_NE(sorted[i], INT_MIN);                   // solution must be a permutation
             if (i > 0)
-                assert(sorted[i-1] < sorted[i]);            // solution must sort
+                BOOST_REQUIRE_LT(sorted[i-1], sorted[i]);            // solution must sort
         }
         logging << endl;
 
@@ -233,20 +225,20 @@ namespace ilp_solver
 
         // Check solution status
         const auto optimal = status == SolutionStatus::PROVEN_OPTIMAL;
+        BOOST_REQUIRE(optimal);
         logging << "The solution is " << (optimal ? "" : "not ") << "optimal." << endl;
-        assert(optimal);
 
         // Check correctness of objective
         auto obj_cmp = 0.0;
         for (auto i = 0; i < num_vars; ++i)
             obj_cmp += c[i]*x[i];
-        assert(fabs(obj - obj_cmp) < c_eps);   // objective should fit to the solution
+        BOOST_REQUIRE_LT(fabs(obj - obj_cmp), c_eps);   // objective should fit to the solution
 
         logging << endl;
         logging << "Expected objective: " << obj0 << endl;
         logging << "Resulting objective: " << obj << endl;
 
-        assert(fabs(obj - obj0) < c_eps);      // objective should equal the optimal objective
+        BOOST_REQUIRE_LT(fabs(obj - obj0),  c_eps);      // objective should equal the optimal objective
 
         // Check correctness of solution
         logging << endl << "Constraint values:" << endl;
@@ -258,9 +250,9 @@ namespace ilp_solver
 
             logging << constraint_value << " (must be in [" << b[j] -constraint_shift << "," << b[j] << "), expected " << b[j] << endl;
 
-            assert(constraint_value >= b[j] - constraint_shift - c_eps);  // solution obeys lower bound of the j'th constraint
-            assert(constraint_value <= b[j] + c_eps);                     // solution obeys upper bound of the j'th constraint
-            assert(constraint_value >= b[j] - c_eps);                     // upper bound of the j'th constraint is tight
+            BOOST_REQUIRE_GE(constraint_value, b[j] - constraint_shift - c_eps);  // solution obeys lower bound of the j'th constraint
+            BOOST_REQUIRE_LE(constraint_value, b[j] + c_eps);                     // solution obeys upper bound of the j'th constraint
+            BOOST_REQUIRE_GE(constraint_value, b[j] - c_eps);                     // upper bound of the j'th constraint is tight
         }
 
         logging << endl << "Expected solution: ";
@@ -272,7 +264,7 @@ namespace ilp_solver
         for (auto i = 0; i < num_vars; ++i)
         {
             logging << x[i] << " ";
-            assert(fabs(x[i] - x0[i]) <= c_eps);
+            BOOST_REQUIRE_LT(fabs(x[i] - x0[i]), c_eps);
         }
         logging << endl;
 
@@ -283,6 +275,8 @@ namespace ilp_solver
 
     void test_performance(ILPSolverInterface* p_solver, const string& p_solver_name)
     {
+        std::stringstream logging;
+
         // max x+y, -1 <= x, y <= 1
         p_solver->add_variable_continuous(1, -1, 1);
         p_solver->add_variable_continuous(1, -1, 1);
@@ -311,17 +305,20 @@ namespace ilp_solver
             p_solver->maximize();
             const auto solution = p_solver->get_solution();
 
-            assert(fabs(solution[0] - expected_solution[0]) < c_eps);
-            assert(fabs(solution[1] - expected_solution[1]) < c_eps);
+            BOOST_REQUIRE_LT(fabs(solution[0] - expected_solution[0]), c_eps);
+            BOOST_REQUIRE_LT(fabs(solution[1] - expected_solution[1]), c_eps);
 
             if ((i % one_twentieth) == 0)
-                cout << "*";
+                logging << "*";
         }
         const auto end_time = GetTickCount();
 
-        cout << endl
+        logging << endl
              << endl
              << "Test took " << end_time - start_time << " ms" << endl;
+
+        if (LOGGING)
+            cout << logging.str();
     }
 
 
@@ -351,7 +348,7 @@ namespace ilp_solver
         expected_solution.push_back(0);
         expected_solution.push_back(0);
         expected_solution.push_back(2);
-        auto success = true;
+
         for (auto i = 0; i < 3; ++i)
         {
             p_solver->set_start_solution(expected_solution);
@@ -361,17 +358,15 @@ namespace ilp_solver
                 p_solver->minimize();
             const auto solution = p_solver->get_solution();
 
-            success &= (fabs(solution[0] - expected_solution[0]) < c_eps &&
-                        fabs(solution[1] - expected_solution[1]) < c_eps &&
-                        fabs(solution[2] - expected_solution[2]) < c_eps);
-            assert(success);
+            BOOST_REQUIRE_LT (fabs(solution[0] - expected_solution[0]), c_eps);
+            BOOST_REQUIRE_LT (fabs(solution[1] - expected_solution[1]), c_eps);
+            BOOST_REQUIRE_LT (fabs(solution[2] - expected_solution[2]), c_eps);
 
             // Iterate: (0,0,2) -> (1,1,1) -> (2,2,0)
             expected_solution[0] += 1.0;
             expected_solution[1] += 1.0;
             expected_solution[2] -= 1.0;
         }
-        cout << "Test " << (success ? "succeeded" : "failed") << endl;
     }
 
 
@@ -410,19 +405,12 @@ namespace ilp_solver
         {
             // bad_alloc should be treated as "no solution"
             p_solver->minimize();
-            assert(p_solver->get_status() == SolutionStatus::NO_SOLUTION);
-            assert(p_solver->get_solution().size() == 0);
-
-            if ((p_solver->get_status() == SolutionStatus::NO_SOLUTION) && (p_solver->get_solution().size() == 0))
-                cout << "Test succeeded" << endl;
-            else
-                cout << "Test failed" << endl;
+            BOOST_REQUIRE(p_solver->get_status() == SolutionStatus::NO_SOLUTION);
+            BOOST_REQUIRE_EQUAL (p_solver->get_solution().size(), 0);
         }
         catch (...)
         {
-            assert(false);
-
-            cout << "Test failed" << endl;
+            BOOST_REQUIRE(false);
         }
     }
 }
@@ -478,5 +466,11 @@ BOOST_AUTO_TEST_CASE ( PerformanceCbcStubSolver )
 {
     test_performance (ilp_solver::create_solver_stub("ScaiIlpExe.exe"), "Cbc StubSolver");
 }
+
+BOOST_AUTO_TEST_CASE ( BadAllocCbcStubSolver )
+{
+    test_bad_alloc (ilp_solver::create_solver_stub("ScaiIlpExe.exe"), "Cbc StubSolver");
+}
+
 
 BOOST_AUTO_TEST_SUITE_END();

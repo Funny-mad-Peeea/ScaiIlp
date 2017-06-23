@@ -2,11 +2,11 @@
 
 #include "ilp_solver_factory.hpp"
 
-#include <cassert>
 #include <iostream>
 #include <string>
 
-using std::cout;
+#include <boost/test/unit_test.hpp>
+
 using std::endl;
 using std::string;
 
@@ -14,28 +14,29 @@ namespace ilp_solver
 {
     void test_create_exception()
     {
-        cout << endl
-             << "Exception test" << endl
-             << "==============" << endl
-             << endl;
-
         const auto exception_message = string("This is a test exception.");
         const auto exception = ilp_solver::create_exception();
         try
         {
-            cout << "Throwing the following exception: " << exception_message << endl;
             exception->throw_exception(exception_message);
-
-            cout << "Error: Could not catch the exception." << endl;
             destroy_exception(exception);
-            assert(false);
+            BOOST_REQUIRE(false);
+
         }
         catch (std::exception& e)
         {
             const auto exception_message_2 = string(e.what());
             destroy_exception(exception);
-            cout << "Caught the following exception: " << exception_message_2 << endl;
-            assert(exception_message_2 == exception_message);
+            BOOST_REQUIRE_EQUAL(exception_message_2, exception_message);
         }
     }
 }
+
+BOOST_AUTO_TEST_SUITE( IlpSolverExceptionT );
+
+BOOST_AUTO_TEST_CASE ( Exception )
+{
+    ilp_solver::test_create_exception ();
+}
+
+BOOST_AUTO_TEST_SUITE_END();
