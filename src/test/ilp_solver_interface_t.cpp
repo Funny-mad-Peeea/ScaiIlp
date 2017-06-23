@@ -7,13 +7,6 @@
 #include <cassert>
 #include <iostream>
 
-// BOOST_AUTO_LINK_TAGGED = Namen der Boost-Libraries enthalten NICHT Toolkit und Boost-Version
-#ifndef BOOST_AUTO_LINK_TAGGED
-#define BOOST_AUTO_LINK_TAGGED
-#endif
-
-#define _ITERATOR_DEBUG_LEVEL 0
-
 #include <boost/test/unit_test.hpp>
 
 #define NOMINMAX

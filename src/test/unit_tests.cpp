@@ -11,13 +11,6 @@
 #include "ilp_solver_interface_t.hpp"
 #include "serialization_t.hpp"
 
-// BOOST_AUTO_LINK_TAGGED = Namen der Boost-Libraries enthalten NICHT Toolkit und Boost-Version
-#ifndef BOOST_AUTO_LINK_TAGGED
-#define BOOST_AUTO_LINK_TAGGED
-#endif
-
-#define _ITERATOR_DEBUG_LEVEL 0
-
 #include <boost/test/unit_test.hpp>
 #include <functional>
 #include <string>
