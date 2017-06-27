@@ -418,52 +418,53 @@ BOOST_AUTO_TEST_CASE ( SortingCbcSolver )
 
 BOOST_AUTO_TEST_CASE ( SortingCbcStubSolver )
 {
-    test_sorting (ilp_solver::create_solver_stub("ScaiIlpExe.exe"));
+    execute_test_and_destroy_solver (ilp_solver::create_solver_stub("ScaiIlpExe.exe"), ilp_solver::test_sorting);
 }
 
 BOOST_AUTO_TEST_CASE ( LinProgrCbcSolver )
 {
-    test_linear_programming (ilp_solver::create_solver_cbc());
+    execute_test_and_destroy_solver (ilp_solver::create_solver_cbc(), ilp_solver::test_linear_programming);
 }
 
 BOOST_AUTO_TEST_CASE ( LinProgrCbcStubSolver )
 {
-    test_linear_programming (ilp_solver::create_solver_stub("ScaiIlpExe.exe"));
+    execute_test_and_destroy_solver  (ilp_solver::create_solver_stub("ScaiIlpExe.exe"), ilp_solver::test_linear_programming);
 }
 
 BOOST_AUTO_TEST_CASE ( StartSolutionMinCbcSolver )
 {
-    test_start_solution_minimization (ilp_solver::create_solver_cbc());
+    execute_test_and_destroy_solver  (ilp_solver::create_solver_cbc(), ilp_solver::test_start_solution_minimization);
 }
 
 BOOST_AUTO_TEST_CASE ( StartSolutionMinCbcStubSolver )
 {
-    test_start_solution_minimization (ilp_solver::create_solver_stub("ScaiIlpExe.exe"));
+    execute_test_and_destroy_solver (ilp_solver::create_solver_stub("ScaiIlpExe.exe"), ilp_solver::test_start_solution_minimization);
 }
 
 BOOST_AUTO_TEST_CASE ( StartSolutionMaxCbcSolver )
 {
-    test_start_solution_maximization (ilp_solver::create_solver_cbc());
+    execute_test_and_destroy_solver (ilp_solver::create_solver_cbc(), ilp_solver::test_start_solution_maximization);
 }
 
 BOOST_AUTO_TEST_CASE ( StartSolutionMaxCbcStubSolver )
 {
-    test_start_solution_maximization (ilp_solver::create_solver_stub("ScaiIlpExe.exe"));
+    execute_test_and_destroy_solver (ilp_solver::create_solver_stub("ScaiIlpExe.exe"), ilp_solver::test_start_solution_maximization);
 }
 
 BOOST_AUTO_TEST_CASE ( PerformanceCbcSolver )
 {
-    test_performance (ilp_solver::create_solver_cbc());
+    execute_test_and_destroy_solver (ilp_solver::create_solver_cbc(), ilp_solver::test_performance);
 }
 
 BOOST_AUTO_TEST_CASE ( PerformanceCbcStubSolver )
 {
-    test_performance (ilp_solver::create_solver_stub("ScaiIlpExe.exe"));
+    execute_test_and_destroy_solver (ilp_solver::create_solver_stub("ScaiIlpExe.exe"), ilp_solver::test_performance);
 }
 
+// For stub solver only, will crash by design with CbcSolver
 BOOST_AUTO_TEST_CASE ( BadAllocCbcStubSolver )
 {
-    test_bad_alloc (ilp_solver::create_solver_stub("ScaiIlpExe.exe"));
+    execute_test_and_destroy_solver (ilp_solver::create_solver_stub("ScaiIlpExe.exe"), ilp_solver::test_bad_alloc);
 }
 
 
