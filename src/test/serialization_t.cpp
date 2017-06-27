@@ -1,5 +1,3 @@
-#include "serialization_t.hpp"
-
 #include "serialization.hpp"
 
 #include <iostream>

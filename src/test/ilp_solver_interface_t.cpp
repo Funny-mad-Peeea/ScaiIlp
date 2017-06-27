@@ -1,5 +1,3 @@
-#include "ilp_solver_interface_t.hpp"
-
 #include "ilp_solver_factory.hpp"
 #include "ilp_solver_interface.hpp"
 
