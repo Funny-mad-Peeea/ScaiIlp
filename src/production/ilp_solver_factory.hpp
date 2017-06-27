@@ -1,7 +1,6 @@
 #ifndef _ILP_SOLVER_FACTORY_HPP
 #define _ILP_SOLVER_FACTORY_HPP
 
-#include "ilp_solver_exception.hpp"
 #include "ilp_solver_interface.hpp"
 
 namespace ilp_solver
