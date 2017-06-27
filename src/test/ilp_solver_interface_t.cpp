@@ -23,9 +23,6 @@ const bool LOGGING = false;
 
 namespace ilp_solver
 {
-    /*********************
-    * Internal functions *
-    *********************/
     static int round(double x)
     {
         return (int) (x+0.5);
@@ -38,9 +35,6 @@ namespace ilp_solver
     }
 
 
-    /**********************
-    * Published functions *
-    **********************/
     void execute_test_and_destroy_solver(ILPSolverInterface* p_solver, const string& p_solver_name, std::function<void(ILPSolverInterface*, const string&)> p_test)
     {
         try
@@ -419,7 +413,7 @@ BOOST_AUTO_TEST_SUITE( IlPSolverT );
 
 BOOST_AUTO_TEST_CASE ( SortingCbcSolver )
 {
-    test_sorting (ilp_solver::create_solver_cbc(), "Cbc Solver");
+    execute_test_and_destroy_solver (ilp_solver::create_solver_cbc(), "Cbc Solver", ilp_solver::test_sorting);
 }
 
 BOOST_AUTO_TEST_CASE ( SortingCbcStubSolver )
