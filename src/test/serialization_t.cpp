@@ -248,11 +248,12 @@ static Data deserialize(void* p_address, void** v_result_address)
 
 static void serialize_result(const Result& p_result, void* p_result_address)
 {
-    Serializer(p_result_address) << p_result.vector_3_char
-                                 << p_result.vector_1_int
-                                 << p_result.vector_2_double
-                                 << p_result.value_enum
-                                 << p_result.value_int;
+    Serializer serializer(p_result_address);
+    serializer << p_result.vector_3_char
+               << p_result.vector_1_int
+               << p_result.vector_2_double
+               << p_result.value_enum
+               << p_result.value_int;
 };
 
 
@@ -260,11 +261,12 @@ static Result deserialize_result(void* p_result_address)
 {
     Result result;
 
-    Deserializer(p_result_address) >> result.vector_3_char
-                                   >> result.vector_1_int
-                                   >> result.vector_2_double
-                                   >> result.value_enum
-                                   >> result.value_int;
+    Deserializer deserializer(p_result_address);
+    deserializer >> result.vector_3_char
+                 >> result.vector_1_int
+                 >> result.vector_2_double
+                 >> result.value_enum
+                 >> result.value_int;
 
     return result;
 }
@@ -276,9 +278,9 @@ static void verify_zero(void* p_result_address)
 
     BOOST_REQUIRE_EQUAL(result.value_int              , 0);
     BOOST_REQUIRE      (result.value_enum           ==  Result::Enumeration::ENUM_NO_RESULT);
-    BOOST_REQUIRE_EQUAL(result.vector_1_int.size()    , 0);
-    BOOST_REQUIRE_EQUAL(result.vector_2_double.size() , 0);
-    BOOST_REQUIRE_EQUAL(result.vector_3_char.size()   , 0);
+    BOOST_REQUIRE_EQUAL(result.vector_1_int.size()    , 0u);
+    BOOST_REQUIRE_EQUAL(result.vector_2_double.size() , 0u);
+    BOOST_REQUIRE_EQUAL(result.vector_3_char.size()   , 0u);
 }
 
 

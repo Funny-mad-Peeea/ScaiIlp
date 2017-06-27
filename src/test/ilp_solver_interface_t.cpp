@@ -400,7 +400,7 @@ namespace ilp_solver
             // bad_alloc should be treated as "no solution"
             p_solver->minimize();
             BOOST_REQUIRE(p_solver->get_status() == SolutionStatus::NO_SOLUTION);
-            BOOST_REQUIRE_EQUAL (p_solver->get_solution().size(), 0);
+            BOOST_REQUIRE_EQUAL (p_solver->get_solution().size(), 0u);
         }
         catch (...)
         {

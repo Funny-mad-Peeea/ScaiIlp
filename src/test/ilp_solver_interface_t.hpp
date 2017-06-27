@@ -9,7 +9,7 @@ namespace ilp_solver
     class ILPSolverInterface;
 
     // For stub solver only
-    void test_bad_alloc(ILPSolverInterface* p_solver, const std::string& p_solver_name);
+    void test_bad_alloc(ILPSolverInterface* p_solver);
 }
 
 #endif
