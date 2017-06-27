@@ -35,11 +35,11 @@ namespace ilp_solver
     }
 
 
-    void execute_test_and_destroy_solver(ILPSolverInterface* p_solver, const string& p_solver_name, std::function<void(ILPSolverInterface*, const string&)> p_test)
+    void execute_test_and_destroy_solver(ILPSolverInterface* p_solver, std::function<void(ILPSolverInterface*)> p_test)
     {
         try
         {
-            p_test(p_solver, p_solver_name);
+            p_test(p_solver);
         }
         catch (...)
         {
@@ -50,7 +50,7 @@ namespace ilp_solver
     }
 
 
-    void test_sorting(ILPSolverInterface* p_solver, const string& p_solver_name)
+    void test_sorting(ILPSolverInterface* p_solver)
     {
         std::stringstream logging;
 
@@ -140,7 +140,7 @@ namespace ilp_solver
             cout << logging.str();
     }
 
-    void test_linear_programming(ILPSolverInterface* p_solver, const string& p_solver_name)
+    void test_linear_programming(ILPSolverInterface* p_solver)
     {
         std::stringstream logging;
 
@@ -267,7 +267,7 @@ namespace ilp_solver
     }
 
 
-    void test_performance(ILPSolverInterface* p_solver, const string& p_solver_name)
+    void test_performance(ILPSolverInterface* p_solver)
     {
         std::stringstream logging;
 
@@ -316,7 +316,7 @@ namespace ilp_solver
     }
 
 
-    void test_start_solution(ILPSolverInterface* p_solver, const string& p_solver_name, double p_sense)
+    void test_start_solution(ILPSolverInterface* p_solver, double p_sense)
     {
         // max x+y+2z (<=> min -(x+y+2z)), 0 <= x, y, z <= 2
         p_solver->add_variable_integer(1*p_sense, 0, 2);
@@ -364,19 +364,19 @@ namespace ilp_solver
     }
 
 
-    void test_start_solution_minimization(ILPSolverInterface* p_solver, const string& p_solver_name)
+    void test_start_solution_minimization(ILPSolverInterface* p_solver)
     {
-        test_start_solution(p_solver, p_solver_name, -1.0);
+        test_start_solution(p_solver, -1.0);
     }
 
 
-    void test_start_solution_maximization(ILPSolverInterface* p_solver, const string& p_solver_name)
+    void test_start_solution_maximization(ILPSolverInterface* p_solver)
     {
-        test_start_solution(p_solver, p_solver_name, 1.0);
+        test_start_solution(p_solver, 1.0);
     }
 
 
-    void test_bad_alloc(ILPSolverInterface* p_solver, const string& p_solver_name)
+    void test_bad_alloc(ILPSolverInterface* p_solver)
     {
         srand(3);
 
@@ -413,57 +413,57 @@ BOOST_AUTO_TEST_SUITE( IlPSolverT );
 
 BOOST_AUTO_TEST_CASE ( SortingCbcSolver )
 {
-    execute_test_and_destroy_solver (ilp_solver::create_solver_cbc(), "Cbc Solver", ilp_solver::test_sorting);
+    execute_test_and_destroy_solver (ilp_solver::create_solver_cbc(), ilp_solver::test_sorting);
 }
 
 BOOST_AUTO_TEST_CASE ( SortingCbcStubSolver )
 {
-    test_sorting (ilp_solver::create_solver_stub("ScaiIlpExe.exe"), "Cbc StubSolver");
+    test_sorting (ilp_solver::create_solver_stub("ScaiIlpExe.exe"));
 }
 
 BOOST_AUTO_TEST_CASE ( LinProgrCbcSolver )
 {
-    test_linear_programming (ilp_solver::create_solver_cbc(), "Cbc Solver");
+    test_linear_programming (ilp_solver::create_solver_cbc());
 }
 
 BOOST_AUTO_TEST_CASE ( LinProgrCbcStubSolver )
 {
-    test_linear_programming (ilp_solver::create_solver_stub("ScaiIlpExe.exe"), "Cbc StubSolver");
+    test_linear_programming (ilp_solver::create_solver_stub("ScaiIlpExe.exe"));
 }
 
 BOOST_AUTO_TEST_CASE ( StartSolutionMinCbcSolver )
 {
-    test_start_solution_minimization (ilp_solver::create_solver_cbc(), "Cbc Solver");
+    test_start_solution_minimization (ilp_solver::create_solver_cbc());
 }
 
 BOOST_AUTO_TEST_CASE ( StartSolutionMinCbcStubSolver )
 {
-    test_start_solution_minimization (ilp_solver::create_solver_stub("ScaiIlpExe.exe"), "Cbc StubSolver");
+    test_start_solution_minimization (ilp_solver::create_solver_stub("ScaiIlpExe.exe"));
 }
 
 BOOST_AUTO_TEST_CASE ( StartSolutionMaxCbcSolver )
 {
-    test_start_solution_maximization (ilp_solver::create_solver_cbc(), "Cbc Solver");
+    test_start_solution_maximization (ilp_solver::create_solver_cbc());
 }
 
 BOOST_AUTO_TEST_CASE ( StartSolutionMaxCbcStubSolver )
 {
-    test_start_solution_maximization (ilp_solver::create_solver_stub("ScaiIlpExe.exe"), "Cbc StubSolver");
+    test_start_solution_maximization (ilp_solver::create_solver_stub("ScaiIlpExe.exe"));
 }
 
 BOOST_AUTO_TEST_CASE ( PerformanceCbcSolver )
 {
-    test_performance (ilp_solver::create_solver_cbc(), "Cbc Solver");
+    test_performance (ilp_solver::create_solver_cbc());
 }
 
 BOOST_AUTO_TEST_CASE ( PerformanceCbcStubSolver )
 {
-    test_performance (ilp_solver::create_solver_stub("ScaiIlpExe.exe"), "Cbc StubSolver");
+    test_performance (ilp_solver::create_solver_stub("ScaiIlpExe.exe"));
 }
 
 BOOST_AUTO_TEST_CASE ( BadAllocCbcStubSolver )
 {
-    test_bad_alloc (ilp_solver::create_solver_stub("ScaiIlpExe.exe"), "Cbc StubSolver");
+    test_bad_alloc (ilp_solver::create_solver_stub("ScaiIlpExe.exe"));
 }
 
 
