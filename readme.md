@@ -205,11 +205,16 @@ A: If you don't experience solver crashes, you can avoid some overhead by using 
 
 3. Specify the location of Cbc by setting the environment variable CBC_DIR.
 
-4. Specify the location of Boost by setting the environment variable BOOST_DIR. Note that the
+4. If you want to support multithreading,
+   specify the location of pthread by setting the environment variable PTHREAD_DIR,
+   whereby PTHREAD_DIR has to contain the folder "Release", "Debug", "x64_Release" and "x64_Debug",
+   each containing the appropriate version of pthread.dll. Otherwise proceed with step 5.
+
+5. Specify the location of Boost by setting the environment variable BOOST_DIR. Note that the
 include files must be located in $(BOOST_DIR)\include and the lib files must be located in
 $(BOOST_DIR)\lib.
 
-5. Build ScaiIlpDll, ScaiIlpExe, and UnitTest.
+6. Build ScaiIlpDll, ScaiIlpExe, and UnitTest.
 
 
 3 Code Structure
