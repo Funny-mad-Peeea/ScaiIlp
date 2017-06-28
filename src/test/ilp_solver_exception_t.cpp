@@ -18,7 +18,7 @@ namespace ilp_solver
         {
             exception->throw_exception(exception_message);
             destroy_exception(exception);
-            BOOST_REQUIRE(false);
+            BOOST_FAIL("Failed to throw created test exception.");
 
         }
         catch (std::exception& e)

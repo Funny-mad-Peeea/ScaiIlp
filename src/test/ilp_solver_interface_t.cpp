@@ -106,7 +106,7 @@ namespace ilp_solver
 
         // Check correctness of objective
         const auto expected_obj_value = num_vars*(num_vars-1)/2;
-        BOOST_REQUIRE_LT(fabs(obj_value - expected_obj_value), c_eps);  // objective should be 0+1+...+(num_numbers-1)
+        BOOST_REQUIRE_CLOSE(obj_value, expected_obj_value, c_eps);  // objective should be 0+1+...+(num_numbers-1)
 
         // Check correctness of solution
         auto sorted = vector<int>(num_vars, INT_MIN);       // sort according solution
@@ -118,7 +118,7 @@ namespace ilp_solver
 
             logging << pos << " ";
 
-            BOOST_REQUIRE_LT(fabs(pos - permutation[i]), c_eps);    // solution must be integral
+            BOOST_REQUIRE_CLOSE(pos, permutation[i], c_eps);    // solution must be integral
             sorted[pos] = numbers[i];
         }
         logging << endl;
@@ -224,13 +224,13 @@ namespace ilp_solver
         auto obj_cmp = 0.0;
         for (auto i = 0; i < num_vars; ++i)
             obj_cmp += c[i]*x[i];
-        BOOST_REQUIRE_LT(fabs(obj - obj_cmp), c_eps);   // objective should fit to the solution
+        BOOST_REQUIRE_CLOSE(obj, obj_cmp, c_eps);   // objective should fit to the solution
 
         logging << endl;
         logging << "Expected objective: " << obj0 << endl;
         logging << "Resulting objective: " << obj << endl;
 
-        BOOST_REQUIRE_LT(fabs(obj - obj0),  c_eps);      // objective should equal the optimal objective
+        BOOST_REQUIRE_CLOSE(obj, obj0,  c_eps);      // objective should equal the optimal objective
 
         // Check correctness of solution
         logging << endl << "Constraint values:" << endl;
@@ -256,7 +256,7 @@ namespace ilp_solver
         for (auto i = 0; i < num_vars; ++i)
         {
             logging << x[i] << " ";
-            BOOST_REQUIRE_LT(fabs(x[i] - x0[i]), c_eps);
+            BOOST_REQUIRE_CLOSE(x[i], x0[i], c_eps);
         }
         logging << endl;
 
@@ -297,8 +297,8 @@ namespace ilp_solver
             p_solver->maximize();
             const auto solution = p_solver->get_solution();
 
-            BOOST_REQUIRE_LT(fabs(solution[0] - expected_solution[0]), c_eps);
-            BOOST_REQUIRE_LT(fabs(solution[1] - expected_solution[1]), c_eps);
+            BOOST_REQUIRE_CLOSE(solution[0], expected_solution[0], c_eps);
+            BOOST_REQUIRE_CLOSE(solution[1], expected_solution[1], c_eps);
 
             if ((i % one_twentieth) == 0)
                 logging << "*";
@@ -350,9 +350,9 @@ namespace ilp_solver
                 p_solver->minimize();
             const auto solution = p_solver->get_solution();
 
-            BOOST_REQUIRE_LT (fabs(solution[0] - expected_solution[0]), c_eps);
-            BOOST_REQUIRE_LT (fabs(solution[1] - expected_solution[1]), c_eps);
-            BOOST_REQUIRE_LT (fabs(solution[2] - expected_solution[2]), c_eps);
+            BOOST_REQUIRE_CLOSE (solution[0], expected_solution[0], c_eps);
+            BOOST_REQUIRE_CLOSE (solution[1], expected_solution[1], c_eps);
+            BOOST_REQUIRE_CLOSE (solution[2], expected_solution[2], c_eps);
 
             // Iterate: (0,0,2) -> (1,1,1) -> (2,2,0)
             expected_solution[0] += 1.0;
@@ -402,7 +402,7 @@ namespace ilp_solver
         }
         catch (...)
         {
-            BOOST_REQUIRE(false);
+            BOOST_FAIL("Bad alloc test failed (threw exception instead of treating as >>no solution<<.");
         }
     }
 }
