@@ -18,4 +18,12 @@ enum class SolverExitCode
     forced_termination
 };
 
+
+class SolverExeException : public std::runtime_error
+{
+public:
+    SolverExeException (const std::string& p_what) : std::runtime_error(p_what) {};
+};
+
+
 #endif
