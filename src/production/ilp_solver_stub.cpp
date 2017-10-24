@@ -158,11 +158,11 @@ namespace ilp_solver
         case SolverExitCode::ok:
             return "";
         case SolverExitCode::uncaught_exception_1:
-            return "Uncaught exception (maybe out of memory).";
+            return "Uncaught exception, likely out of memory (stack buffer overflow Windows 7).";
         case SolverExitCode::uncaught_exception_2:
             return "Uncaught exception, likely out of memory (C++ exception).";
         case SolverExitCode::uncaught_exception_3:
-            return "Uncaught exception, likely out of memory / stack buffer overflow.";
+            return "Uncaught exception, likely out of memory (stack buffer overflow Windows 10).";
         case SolverExitCode::out_of_memory:
             return "Out of memory.";
         case SolverExitCode::command_line_error:
