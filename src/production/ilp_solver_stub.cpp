@@ -202,7 +202,7 @@ namespace ilp_solver
         if (exit_code_should_be_ignored_silently(p_exit_code))
         {
             if (p_log_level)
-                std::cout << exit_code_to_message(p_exit_code);
+                std::cout << exit_code_to_message(p_exit_code) << " Exit Code:" << static_cast<int>(p_exit_code);
         }
         else
             throw std::exception(("External ILP solver: " + exit_code_to_message(p_exit_code)).c_str());
