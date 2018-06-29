@@ -94,7 +94,6 @@
       <WarningLevel>Level4</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>BOOST_AUTO_LINK_TAGGED;_ITERATOR_DEBUG_LEVEL=0;WIN32;_DEBUG;_WINDOWS;_USRDLL;ILPSOLVERDLL_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <SDLCheck>true</SDLCheck>
       <AdditionalIncludeDirectories>$(BOOST_DIR)\include;$(CBC_DIR)\Clp\src;$(CBC_DIR)\Osi\src\Osi;$(CBC_DIR)\CoinUtils\src;$(CBC_DIR)\Clp\src\OsiClp;$(CBC_DIR)\Cbc\src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <MinimalRebuild>false</MinimalRebuild>
@@ -114,7 +113,6 @@
       <WarningLevel>Level4</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>BOOST_AUTO_LINK_TAGGED;_ITERATOR_DEBUG_LEVEL=0;WIN32;_DEBUG;_WINDOWS;_USRDLL;ILPSOLVERDLL_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <SDLCheck>true</SDLCheck>
       <AdditionalIncludeDirectories>$(BOOST_DIR)\include;$(CBC_DIR)\Clp\src;$(CBC_DIR)\Osi\src\Osi;$(CBC_DIR)\CoinUtils\src;$(CBC_DIR)\Clp\src\OsiClp;$(CBC_DIR)\Cbc\src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <MinimalRebuild>false</MinimalRebuild>
@@ -136,7 +134,6 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>BOOST_AUTO_LINK_TAGGED;_ITERATOR_DEBUG_LEVEL=0;WIN32;NDEBUG;_WINDOWS;_USRDLL;ILPSOLVERDLL_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <SDLCheck>true</SDLCheck>
       <AdditionalIncludeDirectories>$(BOOST_DIR)\include;$(CBC_DIR)\Clp\src;$(CBC_DIR)\Osi\src\Osi;$(CBC_DIR)\CoinUtils\src;$(CBC_DIR)\Clp\src\OsiClp;$(CBC_DIR)\Cbc\src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <DisableSpecificWarnings>4127</DisableSpecificWarnings>
@@ -159,7 +156,6 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>BOOST_AUTO_LINK_TAGGED;_ITERATOR_DEBUG_LEVEL=0;WIN32;NDEBUG;_WINDOWS;_USRDLL;ILPSOLVERDLL_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <SDLCheck>true</SDLCheck>
       <AdditionalIncludeDirectories>$(BOOST_DIR)\include;$(CBC_DIR)\Clp\src;$(CBC_DIR)\Osi\src\Osi;$(CBC_DIR)\CoinUtils\src;$(CBC_DIR)\Clp\src\OsiClp;$(CBC_DIR)\Cbc\src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <DisableSpecificWarnings>4127</DisableSpecificWarnings>
