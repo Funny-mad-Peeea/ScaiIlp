@@ -173,7 +173,7 @@
     <ClCompile Include="..\..\src\test\unit_tests.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <CustomBuild Include="$(PTHREAD_DIR)\Debug\pthread.dll">
+    <CustomBuild Include="$(PTHREAD_DIR)\$(Platform)-$(PlatformToolset)-$(Configuration)\pthread.dll">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
@@ -185,7 +185,7 @@
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(OutDir)\%(Filename)%(Extension)</Outputs>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(OutDir)\%(Filename)%(Extension)</Outputs>
     </CustomBuild>
-    <CustomBuild Include="$(PTHREAD_DIR)\Release\pthread.dll">
+    <CustomBuild Include="$(PTHREAD_DIR)\$(Platform)-$(PlatformToolset)-$(Configuration)\pthread.dll">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
@@ -199,7 +199,7 @@
     </CustomBuild>
   </ItemGroup>
   <ItemGroup>
-    <CustomBuild Include="$(PTHREAD_DIR)\x64_Debug\pthread.dll">
+    <CustomBuild Include="$(PTHREAD_DIR)\$(Platform)-$(PlatformToolset)-$(Configuration)\pthread.dll">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
@@ -211,7 +211,7 @@
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(OutDir)\%(Filename)%(Extension)</Outputs>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(OutDir)\%(Filename)%(Extension)</Outputs>
     </CustomBuild>
-    <CustomBuild Include="$(PTHREAD_DIR)\x64_Release\pthread.dll">
+    <CustomBuild Include="$(PTHREAD_DIR)\$(Platform)-$(PlatformToolset)-$(Configuration)\pthread.dll">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>

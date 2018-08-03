@@ -49,24 +49,21 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <CustomBuild Include="$(PTHREAD_DIR)\Debug\pthread.dll" />
-    <CustomBuild Include="$(PTHREAD_DIR)\Release\pthread.dll" />
-    <CustomBuild Include="$(PTHREAD_DIR)\x64_Debug\pthread.dll" />
-    <CustomBuild Include="$(PTHREAD_DIR)\x64_Release\pthread.dll" />
+    <CustomBuild Include="$(PTHREAD_DIR)\$(Platform)-$(PlatformToolset)-$(Configuration)\pthread.dll" />
   </ItemGroup>
   <ItemGroup>
-    <CustomBuild Include="$(PTHREAD_DIR)\Release\pthread.dll">
+    <CustomBuild Include="$(PTHREAD_DIR)\$(Platform)-$(PlatformToolset)-$(Configuration)\pthread.dll">
       <Filter>binaries\Release</Filter>
     </CustomBuild>
-    <CustomBuild Include="$(PTHREAD_DIR)\Debug\pthread.dll">
+    <CustomBuild Include="$(PTHREAD_DIR)\$(Platform)-$(PlatformToolset)-$(Configuration)\pthread.dll">
       <Filter>binaries\Debug</Filter>
     </CustomBuild>
   </ItemGroup>
   <ItemGroup>
-    <CustomBuild Include="$(PTHREAD_DIR)\x64_Release\pthread.dll">
+    <CustomBuild Include="$(PTHREAD_DIR)\$(Platform)-$(PlatformToolset)-$(Configuration)\pthread.dll">
       <Filter>binaries\x64_Release</Filter>
     </CustomBuild>
-    <CustomBuild Include="$(PTHREAD_DIR)\x64_Debug\pthread.dll">
+    <CustomBuild Include="$(PTHREAD_DIR)\$(Platform)-$(PlatformToolset)-$(Configuration)\pthread.dll">
       <Filter>binaries\x64_Debug</Filter>
     </CustomBuild>
   </ItemGroup>
