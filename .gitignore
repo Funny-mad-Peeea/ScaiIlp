@@ -16,7 +16,4 @@ vc/UnitTest/Release/*
 vc/UnitTest/x64_Debug/*
 vc/UnitTest/x64_Release/*
 vc/.vs/*
-*.sdf
-*.opensdf
-*.suo
 *.aps
