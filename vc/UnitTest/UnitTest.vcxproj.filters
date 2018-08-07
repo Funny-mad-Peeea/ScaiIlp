@@ -44,9 +44,6 @@
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="$(PTHREAD_DIR)\$(Platform)-$(PlatformToolset)-$(Configuration)\pthread.dll">
-      <Filter>binaries\$(Platform)-$(PlatformToolset)-$(Configuration)</Filter>
-    </CustomBuild>
-    <CustomBuild Include="$(PTHREAD_DIR)\$(Platform)-$(PlatformToolset)-$(Configuration)\pthread.dll">
       <Filter>binaries</Filter>
     </CustomBuild>
   </ItemGroup>
