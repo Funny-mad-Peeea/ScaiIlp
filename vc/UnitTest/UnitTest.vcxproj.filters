@@ -53,18 +53,7 @@
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="$(PTHREAD_DIR)\$(Platform)-$(PlatformToolset)-$(Configuration)\pthread.dll">
-      <Filter>binaries\Release</Filter>
-    </CustomBuild>
-    <CustomBuild Include="$(PTHREAD_DIR)\$(Platform)-$(PlatformToolset)-$(Configuration)\pthread.dll">
-      <Filter>binaries\Debug</Filter>
-    </CustomBuild>
-  </ItemGroup>
-  <ItemGroup>
-    <CustomBuild Include="$(PTHREAD_DIR)\$(Platform)-$(PlatformToolset)-$(Configuration)\pthread.dll">
-      <Filter>binaries\x64_Release</Filter>
-    </CustomBuild>
-    <CustomBuild Include="$(PTHREAD_DIR)\$(Platform)-$(PlatformToolset)-$(Configuration)\pthread.dll">
-      <Filter>binaries\x64_Debug</Filter>
+      <Filter>binaries\$(Platform)-$(PlatformToolset)-$(Configuration)</Filter>
     </CustomBuild>
   </ItemGroup>
 </Project>
