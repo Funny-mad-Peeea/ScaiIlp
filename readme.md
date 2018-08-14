@@ -202,7 +202,9 @@ A: If you don't experience solver crashes, you can avoid some overhead by using 
 
 1. Ensure that you have built Cbc as described above.
 
-2. Ensure that you have built Boost.
+2. Ensure that you have built Boost. When building Boost, you need to set the parameters
+   define=_ITERATOR_DEBUG_LEVEL=0
+   define=BOOST_TEST_NO_MAIN
 
 3. Specify the location of Cbc by setting the environment variable CBC_DIR.
 
