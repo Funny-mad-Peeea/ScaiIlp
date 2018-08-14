@@ -203,14 +203,14 @@ A: If you don't experience solver crashes, you can avoid some overhead by using 
 1. Ensure that you have built Cbc as described above.
 
 2. Ensure that you have built Boost. When building Boost, you need to set the parameters
-   define=_ITERATOR_DEBUG_LEVEL=0
-   define=BOOST_TEST_NO_MAIN
+    * "define=_ITERATOR_DEBUG_LEVEL=0" (without double quotes)
+    * "define=BOOST_TEST_NO_MAIN"      (without double quotes)
 
 3. Specify the location of Cbc by setting the environment variable CBC_DIR.
 
 4. If you want to support multithreading,
    specify the location of pthread by setting the environment variable PTHREAD_DIR,
-   whereby PTHREAD_DIR has to contain the folder "Release", "Debug", "x64_Release" and "x64_Debug",
+   whereby PTHREAD_DIR has to contain the folders "Win32-v141-Release", "Win32-v141-Debug", "x64-v141-Release" and "x64-v141-Debug",
    each containing the appropriate version of pthread.dll. Otherwise proceed with step 5.
 
 5. Specify the location of Boost by setting the environment variable BOOST_DIR. Note that the
