@@ -3,8 +3,11 @@
 
 #include "ilp_solver_osi_model.hpp"
 
+#pragma warning(push)
+#pragma warning(disable : 5033) // silence warning in CBC concerning the deprecated keyword 'register'
 #include "CbcModel.hpp"
 #include "OsiClpSolverInterface.hpp"
+#pragma warning(pop)
 
 class OsiSolverInterface;
 

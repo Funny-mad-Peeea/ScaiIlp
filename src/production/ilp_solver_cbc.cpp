@@ -1,7 +1,11 @@
 #include "ilp_solver_cbc.hpp"
 
+#pragma warning(push)
+#pragma warning(disable : 5033) // silence warning in CBC concerning the deprecated keyword 'register'
 #include "CoinMessageHandler.hpp"
 #include "OsiSolverInterface.hpp"
+#pragma warning(pop)
+
 
 namespace ilp_solver
 {

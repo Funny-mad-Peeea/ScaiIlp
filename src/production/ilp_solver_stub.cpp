@@ -21,11 +21,14 @@ using std::wstring;
 
 namespace ilp_solver
 {
+#pragma warning(push)
+#pragma warning(disable : 4996) // silence C++17 conformance warning
     static wstring utf8_to_utf16(const string& p_utf8_string)
     {
         std::wstring_convert<std::codecvt_utf8_utf16<wchar_t>> converter;
         return converter.from_bytes(p_utf8_string);
     }
+#pragma warning(pop)
 
 
     static wstring quote(const wstring& p_string)

@@ -19,11 +19,14 @@ class SolverException : public std::exception {};
 using ilp_solver::ILPSolverInterface;
 
 
+#pragma warning(push)
+#pragma warning(disable : 4996) // silence C++17 conformance warning
 static std::string utf16_to_utf8(const std::wstring &p_utf16_string)
 {
     std::wstring_convert<std::codecvt_utf8_utf16<wchar_t>> convert;
     return convert.to_bytes(p_utf16_string);
 }
+#pragma warning(pop)
 
 
 static void add_variables(ILPSolverInterface* v_solver, const ILPData& p_data)
