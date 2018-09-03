@@ -15,9 +15,9 @@ using std::vector;
 
 // States whether consecutive elements of each column are contiguous in memory.
 // (If not, consecutive elements of each row are contiguous in memory.)
-const auto c_column_ordered = false;
+constexpr auto c_column_ordered = false;
 
-const auto c_test_for_duplicate_index = false;
+constexpr auto c_test_for_duplicate_index = false;
 
 namespace ilp_solver
 {

@@ -12,8 +12,8 @@
 #define NOMINMAX
 #include <windows.h>    // for GetModuleFileNameW, CreateProcessW etc.
 
-const auto c_file_separator = L"\\";
-const auto c_max_path_length = 1 << 16;
+constexpr auto c_file_separator = L"\\";
+constexpr auto c_max_path_length = 1 << 16;
 
 using std::string;
 using std::wstring;

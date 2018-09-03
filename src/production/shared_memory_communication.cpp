@@ -5,8 +5,8 @@
 
 using namespace boost::interprocess;
 
-static const auto c_shared_memory_base_name = "ScaiIlpSolver";
-static const auto c_num_shared_memory_name_trials = 10000;
+constexpr auto c_shared_memory_base_name = "ScaiIlpSolver";
+constexpr auto c_num_shared_memory_name_trials = 10000;
 
 namespace ilp_solver
 {
