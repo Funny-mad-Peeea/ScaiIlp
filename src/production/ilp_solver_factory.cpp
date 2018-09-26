@@ -1,10 +1,16 @@
 #include "ilp_solver_factory.hpp"
 
+#include "ilp_solver_scip.hpp"
 #include "ilp_solver_cbc.hpp"
 #include "ilp_solver_stub.hpp"
 
 namespace ilp_solver
 {
+    extern "C" ILPSolverInterface* __stdcall create_solver_scip()
+    {
+        return new ILPSolverSCIP();
+    }
+
     extern "C" ILPSolverInterface* __stdcall create_solver_cbc()
     {
 #if WITH_CBC == 1

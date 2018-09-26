@@ -1,14 +1,18 @@
 #pragma once
 
-#if 0
-
 #include "ilp_solver_interface.hpp"
+
 
 namespace ilp_solver
 {
-    class SCIP;
-    class SCIP_CONS;
-    class SCIP_VAR;
+    struct  Scip;
+    typedef Scip SCIP;
+    struct  SCIP_Cons;
+    typedef SCIP_Cons SCIP_CONS;
+    struct  SCIP_Var;
+    typedef SCIP_Var SCIP_VAR;
+    enum    SCIP_Vartype : int;
+    typedef SCIP_Vartype SCIP_VARTYPE;
 
     class ILPSolverSCIP : public ILPSolverInterface
     {
@@ -61,9 +65,7 @@ namespace ilp_solver
         std::vector<SCIP_CONS*>   d_rows;
         std::vector<SCIP_VAR*>    d_cols;
 
-        void add_variable(const std::vector<int>* p_row_indices, const std::vector<double>* p_row_values, double p_lower_bound, double p_upper_bound, double p_objective, int p_type, const std::string& p_name);
+        void add_variable(const std::vector<int>* p_row_indices, const std::vector<double>* p_row_values, double p_lower_bound, double p_upper_bound, double p_objective, SCIP_VARTYPE p_type, const std::string& p_name);
         void add_constraint_intern(const std::vector<int>* p_col_indices, const std::vector<double>& p_col_values, double p_lhs, double p_rhs, const std::string& p_name);
     };
 }
-
-#endif
