@@ -1,3 +1,5 @@
+#if WITH_CBC == 1
+
 #ifndef _ILP_SOLVER_OSI_HPP
 #define _ILP_SOLVER_OSI_HPP
 
@@ -25,5 +27,7 @@ namespace ilp_solver
             SolutionStatus            do_get_status    () const override;
     };
 }
+
+#endif
 
 #endif

@@ -1,7 +1,14 @@
+#if WITH_CBC == 1
+
 #include "ilp_solver_osi_model.hpp"
 
 #include "CoinPackedVector.hpp"
+
+
+#pragma warning(push)
+#pragma warning(disable : 4309) // silence warning in CBC concerning truncations of constant values in 64 bit.
 #include "OsiSolverInterface.hpp"
+#pragma warning(pop)
 
 #include <cassert>
 
@@ -126,3 +133,5 @@ namespace ilp_solver
         ilp_solver->setHintParam(OsiDoReducePrint, 1);
     }
 }
+
+#endif

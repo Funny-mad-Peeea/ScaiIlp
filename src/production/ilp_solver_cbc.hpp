@@ -1,10 +1,21 @@
+#if WITH_CBC == 1
+
 #ifndef _ILP_SOLVER_CBC_HPP
 #define _ILP_SOLVER_CBC_HPP
+
+
+#pragma comment(lib, "libCbc.lib")
+#pragma comment(lib, "libCoinUtils.lib")
+#pragma comment(lib, "libClp.lib")
+#pragma comment(lib, "libOsi.lib")
+#pragma comment(lib, "libOsiClp.lib")
+#pragma comment(lib, "libCgl.lib")
 
 #include "ilp_solver_osi_model.hpp"
 
 #pragma warning(push)
 #pragma warning(disable : 5033) // silence warning in CBC concerning the deprecated keyword 'register'
+#pragma warning(disable : 4309) // silence warning in CBC concerning truncations of constant values in 64 bit.
 #include "CbcModel.hpp"
 #include "OsiClpSolverInterface.hpp"
 #pragma warning(pop)
@@ -29,5 +40,7 @@ namespace ilp_solver
             SolutionStatus            do_get_status    () const override;
     };
 }
+
+#endif
 
 #endif

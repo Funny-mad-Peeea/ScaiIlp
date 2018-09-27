@@ -1,3 +1,5 @@
+#if WITH_CBC == 1
+
 #include "ilp_solver_cbc.hpp"
 
 #pragma warning(push)
@@ -60,3 +62,5 @@ namespace ilp_solver
                                                  : SolutionStatus::SUBOPTIMAL);
     }
 }
+
+#endif

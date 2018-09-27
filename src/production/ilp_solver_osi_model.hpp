@@ -1,3 +1,5 @@
+#if WITH_CBC == 1
+
 #ifndef _ILP_SOLVER_OSI_MODEL_HPP
 #define _ILP_SOLVER_OSI_MODEL_HPP
 
@@ -42,5 +44,7 @@ namespace ilp_solver
             void prepare();
     };
 }
+
+#endif
 
 #endif
