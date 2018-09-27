@@ -5,6 +5,7 @@
 
 namespace ilp_solver
 {
+    // Necessary forward declarations of structs and typedefs.
     struct  Scip;
     typedef Scip SCIP;
     struct  SCIP_Cons;
@@ -51,10 +52,10 @@ namespace ilp_solver
         double                    get_objective() const override;
         SolutionStatus            get_status()    const override;
 
-        void set_num_threads(int p_num_threads)    override;
+        void set_num_threads(int p_num_threads)           override;
         void set_deterministic_mode(bool p_deterministic) override;
-        void set_log_level(int p_level)          override;
-        void set_max_seconds(double p_seconds)     override;
+        void set_log_level(int p_level)                   override;
+        void set_max_seconds(double p_seconds)            override;
 
 
         ILPSolverSCIP();

@@ -1,6 +1,5 @@
 #include <cassert>
 #include "ilp_solver_scip.hpp"
-#include <iostream>
 
 namespace ilp_solver
 {
@@ -100,6 +99,7 @@ namespace ilp_solver
     void ILPSolverSCIP::set_start_solution(const std::vector<double>& p_solution)
     {
         assert(p_solution.size() >= d_cols.size());
+
         SCIP_SOL* sol;
         SCIP_Bool ignored{false};
         SCIP_call_exec(SCIPcreateSol, d_scip, &sol, nullptr);
@@ -125,24 +125,35 @@ namespace ilp_solver
 
     const std::vector<double> ILPSolverSCIP::get_solution()  const
     {
+        assert( get_status() == SolutionStatus::SUBOPTIMAL || get_status() == SolutionStatus::PROVEN_OPTIMAL );
+
         std::vector<double> res;
         res.reserve(d_cols.size());
+
+        // Obtain the best solution value for each variable in the current best solution.
         auto sol = SCIPgetBestSol(d_scip);
         for (auto& s : d_cols)
             res.push_back(SCIPgetSolVal(d_scip, sol, s));
+
         return res;
     }
     double ILPSolverSCIP::get_objective() const
     {
+        // The current primal bound is the best objective value attained.
         double val = SCIPgetPrimalbound(d_scip);
+
+        // Handle infinity cases.
         if (val ==  SCIPinfinity(d_scip)) return std::numeric_limits<double>::max();
         if (val == -SCIPinfinity(d_scip)) return std::numeric_limits<double>::min();
+
         return val;
     }
     SolutionStatus ILPSolverSCIP::get_status() const
     {
         auto n = SCIPgetNSolsFound(d_scip);
         SolutionStatus ret = (n > 0) ? SolutionStatus::SUBOPTIMAL : SolutionStatus::NO_SOLUTION;
+
+        // Handle all possible status values. Almost all will be reduced to SUBOPTIMAL or NO_SOLUTION.
         switch (SCIPgetStatus(d_scip))
         {
             case SCIP_STATUS_OPTIMAL:    return SolutionStatus::PROVEN_OPTIMAL;
@@ -175,8 +186,8 @@ namespace ilp_solver
     }
     void ILPSolverSCIP::set_log_level(int p_level)
     {
-        p_level = (p_level < 0) ? 0 : p_level;
-        p_level = (p_level > 5) ? 5 : p_level;
+        p_level = (p_level < 0) ? 0 : p_level; // Minimum level for verbosity is 0.
+        p_level = (p_level > 5) ? 5 : p_level; // Maximum level for verbosity is 5.
         SCIP_call_exec(SCIPsetIntParam, d_scip, "display/verblevel", p_level);
     }
     void ILPSolverSCIP::set_max_seconds(double p_seconds)
@@ -190,40 +201,50 @@ namespace ilp_solver
         SCIP_call_exec(SCIPcreate, &d_scip);
         SCIP_call_exec(SCIPincludeDefaultPlugins, d_scip);
 
+        // All the nullptr's are possible User-data.
         SCIP_call_exec(SCIPcreateProb, d_scip, "problem", nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr);
         SCIP_call_exec(SCIPsetObjsense, d_scip, SCIP_OBJSENSE_MINIMIZE);
     }
 
     ILPSolverSCIP::~ILPSolverSCIP()
     {
-         for(auto& p : d_cols) SCIP_call_exec(SCIPreleaseVar, d_scip, &p);
-         for(auto& p : d_rows) SCIP_call_exec(SCIPreleaseCons, d_scip, &p);
-         SCIP_call_exec(SCIPfree, &d_scip);
+        // Variables and Constraints need to be released separately.
+        for(auto& p : d_cols)
+            SCIP_call_exec(SCIPreleaseVar, d_scip, &p);
+        for(auto& p : d_rows)
+            SCIP_call_exec(SCIPreleaseCons, d_scip, &p);
+        SCIP_call_exec(SCIPfree, &d_scip);
     }
 
     void ILPSolverSCIP::add_variable(const std::vector<int>* p_row_indices, const std::vector<double>* p_row_values, double p_lower_bound, double p_upper_bound, double p_objective, SCIP_VARTYPE p_type, const std::string& p_name)
     {
         SCIP_VAR* var;
         const char* name = p_name.c_str();
+        // Creates a variable of type p_type with corresponding objectives and bounds.
+        // The parameters after p_type are:
+        //     initial:   true  (the column belonging to var is present in the initial root LP.)
+        //     removable: false (the column belonging to var is not removable from the LP.)
+        //     User Data pointers.
         SCIP_call_exec(SCIPcreateVar, d_scip, &var, name, p_lower_bound, p_upper_bound, p_objective, p_type, TRUE, FALSE, nullptr, nullptr, nullptr, nullptr, nullptr);
-        d_cols.push_back(var);
         SCIP_call_exec(SCIPaddVar, d_scip, var);
+        d_cols.push_back(var); // We need to store the variables seperately to access them later on.
 
-        if (p_row_values)
+        if (p_row_values) // If we have coefficients given...
         {
-            if (p_row_indices)
+            if (p_row_indices) // and indices...
             {
                 assert( p_row_values->size() >= p_row_indices->size() );
+                // Add the corresponding coefficient to every constraint indexed.
                 for (auto i : *p_row_indices)
                 {
                     assert( i < d_rows.size() );
-                    SCIP_CONS* cons = d_rows[i];
-                    SCIP_call_exec(SCIPaddCoefLinear, d_scip, cons, var, (*p_row_values)[i]);
+                    SCIP_call_exec(SCIPaddCoefLinear, d_scip, d_rows[i], var, (*p_row_values)[i]);
                 }
             }
             else
             {
                 assert( p_row_values->size() >= d_rows.size() );
+                // Add the corresponding coefficient to every constraint in the problem.
                 for (size_t i = 0; i < d_rows.size(); i++)
                 {
                     SCIP_call_exec(SCIPaddCoefLinear, d_scip, d_rows[i], var, (*p_row_values)[i]);
@@ -240,6 +261,8 @@ namespace ilp_solver
         int size{0};
 
         const char* name = p_name.c_str();
+
+        // If we have no indices given, we need to have a coefficient for every variable in the problem.
         if (!p_col_indices)
         {
             assert(p_col_values.size() >= d_cols.size());
@@ -248,6 +271,7 @@ namespace ilp_solver
         }
         else
         {
+            // Otherwise we need to create a vector of the correct variables given by their indices.
             assert(p_col_values.size() >= p_col_indices->size());
             tmp.reserve(p_col_indices->size());
             for (int i : *p_col_indices)
@@ -262,6 +286,17 @@ namespace ilp_solver
         // SCIP uses a double*, not a const double*, but ScaiILP demands a const std::vector<double>&.
         // Internally, SCIP copies the buffer, so the const_cast should not violate actual const-ness.
         // Sadly, it is not avoidable since SCIP is not const-correct. (SCIP 6.0)
+        // The parameters after p_rhs are:
+        //    initial:        true  (the relaxed constraint is in the initial LP.)
+        //    separate:       true  (the constraint should be separated during LP processing.)
+        //    enforce:        true  (the constraint is enforced during node processing.)
+        //    check:          true  (the constraint is checked for feasibility.)
+        //    propagate:      true  (the constraint is propagated during node processing.)
+        //    local:          false (the constraint is valid globally.)
+        //    modifiable:     false (the constraint is not subject to column generation.)
+        //    dynamic:        false (the constraint is not subject to aging.)
+        //    removable:      false (the constraint may not be removed during aging or cleanup.)
+        //    stickingatnode: false (the constraint should not be kept at the node where it was added.)
         SCIP_call_exec(SCIPcreateConsLinear, d_scip, &cons, name, size, vars, const_cast<double*>(p_col_values.data()),
                 p_lhs, p_rhs, TRUE, TRUE, TRUE, TRUE, TRUE, FALSE, FALSE, FALSE, FALSE, FALSE);
         SCIP_call_exec(SCIPaddCons, d_scip, cons);
