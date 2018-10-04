@@ -2,19 +2,38 @@
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ImportGroup Label="PropertySheets" />
   <PropertyGroup Label="UserMacros">
-    <BOOST_INCLUDE_PATH>$(BOOST_DIR)\vc$(PlatformToolsetVersion)_idl0_x$(PlatformArchitecture)\include\boost-1_68</BOOST_INCLUDE_PATH>
-    <BOOST_LIB_PATH>$(BOOST_DIR)\vc$(PlatformToolsetVersion)_idl0_x$(PlatformArchitecture)\lib</BOOST_LIB_PATH>
-    <CBC_PATH>$(CBC_DIR)</CBC_PATH>
-    <CBC_LIB_PATH>$(CBC_PATH)\Cbc\MSVisualStudio\$(PlatformToolset)\$(Platform)-$(PlatformToolset)-$(Configuration)</CBC_LIB_PATH>
-    <CBC_INCLUDE>$(CBC_PATH)\clp\src;$(CBC_PATH)\Osi\src\Osi;$(CBC_PATH)\CoinUtils\src;$(CBC_PATH)\clp\src\osiclp;$(CBC_PATH)\cbc\src</CBC_INCLUDE>
+    <BOOST_VERSION>1_68</BOOST_VERSION>
+    <PLATFORM_BITS>$(PlatformArchitecture)</PLATFORM_BITS>
+    <MSVC_VERSION>vc$(PlatformToolsetVersion)</MSVC_VERSION>
+    <BOOST_DIR>$(optsoft)\boost_$(BOOST_VERSION)_0\$(MSVC_VERSION)_idl0_x$(PLATFORM_BITS)</BOOST_DIR>
+    <COIN_DIR>$(optsoft)\Cbc-2.9.9_$(MSVC_VERSION)_full\</COIN_DIR>
+    <BOOST_INCLUDE_PATH>$(BOOST_DIR)\include\boost-$(BOOST_VERSION)</BOOST_INCLUDE_PATH>
+    <BOOST_LIB_PATH>$(BOOST_DIR)\lib</BOOST_LIB_PATH>
+    <CBC_LIB_PATH>$(COIN_DIR)\Cbc\MSVisualStudio\$(PlatformToolset)\$(Platform)-$(PlatformToolset)-$(Configuration)</CBC_LIB_PATH>
+    <COIN_INCLUDE_PATHS>$(COIN_DIR)\clp\src;$(COIN_DIR)\Osi\src\Osi;$(COIN_DIR)\CoinUtils\src;$(COIN_DIR)\clp\src\osiclp;$(COIN_DIR)\cbc\src</COIN_INCLUDE_PATHS>
   </PropertyGroup>
   <PropertyGroup />
   <ItemDefinitionGroup>
     <ClCompile>
-      <PreprocessorDefinitions>WITH_OSI=0;WITH_CBC=0;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WITH_OSI=1;WITH_CBC=1;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <BuildMacro Include="BOOST_VERSION">
+      <Value>$(BOOST_VERSION)</Value>
+    </BuildMacro>
+    <BuildMacro Include="PLATFORM_BITS">
+      <Value>$(PLATFORM_BITS)</Value>
+    </BuildMacro>
+    <BuildMacro Include="MSVC_VERSION">
+      <Value>$(MSVC_VERSION)</Value>
+    </BuildMacro>
+    <BuildMacro Include="BOOST_DIR">
+      <Value>$(BOOST_DIR)</Value>
+    </BuildMacro>
+    <BuildMacro Include="COIN_DIR">
+      <Value>$(COIN_DIR)</Value>
+    </BuildMacro>
     <BuildMacro Include="BOOST_INCLUDE_PATH">
       <Value>$(BOOST_INCLUDE_PATH)</Value>
       <EnvironmentVariable>true</EnvironmentVariable>
@@ -22,15 +41,11 @@
     <BuildMacro Include="BOOST_LIB_PATH">
       <Value>$(BOOST_LIB_PATH)</Value>
     </BuildMacro>
-    <BuildMacro Include="CBC_PATH">
-      <Value>$(CBC_PATH)</Value>
-      <EnvironmentVariable>true</EnvironmentVariable>
-    </BuildMacro>
     <BuildMacro Include="CBC_LIB_PATH">
       <Value>$(CBC_LIB_PATH)</Value>
     </BuildMacro>
-    <BuildMacro Include="CBC_INCLUDE">
-      <Value>$(CBC_INCLUDE)</Value>
+    <BuildMacro Include="COIN_INCLUDE_PATHS">
+      <Value>$(COIN_INCLUDE_PATHS)</Value>
     </BuildMacro>
   </ItemGroup>
 </Project>
