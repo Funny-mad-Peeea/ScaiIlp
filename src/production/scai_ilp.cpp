@@ -98,11 +98,7 @@ static ILPSolutionData solution_data(const ILPSolverInterface& p_solver)
 // Throws ModelException, SolverException or std::bad_alloc
 static ILPSolutionData solve_ilp(const ILPData& p_data)
 {
-#if WITH_CBC == 1
     auto solver = ilp_solver::create_solver_cbc();
-#else
-    auto solver =ilp_solver::create_solver_stub("");
-#endif
 
 
     // RAII for deleting solver
