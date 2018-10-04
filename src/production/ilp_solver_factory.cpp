@@ -5,17 +5,17 @@
 
 namespace ilp_solver
 {
+    extern "C" ILPSolverInterface* __stdcall create_solver_cbc()
+    {
 #if WITH_CBC == 1
-    extern "C" ILPSolverInterface* __stdcall create_solver_cbc()
-    {
         return new ILPSolverCbc();
-    }
 #else
-    extern "C" ILPSolverInterface* __stdcall create_solver_cbc()
-    {
+        static_assert(false, "Creation of CBC solver is deactivated.");
         return nullptr;
-    }
 #endif
+    }
+
+
 
     extern "C" ILPSolverInterface* __stdcall create_solver_stub(const char* p_executable_basename)
     {
