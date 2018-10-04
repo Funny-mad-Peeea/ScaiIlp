@@ -10,7 +10,6 @@ namespace ilp_solver
 #if WITH_CBC == 1
         return new ILPSolverCbc();
 #else
-        static_assert(false, "Creation of CBC solver is deactivated.");
         return nullptr;
 #endif
     }

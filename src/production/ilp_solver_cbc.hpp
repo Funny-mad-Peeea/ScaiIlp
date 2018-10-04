@@ -7,13 +7,12 @@ static_assert(WITH_OSI == 1,
     "CBC requires the Osi-Interface and the CoinUtils contained therein. "
     "Please set WITH_OSI=1 or deactivate CBC with WITH_CBC=0.");
 
-#include "ilp_solver_osi_model.hpp"
-
-
 // Link with the required CBC Libraries.
 #pragma comment(lib, "libCbc.lib")
 #pragma comment(lib, "libClp.lib")
 #pragma comment(lib, "libCgl.lib")
+
+#include "ilp_solver_osi_model.hpp" // Including this also links with the required COIN Libraries.
 
 #pragma warning(push)
 #pragma warning(disable : 5033) // silence warning in CBC concerning the deprecated keyword 'register'

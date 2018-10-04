@@ -9,7 +9,7 @@
     <COIN_DIR>$(optsoft)\Cbc-2.9.9_$(MSVC_VERSION)_full\</COIN_DIR>
     <BOOST_INCLUDE_PATH>$(BOOST_DIR)\include\boost-$(BOOST_VERSION)</BOOST_INCLUDE_PATH>
     <BOOST_LIB_PATH>$(BOOST_DIR)\lib</BOOST_LIB_PATH>
-    <CBC_LIB_PATH>$(COIN_DIR)\Cbc\MSVisualStudio\$(PlatformToolset)\$(Platform)-$(PlatformToolset)-$(Configuration)</CBC_LIB_PATH>
+    <COIN_LIB_PATH>$(COIN_DIR)\Cbc\MSVisualStudio\$(PlatformToolset)\$(Platform)-$(PlatformToolset)-$(Configuration)</COIN_LIB_PATH>
     <COIN_INCLUDE_PATHS>$(COIN_DIR)\clp\src;$(COIN_DIR)\Osi\src\Osi;$(COIN_DIR)\CoinUtils\src;$(COIN_DIR)\clp\src\osiclp;$(COIN_DIR)\cbc\src</COIN_INCLUDE_PATHS>
   </PropertyGroup>
   <PropertyGroup />
@@ -41,8 +41,8 @@
     <BuildMacro Include="BOOST_LIB_PATH">
       <Value>$(BOOST_LIB_PATH)</Value>
     </BuildMacro>
-    <BuildMacro Include="CBC_LIB_PATH">
-      <Value>$(CBC_LIB_PATH)</Value>
+    <BuildMacro Include="COIN_LIB_PATH">
+      <Value>$(COIN_LIB_PATH)</Value>
     </BuildMacro>
     <BuildMacro Include="COIN_INCLUDE_PATHS">
       <Value>$(COIN_INCLUDE_PATHS)</Value>
