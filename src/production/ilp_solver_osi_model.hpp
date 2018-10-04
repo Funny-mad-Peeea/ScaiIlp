@@ -1,7 +1,12 @@
-#if WITH_CBC == 1
-
 #ifndef _ILP_SOLVER_OSI_MODEL_HPP
 #define _ILP_SOLVER_OSI_MODEL_HPP
+
+#if WITH_OSI == 1
+
+// Link with the CoinUtils and Osi Libraries.
+#pragma comment(lib, "libCoinUtils.lib")
+#pragma comment(lib, "libOsi.lib")
+#pragma comment(lib, "libOsiClp.lib")
 
 #include "ilp_solver_interface_impl.hpp"
 

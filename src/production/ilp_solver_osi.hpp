@@ -1,7 +1,7 @@
-#if WITH_CBC == 1
-
 #ifndef _ILP_SOLVER_OSI_HPP
 #define _ILP_SOLVER_OSI_HPP
+
+#if WITH_OSI == 1
 
 #include "ilp_solver_osi_model.hpp"
 

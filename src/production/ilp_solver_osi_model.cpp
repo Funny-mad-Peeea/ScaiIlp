@@ -1,4 +1,4 @@
-#if WITH_CBC == 1
+#if WITH_OSI == 1
 
 #include "ilp_solver_osi_model.hpp"
 
