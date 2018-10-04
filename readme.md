@@ -206,18 +206,24 @@ A: If you don't experience solver crashes, you can avoid some overhead by using 
     * "define=_ITERATOR_DEBUG_LEVEL=0" (without double quotes)
     * "define=BOOST_TEST_NO_MAIN"      (without double quotes)
 
-3. Specify the location of Cbc by setting the environment variable CBC_DIR.
+3. Specify the location of Cbc by opening the properties.props file
+   and setting the User Macro COIN_DIR (if your paths follow our examples)
+   or by setting the COIN_LIB_PATH and COIN_INCLUDE_PATHS macros to the correct paths on your system.
 
-4. If you want to support multithreading,
+4. Activate CBC by opening the properties.props file and setting the preprocessor definitions "WITH_CBC=1" and "WITH_OSI=1".
+   You can find the preprocessor definitions under C/C++ -> Preprocessor -> Preprocessor Definitions.
+   CBC should be activated by default.
+
+5. If you want to support multithreading,
    specify the location of pthread by setting the environment variable PTHREAD_DIR,
    whereby PTHREAD_DIR has to contain the folders "Win32-v141-Release", "Win32-v141-Debug", "x64-v141-Release" and "x64-v141-Debug",
    each containing the appropriate version of pthread.dll. Otherwise proceed with step 5.
 
-5. Specify the location of Boost by setting the environment variable BOOST_DIR. Note that the
-   include files must be located in $(BOOST_DIR)\include\boost-1_66 and the lib files must be located in
-   $(BOOST_DIR)\lib (for 32 bit) and $(BOOST_DIR)\lib_64 (for 64 bit).
+6. Specify the location of Boost by opening the properties.props file
+   and setting the User Macros BOOST_VERSION and BOOST_DIR (if your paths follow our examples)
+   or by setting the BOOST_INCLUDE_PATH and BOOST_LIB_PATH manually to the correct paths on your system.
 
-6. Build ScaiIlpDll, ScaiIlpExe, and UnitTest.
+7. Build ScaiIlpDll, ScaiIlpExe, and UnitTest.
 
 
 3 Code Structure
