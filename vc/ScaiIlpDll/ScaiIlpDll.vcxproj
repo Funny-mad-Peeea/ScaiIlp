@@ -99,7 +99,7 @@
       <WarningLevel>Level4</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>_WIN32_WINNT=0x0601;WINVER=0x0601;_ITERATOR_DEBUG_LEVEL=0;WIN32;_DEBUG;_WINDOWS;_USRDLL;ILPSOLVERDLL_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(BOOST_INCLUDE_PATH);$(COIN_INCLUDE_PATHS);$(SCIP_INCLUDE_PATH)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(BOOST_INCLUDE_PATH);$(COIN_INCLUDE_PATHS);$(SCIP_INCLUDE_PATH);$(GUROBI_INCLUDE_PATH)</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <MinimalRebuild>false</MinimalRebuild>
       <DisableSpecificWarnings>4127</DisableSpecificWarnings>
@@ -121,7 +121,7 @@
       <WarningLevel>Level4</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>_WIN32_WINNT=0x0601;WINVER=0x0601;_ITERATOR_DEBUG_LEVEL=0;WIN32;_DEBUG;_WINDOWS;_USRDLL;ILPSOLVERDLL_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(BOOST_INCLUDE_PATH);$(COIN_INCLUDE_PATHS);$(SCIP_INCLUDE_PATH)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(BOOST_INCLUDE_PATH);$(COIN_INCLUDE_PATHS);$(SCIP_INCLUDE_PATH);$(GUROBI_INCLUDE_PATH)</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <MinimalRebuild>false</MinimalRebuild>
       <DisableSpecificWarnings>4127</DisableSpecificWarnings>
@@ -145,7 +145,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>_WIN32_WINNT=0x0601;WINVER=0x0601;_ITERATOR_DEBUG_LEVEL=0;WIN32;NDEBUG;_WINDOWS;_USRDLL;ILPSOLVERDLL_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(BOOST_INCLUDE_PATH);$(COIN_INCLUDE_PATHS);$(SCIP_INCLUDE_PATH)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(BOOST_INCLUDE_PATH);$(COIN_INCLUDE_PATHS);$(SCIP_INCLUDE_PATH);$(GUROBI_INCLUDE_PATH)</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <DisableSpecificWarnings>4127</DisableSpecificWarnings>
       <ConformanceMode>true</ConformanceMode>
@@ -170,7 +170,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>_WIN32_WINNT=0x0601;WINVER=0x0601;_ITERATOR_DEBUG_LEVEL=0;WIN32;NDEBUG;_WINDOWS;_USRDLL;ILPSOLVERDLL_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(BOOST_INCLUDE_PATH);$(COIN_INCLUDE_PATHS);$(SCIP_INCLUDE_PATH)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(BOOST_INCLUDE_PATH);$(COIN_INCLUDE_PATHS);$(SCIP_INCLUDE_PATH);$(GUROBI_INCLUDE_PATH)</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <DisableSpecificWarnings>4127</DisableSpecificWarnings>
       <ConformanceMode>true</ConformanceMode>
@@ -193,6 +193,7 @@
     <ClInclude Include="..\..\src\production\ilp_solver_collect.hpp" />
     <ClInclude Include="..\..\src\production\ilp_solver_exception.hpp" />
     <ClInclude Include="..\..\src\production\ilp_solver_factory.hpp" />
+    <ClInclude Include="..\..\src\production\ilp_solver_gurobi.hpp" />
     <ClInclude Include="..\..\src\production\ilp_solver_interface.hpp" />
     <ClInclude Include="..\..\src\production\ilp_solver_impl.hpp" />
     <ClInclude Include="..\..\src\production\ilp_solver_osi.hpp" />
@@ -209,6 +210,7 @@
     <ClCompile Include="..\..\src\production\ilp_solver_collect.cpp" />
     <ClCompile Include="..\..\src\production\ilp_solver_exception.cpp" />
     <ClCompile Include="..\..\src\production\ilp_solver_factory.cpp" />
+    <ClCompile Include="..\..\src\production\ilp_solver_gurobi.cpp" />
     <ClCompile Include="..\..\src\production\ilp_solver_impl.cpp" />
     <ClCompile Include="..\..\src\production\ilp_solver_osi.cpp" />
     <ClCompile Include="..\..\src\production\ilp_solver_osi_model.cpp" />

@@ -18,6 +18,7 @@
     <ClInclude Include="..\..\src\production\ilp_solver_exception.hpp" />
     <ClInclude Include="..\..\src\production\ilp_solver_impl.hpp" />
     <ClInclude Include="..\..\src\production\ilp_solver_scip.hpp" />
+    <ClInclude Include="..\..\src\production\ilp_solver_gurobi.hpp" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\src\production\ilp_solver_cbc.cpp" />
@@ -30,6 +31,7 @@
     <ClCompile Include="..\..\src\production\ilp_solver_exception.cpp" />
     <ClCompile Include="..\..\src\production\ilp_solver_impl.cpp" />
     <ClCompile Include="..\..\src\production\ilp_solver_scip.cpp" />
+    <ClCompile Include="..\..\src\production\ilp_solver_gurobi.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Resource Files">

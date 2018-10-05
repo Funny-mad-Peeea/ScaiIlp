@@ -2,7 +2,9 @@
 
 #include "ilp_solver_scip.hpp"
 #include "ilp_solver_cbc.hpp"
+#include "ilp_solver_gurobi.hpp"
 #include "ilp_solver_stub.hpp"
+
 
 namespace ilp_solver
 {
@@ -15,6 +17,14 @@ namespace ilp_solver
 #endif
     }
 
+    extern "C" ILPSolverInterface* __stdcall create_solver_gurobi()
+    {
+#if (WITH_GUROBI == 1) && (_WIN64 == 1)
+        return new ILPSolverGurobi();
+#else
+        return nullptr;
+#endif
+    }
 
     extern "C" ILPSolverInterface* __stdcall create_solver_scip()
     {
