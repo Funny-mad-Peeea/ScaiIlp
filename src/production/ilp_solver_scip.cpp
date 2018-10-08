@@ -1,6 +1,8 @@
 #include <cassert>
 #include "ilp_solver_scip.hpp"
 
+#if WITH_SCIP == 1
+
 namespace ilp_solver
 {
     #include "scip/scip.h"
@@ -178,15 +180,17 @@ namespace ilp_solver
 
     void ILPSolverSCIP::set_num_threads(int p_num_threads)
     {
+        // Possibly does nothing if not using FiberSCIP or some other parallelization method.
         SCIP_call_exec(SCIPsetIntParam, d_scip, "parallel/maxnthreads", p_num_threads);
     }
     void ILPSolverSCIP::set_deterministic_mode(bool p_deterministic)
     {
+        // Possibly does nothing if not using FiberSCIP or some other parallelization method.
         SCIP_call_exec(SCIPsetIntParam, d_scip, "parallel/mode", p_deterministic);
     }
     void ILPSolverSCIP::set_log_level(int p_level)
     {
-        p_level = (p_level < 0) ? 0 : p_level; // Minimum level for verbosity is 0.
+        p_level = (p_level < 0) ? 0 : p_level; // Minimum level for verbosity is 0 (no output).
         p_level = (p_level > 5) ? 5 : p_level; // Maximum level for verbosity is 5.
         SCIP_call_exec(SCIPsetIntParam, d_scip, "display/verblevel", p_level);
     }
@@ -303,3 +307,5 @@ namespace ilp_solver
         d_rows.push_back(cons);
     }
 }
+
+#endif

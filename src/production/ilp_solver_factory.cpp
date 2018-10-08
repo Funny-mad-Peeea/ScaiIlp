@@ -8,7 +8,11 @@ namespace ilp_solver
 {
     extern "C" ILPSolverInterface* __stdcall create_solver_scip()
     {
+#if WITH_SCIP == 1
         return new ILPSolverSCIP();
+#else
+        return nullptr;
+#endif
     }
 
     extern "C" ILPSolverInterface* __stdcall create_solver_cbc()
