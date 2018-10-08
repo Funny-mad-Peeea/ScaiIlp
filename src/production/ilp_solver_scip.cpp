@@ -110,7 +110,7 @@ namespace ilp_solver
         // Internally, SCIP calls a single-variable setter for every variable with a by-value pass of the corresponding double,
         // so the const_cast should not violate actual const-ness.
         // Sadly, it is not avoidable since SCIP is not const-correct. (SCIP 6.0)
-        SCIP_call_exec(SCIPsetSolVals, d_scip, sol, d_cols.size(), d_cols.data(), const_cast<double*>(p_solution.data()));
+        SCIP_call_exec(SCIPsetSolVals, d_scip, sol, static_cast<int>(d_cols.size()), d_cols.data(), const_cast<double*>(p_solution.data()));
         SCIP_call_exec(SCIPaddSol, d_scip, sol, &ignored);
     }
 
@@ -241,7 +241,7 @@ namespace ilp_solver
                 // Add the corresponding coefficient to every constraint indexed.
                 for (auto i : *p_row_indices)
                 {
-                    assert( i < d_rows.size() );
+                    assert( i < static_cast<int>(d_rows.size()) );
                     SCIP_call_exec(SCIPaddCoefLinear, d_scip, d_rows[i], var, (*p_row_values)[i]);
                 }
             }
@@ -280,7 +280,7 @@ namespace ilp_solver
             tmp.reserve(p_col_indices->size());
             for (int i : *p_col_indices)
             {
-                assert(i < d_cols.size());
+                assert(i < static_cast<int>(d_cols.size()));
                 tmp.push_back(d_cols[i]);
             }
             vars = tmp.data();
