@@ -1,7 +1,7 @@
+#if WITH_SCIP == 1
+
 #include <cassert>
 #include "ilp_solver_scip.hpp"
-
-#if WITH_SCIP == 1
 
 namespace ilp_solver
 {
