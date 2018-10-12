@@ -17,7 +17,9 @@ namespace ilp_solver
 #endif
     ILPSolverInterface* __stdcall create_solver_stub(const char* p_executable_basename);
 
-    extern "C" __declspec (dllexport) void __stdcall destroy_solver(ILPSolverInterface* p_solver);
+    extern "C"
+    __declspec (dllexport)
+    void __stdcall destroy_solver(ILPSolverInterface* p_solver);
 }
 
 #endif
