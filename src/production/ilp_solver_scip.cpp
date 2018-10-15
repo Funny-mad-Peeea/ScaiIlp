@@ -13,13 +13,12 @@ namespace ilp_solver
         // A lambda instead of the macro expansion to handle return codes.
         // If the SCIP function call was unsuccessful, throw an error.
         // REVIEW: Which error should be thrown?
-        static const auto SCIP_call_exec{
-            [](auto f, auto... args) -> void
-            {
-                auto retcode = f(args...);
-                if (retcode != SCIP_OKAY)
-                    throw std::runtime_error("SCIP Error!\n");
-            }
+        template<typename F, typename... Args>
+        static __forceinline void call_scip(F p_f, Args&... p_args)
+        {
+            auto retcode = p_f(p_args...);
+            if (retcode != SCIP_OKAY)
+                throw std::exception("SCIP Error!\n");
         };
     }
 
@@ -104,25 +103,25 @@ namespace ilp_solver
 
         SCIP_SOL* sol;
         SCIP_Bool ignored{false};
-        SCIP_call_exec(SCIPcreateSol, d_scip, &sol, nullptr);
+        call_scip(SCIPcreateSol, d_scip, &sol, nullptr);
 
         // SCIP uses a double*, not a const double*, but ScaiILP demands a const std::vector<double>&.
         // Internally, SCIP calls a single-variable setter for every variable with a by-value pass of the corresponding double,
         // so the const_cast should not violate actual const-ness.
         // Sadly, it is not avoidable since SCIP is not const-correct. (SCIP 6.0)
-        SCIP_call_exec(SCIPsetSolVals, d_scip, sol, static_cast<int>(d_cols.size()), d_cols.data(), const_cast<double*>(p_solution.data()));
-        SCIP_call_exec(SCIPaddSol, d_scip, sol, &ignored);
+        call_scip(SCIPsetSolVals, d_scip, sol, static_cast<int>(d_cols.size()), d_cols.data(), const_cast<double*>(p_solution.data()));
+        call_scip(SCIPaddSol, d_scip, sol, &ignored);
     }
 
     void ILPSolverSCIP::minimize()
     {
-        SCIP_call_exec(SCIPsetObjsense, d_scip, SCIP_OBJSENSE_MINIMIZE);
-        SCIP_call_exec(SCIPsolve, d_scip);
+        call_scip(SCIPsetObjsense, d_scip, SCIP_OBJSENSE_MINIMIZE);
+        call_scip(SCIPsolve, d_scip);
     }
     void ILPSolverSCIP::maximize()
     {
-        SCIP_call_exec(SCIPsetObjsense, d_scip, SCIP_OBJSENSE_MAXIMIZE);
-        SCIP_call_exec(SCIPsolve, d_scip);
+        call_scip(SCIPsetObjsense, d_scip, SCIP_OBJSENSE_MAXIMIZE);
+        call_scip(SCIPsolve, d_scip);
     }
 
     const std::vector<double> ILPSolverSCIP::get_solution()  const
@@ -181,43 +180,43 @@ namespace ilp_solver
     void ILPSolverSCIP::set_num_threads(int p_num_threads)
     {
         // Possibly does nothing if not using FiberSCIP or some other parallelization method.
-        SCIP_call_exec(SCIPsetIntParam, d_scip, "parallel/maxnthreads", p_num_threads);
+        call_scip(SCIPsetIntParam, d_scip, "parallel/maxnthreads", p_num_threads);
     }
     void ILPSolverSCIP::set_deterministic_mode(bool p_deterministic)
     {
         // Possibly does nothing if not using FiberSCIP or some other parallelization method.
-        SCIP_call_exec(SCIPsetIntParam, d_scip, "parallel/mode", p_deterministic);
+        call_scip(SCIPsetIntParam, d_scip, "parallel/mode", p_deterministic);
     }
     void ILPSolverSCIP::set_log_level(int p_level)
     {
         p_level = (p_level < 0) ? 0 : p_level; // Minimum level for verbosity is 0 (no output).
         p_level = (p_level > 5) ? 5 : p_level; // Maximum level for verbosity is 5.
-        SCIP_call_exec(SCIPsetIntParam, d_scip, "display/verblevel", p_level);
+        call_scip(SCIPsetIntParam, d_scip, "display/verblevel", p_level);
     }
     void ILPSolverSCIP::set_max_seconds(double p_seconds)
     {
-        SCIP_call_exec(SCIPsetRealParam, d_scip, "limits/time", p_seconds);
+        call_scip(SCIPsetRealParam, d_scip, "limits/time", p_seconds);
     }
 
 
     ILPSolverSCIP::ILPSolverSCIP()
     {
-        SCIP_call_exec(SCIPcreate, &d_scip);
-        SCIP_call_exec(SCIPincludeDefaultPlugins, d_scip);
+        call_scip(SCIPcreate, &d_scip);
+        call_scip(SCIPincludeDefaultPlugins, d_scip);
 
         // All the nullptr's are possible User-data.
-        SCIP_call_exec(SCIPcreateProb, d_scip, "problem", nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr);
-        SCIP_call_exec(SCIPsetObjsense, d_scip, SCIP_OBJSENSE_MINIMIZE);
+        call_scip(SCIPcreateProb, d_scip, "problem", nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr);
+        call_scip(SCIPsetObjsense, d_scip, SCIP_OBJSENSE_MINIMIZE);
     }
 
     ILPSolverSCIP::~ILPSolverSCIP()
     {
         // Variables and Constraints need to be released separately.
         for(auto& p : d_cols)
-            SCIP_call_exec(SCIPreleaseVar, d_scip, &p);
+            call_scip(SCIPreleaseVar, d_scip, &p);
         for(auto& p : d_rows)
-            SCIP_call_exec(SCIPreleaseCons, d_scip, &p);
-        SCIP_call_exec(SCIPfree, &d_scip);
+            call_scip(SCIPreleaseCons, d_scip, &p);
+        call_scip(SCIPfree, &d_scip);
     }
 
     void ILPSolverSCIP::add_variable(const std::vector<int>* p_row_indices, const std::vector<double>* p_row_values, double p_lower_bound, double p_upper_bound, double p_objective, SCIP_VARTYPE p_type, const std::string& p_name)
@@ -229,8 +228,8 @@ namespace ilp_solver
         //     initial:   true  (the column belonging to var is present in the initial root LP.)
         //     removable: false (the column belonging to var is not removable from the LP.)
         //     User Data pointers.
-        SCIP_call_exec(SCIPcreateVar, d_scip, &var, name, p_lower_bound, p_upper_bound, p_objective, p_type, TRUE, FALSE, nullptr, nullptr, nullptr, nullptr, nullptr);
-        SCIP_call_exec(SCIPaddVar, d_scip, var);
+        call_scip(SCIPcreateVar, d_scip, &var, name, p_lower_bound, p_upper_bound, p_objective, p_type, TRUE, FALSE, nullptr, nullptr, nullptr, nullptr, nullptr);
+        call_scip(SCIPaddVar, d_scip, var);
         d_cols.push_back(var); // We need to store the variables seperately to access them later on.
 
         if (p_row_values) // If we have coefficients given...
@@ -242,7 +241,7 @@ namespace ilp_solver
                 for (auto i : *p_row_indices)
                 {
                     assert( i < static_cast<int>(d_rows.size()) );
-                    SCIP_call_exec(SCIPaddCoefLinear, d_scip, d_rows[i], var, (*p_row_values)[i]);
+                    call_scip(SCIPaddCoefLinear, d_scip, d_rows[i], var, (*p_row_values)[i]);
                 }
             }
             else
@@ -251,7 +250,7 @@ namespace ilp_solver
                 // Add the corresponding coefficient to every constraint in the problem.
                 for (size_t i = 0; i < d_rows.size(); i++)
                 {
-                    SCIP_call_exec(SCIPaddCoefLinear, d_scip, d_rows[i], var, (*p_row_values)[i]);
+                    call_scip(SCIPaddCoefLinear, d_scip, d_rows[i], var, (*p_row_values)[i]);
                 }
             }
         }
@@ -301,9 +300,9 @@ namespace ilp_solver
         //    dynamic:        false (the constraint is not subject to aging.)
         //    removable:      false (the constraint may not be removed during aging or cleanup.)
         //    stickingatnode: false (the constraint should not be kept at the node where it was added.)
-        SCIP_call_exec(SCIPcreateConsLinear, d_scip, &cons, name, size, vars, const_cast<double*>(p_col_values.data()),
+        call_scip(SCIPcreateConsLinear, d_scip, &cons, name, size, vars, const_cast<double*>(p_col_values.data()),
                 p_lhs, p_rhs, TRUE, TRUE, TRUE, TRUE, TRUE, FALSE, FALSE, FALSE, FALSE, FALSE);
-        SCIP_call_exec(SCIPaddCons, d_scip, cons);
+        call_scip(SCIPaddCons, d_scip, cons);
         d_rows.push_back(cons);
     }
 }

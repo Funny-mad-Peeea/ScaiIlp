@@ -16,6 +16,12 @@ namespace ilp_solver
 
 
     extern "C"
+#if (WITH_SCIP == 1)
+    __declspec (dllexport)
+#endif
+    ILPSolverInterface* __stdcall create_solver_cbc();
+
+    extern "C"
 #if (WITH_CBC == 1)
     __declspec (dllexport)
 #endif
@@ -28,3 +34,5 @@ namespace ilp_solver
 }
 
 #endif
+
+
