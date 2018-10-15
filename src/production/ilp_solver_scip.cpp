@@ -14,7 +14,7 @@ namespace ilp_solver
         // If the SCIP function call was unsuccessful, throw an error.
         // REVIEW: Which error should be thrown?
         template<typename F, typename... Args>
-        static __forceinline void call_scip(F p_f, Args&... p_args)
+        static __forceinline void call_scip(F p_f, Args... p_args)
         {
             auto retcode = p_f(p_args...);
             if (retcode != SCIP_OKAY)
