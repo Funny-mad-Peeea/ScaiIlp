@@ -12,7 +12,6 @@ namespace ilp_solver
     {
         // A lambda instead of the macro expansion to handle return codes.
         // If the SCIP function call was unsuccessful, throw an error.
-        // REVIEW: Which error should be thrown?
         template<typename F, typename... Args>
         static __forceinline void call_scip(F p_f, Args... p_args)
         {
