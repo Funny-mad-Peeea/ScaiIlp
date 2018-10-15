@@ -3,10 +3,8 @@
   <ImportGroup Label="PropertySheets" />
   <PropertyGroup Label="UserMacros">
     <BOOST_VERSION>1_68</BOOST_VERSION>
-    <PLATFORM_BITS>$(PlatformArchitecture)</PLATFORM_BITS>
-    <MSVC_VERSION>vc$(PlatformToolsetVersion)</MSVC_VERSION>
-    <BOOST_DIR>$(optsoft)\boost_$(BOOST_VERSION)_0\$(MSVC_VERSION)_idl0_x$(PLATFORM_BITS)</BOOST_DIR>
-    <COIN_DIR>$(optsoft)\Cbc-2.9.9_$(MSVC_VERSION)_full\</COIN_DIR>
+    <BOOST_DIR>$(optsoft)\boost_$(BOOST_VERSION)_0\vc$(PlatformToolsetVersion)_idl0_x$(PlatformArchitecture)</BOOST_DIR>
+    <COIN_DIR>$(optsoft)\Cbc-2.9.9_vc$(PlatformToolsetVersion)_full\</COIN_DIR>
     <BOOST_INCLUDE_PATH>$(BOOST_DIR)\include\boost-$(BOOST_VERSION)</BOOST_INCLUDE_PATH>
     <BOOST_LIB_PATH>$(BOOST_DIR)\lib</BOOST_LIB_PATH>
     <COIN_LIB_PATH>$(COIN_DIR)\Cbc\MSVisualStudio\$(PlatformToolset)\$(Platform)-$(PlatformToolset)-$(Configuration)</COIN_LIB_PATH>
@@ -21,12 +19,6 @@
   <ItemGroup>
     <BuildMacro Include="BOOST_VERSION">
       <Value>$(BOOST_VERSION)</Value>
-    </BuildMacro>
-    <BuildMacro Include="PLATFORM_BITS">
-      <Value>$(PLATFORM_BITS)</Value>
-    </BuildMacro>
-    <BuildMacro Include="MSVC_VERSION">
-      <Value>$(MSVC_VERSION)</Value>
     </BuildMacro>
     <BuildMacro Include="BOOST_DIR">
       <Value>$(BOOST_DIR)</Value>
