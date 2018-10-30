@@ -2,12 +2,12 @@
 #define _ILP_SOLVER_COLLECT_HPP
 
 #include "ilp_data.hpp"
-#include "ilp_solver_interface_impl.hpp"
+#include "ilp_solver_impl.hpp"
 
 namespace ilp_solver
 {
     // Stores all information about the ILP and the solver.
-    class ILPSolverCollect : public ILPSolverInterfaceImpl
+    class ILPSolverCollect : public ILPSolverImpl
     {
         private:
             ILPData d_ilp_data;

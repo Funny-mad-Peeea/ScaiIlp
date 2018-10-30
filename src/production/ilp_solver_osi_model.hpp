@@ -8,7 +8,7 @@
 #pragma comment(lib, "libOsi.lib")
 #pragma comment(lib, "libOsiClp.lib")
 
-#include "ilp_solver_interface_impl.hpp"
+#include "ilp_solver_impl.hpp"
 
 #include "CoinPackedMatrix.hpp"
 
@@ -21,7 +21,7 @@ namespace ilp_solver
 {
     // Implements all methods from ILPSolverInterfaceImpl that can be realized
     // via the model of the OsiSolverInterface.
-    class ILPSolverOsiModel : public ILPSolverInterfaceImpl
+    class ILPSolverOsiModel : public ILPSolverImpl
     {
         public:
             ILPSolverOsiModel();

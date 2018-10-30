@@ -1,5 +1,5 @@
-#ifndef _ILP_SOLVER_INTERFACE_IMPL_HPP
-#define _ILP_SOLVER_INTERFACE_IMPL_HPP
+#ifndef _ILP_SOLVER_IMPL_HPP
+#define _ILP_SOLVER_IMPL_HPP
 
 #include "ilp_solver_interface.hpp"
 
@@ -8,7 +8,7 @@ namespace ilp_solver
     enum class VariableType   { INTEGER, CONTINUOUS };
     enum class ObjectiveSense { MINIMIZE, MAXIMIZE };
 
-    class ILPSolverInterfaceImpl : public ILPSolverInterface
+    class ILPSolverImpl : public ILPSolverInterface
     {
         public:
             void add_variable_boolean    (                                                                                double p_objective,                                             const std::string& p_name = "") override;
@@ -44,7 +44,7 @@ namespace ilp_solver
             void set_max_seconds        (double p_seconds)     override;
 
         protected:
-            ILPSolverInterfaceImpl();
+            ILPSolverImpl();
 
         private:
             std::vector<int>    d_all_col_indices;
