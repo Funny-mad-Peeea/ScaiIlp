@@ -1,6 +1,7 @@
 #include "ilp_solver_factory.hpp"
 #include "ilp_solver_interface.hpp"
 
+#include <array>
 #include <algorithm>
 #include <iostream>
 
@@ -32,8 +33,11 @@ namespace ilp_solver
         return -0.5 + (1.0*rand())/RAND_MAX;
     }
 
+    using TestFunction    = std::function<void(ILPSolverInterface*)>;
+    using FactoryFunction = std::function<ILPSolverInterface*(void)>;
+    using StubFunction    = std::function<ILPSolverInterface*(const char*)>;
 
-    void execute_test_and_destroy_solver(ILPSolverInterface* p_solver, std::function<void(ILPSolverInterface*)> p_test)
+    void execute_test_and_destroy_solver(ILPSolverInterface* p_solver, TestFunction p_test)
     {
         try
         {
@@ -407,63 +411,85 @@ namespace ilp_solver
     }
 }
 
-BOOST_AUTO_TEST_SUITE( IlPSolverT );
-
-BOOST_AUTO_TEST_CASE ( SortingCbcSolver )
+void create_ilp_test_suite()
 {
-    execute_test_and_destroy_solver (ilp_solver::create_solver_cbc(), ilp_solver::test_sorting);
+    using namespace ilp_solver;
+
+    const std::array<std::pair<TestFunction, std::string>, 5> all_tests
+    { std::pair{test_sorting, "Sorting"}
+    , std::pair{test_linear_programming, "LinProgr"}
+    , std::pair{test_performance, "Performance"}
+    , std::pair{test_start_solution_minimization, "StartSolutionMin"}
+    , std::pair{test_start_solution_maximization, "StartSolutionMax"}
+    };
+
+    const std::array<std::pair<TestFunction, std::string>, 1> stub_tests
+    { std::pair{test_bad_alloc, "BadAlloc"}
+    };
+
+    constexpr int num_solvers = WITH_CBC;
+    constexpr int num_stubs   = WITH_CBC;
+
+
+    const std::array<std::pair<FactoryFunction, std::string>, num_solvers> all_solvers
+    {
+#if WITH_CBC == 1
+        std::pair{create_solver_cbc, "CBC"},
+#endif
+    };
+
+    const std::array<std::pair<StubFunction, std::string>, num_solvers> all_stubs
+    {
+#if WITH_CBC == 1
+        std::pair{create_solver_stub, "CBCStub"},
+#endif
+    };
+
+    const auto solver_exe_name = "ScaiIlpExe.exe";
+
+    boost::unit_test::test_suite* IlpSolverT = BOOST_TEST_SUITE("IlpSolverT");
+
+    // Create a test suite for each kind of solver.
+    for (auto& [solver, solver_name] : all_solvers )
+    {
+        boost::unit_test::test_suite* suite = BOOST_TEST_SUITE(solver_name.c_str());
+        for (auto& [test, test_name] : all_tests)
+        {
+            // We need an object to pass to make_test_case, and it needs copy-by-value (solver and test are merely pointers anyway.).
+            auto lambda = [solver, test]()
+            {
+                execute_test_and_destroy_solver(solver(), test);
+            };
+            // Since we use a functor and a name, we avoid using one of the macros and create a test case directly.
+            suite->add( boost::unit_test::make_test_case(lambda, test_name.c_str(), __FILE__, __LINE__) );
+        }
+        // Add the current solver to the IlpSolverT testsuite.
+        IlpSolverT->add( suite );
+    }
+
+    // Do the same as above, just for all stubs - this time including the stub-only tests.
+    for (auto&[stub, stub_name] : all_stubs)
+    {
+        boost::unit_test::test_suite* suite = BOOST_TEST_SUITE(stub_name.c_str());
+        for (auto&[test, test_name] : all_tests)
+        {
+            auto lambda = [stub, test, solver_exe_name]()
+            {
+                execute_test_and_destroy_solver(stub(solver_exe_name), test);
+            };
+            suite->add(boost::unit_test::make_test_case(lambda, test_name.c_str(), __FILE__, __LINE__));
+        }
+        for (auto&[test, test_name] : stub_tests)
+        {
+            auto lambda = [stub, test, solver_exe_name]()
+            {
+                execute_test_and_destroy_solver(stub(solver_exe_name), test);
+            };
+            suite->add(boost::unit_test::make_test_case(lambda, test_name.c_str(), __FILE__, __LINE__));
+        }
+        IlpSolverT->add(suite);
+    }
+
+    // Add the whole IlpSolver test suite to the master test suite.
+    boost::unit_test::framework::master_test_suite().add(IlpSolverT);
 }
-
-BOOST_AUTO_TEST_CASE ( SortingCbcStubSolver )
-{
-    execute_test_and_destroy_solver (ilp_solver::create_solver_stub("ScaiIlpExe.exe"), ilp_solver::test_sorting);
-}
-
-BOOST_AUTO_TEST_CASE ( LinProgrCbcSolver )
-{
-    execute_test_and_destroy_solver (ilp_solver::create_solver_cbc(), ilp_solver::test_linear_programming);
-}
-
-BOOST_AUTO_TEST_CASE ( LinProgrCbcStubSolver )
-{
-    execute_test_and_destroy_solver  (ilp_solver::create_solver_stub("ScaiIlpExe.exe"), ilp_solver::test_linear_programming);
-}
-
-BOOST_AUTO_TEST_CASE ( StartSolutionMinCbcSolver )
-{
-    execute_test_and_destroy_solver  (ilp_solver::create_solver_cbc(), ilp_solver::test_start_solution_minimization);
-}
-
-BOOST_AUTO_TEST_CASE ( StartSolutionMinCbcStubSolver )
-{
-    execute_test_and_destroy_solver (ilp_solver::create_solver_stub("ScaiIlpExe.exe"), ilp_solver::test_start_solution_minimization);
-}
-
-BOOST_AUTO_TEST_CASE ( StartSolutionMaxCbcSolver )
-{
-    execute_test_and_destroy_solver (ilp_solver::create_solver_cbc(), ilp_solver::test_start_solution_maximization);
-}
-
-BOOST_AUTO_TEST_CASE ( StartSolutionMaxCbcStubSolver )
-{
-    execute_test_and_destroy_solver (ilp_solver::create_solver_stub("ScaiIlpExe.exe"), ilp_solver::test_start_solution_maximization);
-}
-
-BOOST_AUTO_TEST_CASE ( PerformanceCbcSolver )
-{
-    execute_test_and_destroy_solver (ilp_solver::create_solver_cbc(), ilp_solver::test_performance);
-}
-
-BOOST_AUTO_TEST_CASE ( PerformanceCbcStubSolver )
-{
-    execute_test_and_destroy_solver (ilp_solver::create_solver_stub("ScaiIlpExe.exe"), ilp_solver::test_performance);
-}
-
-// For stub solver only, will crash by design with CbcSolver
-BOOST_AUTO_TEST_CASE ( BadAllocCbcStubSolver )
-{
-    execute_test_and_destroy_solver (ilp_solver::create_solver_stub("ScaiIlpExe.exe"), ilp_solver::test_bad_alloc);
-}
-
-
-BOOST_AUTO_TEST_SUITE_END();
