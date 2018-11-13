@@ -25,6 +25,11 @@ namespace ilp_solver
     {
         OsiSolverInterface* solver = new OsiClpSolverInterface();
         d_model.assignSolver(solver, true);
+
+        set_num_threads(1);
+        set_deterministic_mode(true);
+        set_log_level(0);
+        set_max_seconds(std::numeric_limits<double>::max());
     }
 
     void ILPSolverCbc::do_solve(const std::vector<double>& p_start_solution)
