@@ -11,11 +11,9 @@ namespace ilp_solver
 {
     ILPSolverOsi::ILPSolverOsi(OsiSolverInterface* p_ilp_solver) : d_ilp_solver(p_ilp_solver) {}
 
-    void ILPSolverOsi::do_solve(const std::vector<double>& p_start_solution,
-                                int /* p_num_threads */, bool /* p_deterministic */, int p_log_level, double /* p_max_seconds */)
+    void ILPSolverOsi::do_solve(const std::vector<double>& p_start_solution)
     {
         auto solver = do_get_solver();
-        solver->messageHandler()->setLogLevel(p_log_level);
         if (!p_start_solution.empty())
             solver->setColSolution(p_start_solution.data());
         solver->branchAndBound();
@@ -41,6 +39,26 @@ namespace ilp_solver
         else
             return (do_get_solution() == nullptr ? SolutionStatus::NO_SOLUTION
                                                  : SolutionStatus::SUBOPTIMAL);
+    }
+
+    void ILPSolverOsi::set_num_threads        ([[maybe_unused]] int p_num_threads)
+    {
+        // Not supported by OsiSolverInterface.
+    }
+
+    void ILPSolverOsi::set_deterministic_mode ([[maybe_unused]] bool p_deterministic)
+    {
+        // Not supported by OsiSolverInterface.
+    }
+
+    void ILPSolverOsi::set_log_level          ([[maybe_unused]] int p_level)
+    {
+        do_get_solver()->messageHandler()->setLogLevel(p_level);
+    }
+
+    void ILPSolverOsi::set_max_seconds        ([[maybe_unused]] double p_seconds)
+    {
+        // Not supported by OsiSolverInterface.
     }
 }
 

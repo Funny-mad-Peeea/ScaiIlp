@@ -91,10 +91,10 @@ namespace ilp_solver
     }
 
 
-    void ILPSolverOsiModel::do_prepare_and_solve(const std::vector<double>& p_start_solution, int p_num_threads, bool p_deterministic, int p_log_level, double p_max_seconds)
+    void ILPSolverOsiModel::do_prepare_and_solve(const std::vector<double>& p_start_solution)
     {
         prepare();
-        do_solve(p_start_solution, p_num_threads, p_deterministic, p_log_level, p_max_seconds);
+        do_solve(p_start_solution);
     }
 
 

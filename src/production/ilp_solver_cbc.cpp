@@ -27,16 +27,8 @@ namespace ilp_solver
         d_model.assignSolver(solver, true);
     }
 
-    void ILPSolverCbc::do_solve(const std::vector<double>& p_start_solution,
-                                int p_num_threads, bool p_deterministic, int p_log_level, double p_max_seconds)
+    void ILPSolverCbc::do_solve(const std::vector<double>& p_start_solution)
     {
-        const auto cbc_num_threads = (p_num_threads == 1 ? 0 : p_num_threads);      // peculiarity of Cbc
-        const auto cbc_thread_mode = ((p_num_threads > 1 && p_deterministic) ? 1 : 0);
-
-        d_model.setNumberThreads(cbc_num_threads);
-        d_model.setThreadMode(cbc_thread_mode);
-        d_model.messageHandler()->setLogLevel(std::min(std::max(p_log_level, 0), 4));   // log level must be between 0 and 4
-        d_model.setMaximumSeconds(p_max_seconds);
         if (!p_start_solution.empty())
         {
             assert((int) p_start_solution.size() == d_model.getNumCols());
@@ -65,6 +57,29 @@ namespace ilp_solver
             return (do_get_solution() == nullptr ? SolutionStatus::NO_SOLUTION
                                                  : SolutionStatus::SUBOPTIMAL);
     }
+
+    void ILPSolverCbc::set_num_threads        (int p_num_threads)
+    {
+        const auto cbc_num_threads = (p_num_threads == 1 ? 0 : p_num_threads);      // peculiarity of Cbc
+        d_model.setNumberThreads(cbc_num_threads);
+    }
+
+    void ILPSolverCbc::set_deterministic_mode (bool p_deterministic)
+    {
+        const auto cbc_thread_mode = ((d_model.getNumberThreads() > 1 && p_deterministic) ? 1 : 0);
+        d_model.setThreadMode(cbc_thread_mode);
+    }
+
+    void ILPSolverCbc::set_log_level          (int p_level)
+    {
+        d_model.messageHandler()->setLogLevel(std::min(std::max(p_level, 0), 4));   // log level must be between 0 and 4
+    }
+
+    void ILPSolverCbc::set_max_seconds        (double p_seconds)
+    {
+        d_model.setMaximumSeconds(p_seconds);
+    }
+
 }
 
 #endif

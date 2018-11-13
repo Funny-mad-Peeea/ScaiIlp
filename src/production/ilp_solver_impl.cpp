@@ -9,7 +9,7 @@ using std::vector;
 namespace ilp_solver
 {
     ILPSolverImpl::ILPSolverImpl()
-        : d_start_solution(), d_num_threads(1), d_deterministic(true), d_log_level(0), d_max_seconds(std::numeric_limits<double>::max())
+        : d_start_solution()
         {}
 
     void ILPSolverImpl::add_variable_boolean(double p_objective, const string& p_name)
@@ -146,26 +146,6 @@ namespace ilp_solver
         return do_get_status();
     }
 
-    void ILPSolverImpl::set_num_threads(int p_num_threads)
-    {
-        d_num_threads = p_num_threads;
-    }
-
-    void ILPSolverImpl::set_deterministic_mode(bool p_deterministic)
-    {
-        d_deterministic = p_deterministic;
-    }
-
-    void ILPSolverImpl::set_log_level(int p_level)
-    {
-        d_log_level = p_level;
-    }
-
-    void ILPSolverImpl::set_max_seconds(double p_seconds)
-    {
-        d_max_seconds = p_seconds;
-    }
-
     void ILPSolverImpl::add_variable_and_update_index_vector(const std::vector<int>& p_row_indices, const std::vector<double>& p_row_values, double p_objective, double p_lower_bound, double p_upper_bound, const std::string& p_name, VariableType p_type)
     {
         d_all_col_indices.push_back((int) d_all_col_indices.size());    // update d_all_col_indices
@@ -180,7 +160,7 @@ namespace ilp_solver
 
     void ILPSolverImpl::solve()
     {
-        do_prepare_and_solve(d_start_solution, d_num_threads, d_deterministic, d_log_level, d_max_seconds);
+        do_prepare_and_solve(d_start_solution);
         d_start_solution.clear();
     }
 }
