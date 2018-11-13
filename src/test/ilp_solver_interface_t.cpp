@@ -410,44 +410,38 @@ namespace ilp_solver
             BOOST_FAIL("Bad alloc test failed (threw exception instead of treating as >>no solution<<.");
         }
     }
+
+    ILPSolverInterface* __stdcall create_stub()
+    {
+        constexpr std::string_view solver_exe_name = "ScaiIlpExe.exe";
+        return create_solver_stub(solver_exe_name.data());
+    }
 }
 
-void create_ilp_test_suite()
+
+
+int create_ilp_test_suite()
 {
     using namespace ilp_solver;
 
 
-    constexpr std::array<std::pair<void(*)(ILPSolverInterface*), std::string_view>, 5> all_tests
+    constexpr std::array<std::pair<TestFunction, std::string_view>, 5> all_tests
     { std::pair{test_sorting, "Sorting"}
     , std::pair{test_linear_programming, "LinProgr"}
-    , std::pair{test_performance, "Performance"}
     , std::pair{test_start_solution_minimization, "StartSolutionMin"}
     , std::pair{test_start_solution_maximization, "StartSolutionMax"}
+    , std::pair{test_performance, "Performance"}
     };
 
-    constexpr std::array<std::pair<TestFunction, std::string_view>, 1> stub_tests
-    { std::pair{test_bad_alloc, "BadAlloc"}
-    };
-
-    constexpr int num_solvers = WITH_CBC;
-    constexpr int num_stubs   = WITH_CBC;
-
+    constexpr int num_solvers = 2 * (WITH_CBC);
 
     constexpr std::array<std::pair<FactoryFunction, std::string_view>, num_solvers> all_solvers
     {
 #if WITH_CBC == 1
         std::pair{create_solver_cbc, "CBC"},
+        std::pair{create_stub,       "CBCStub"},
 #endif
     };
-
-    constexpr std::array<std::pair<StubFunction, std::string_view>, num_solvers> all_stubs
-    {
-#if WITH_CBC == 1
-        std::pair{create_solver_stub, "CBCStub"},
-#endif
-    };
-
-    constexpr std::string_view solver_exe_name = "ScaiIlpExe.exe";
 
     boost::unit_test::test_suite* IlpSolverT = BOOST_TEST_SUITE("IlpSolverT");
 
@@ -458,40 +452,29 @@ void create_ilp_test_suite()
         for (auto& [test, test_name] : all_tests)
         {
             // We need an object to pass to make_test_case, and it needs copy-by-value (solver and test are merely pointers anyway.).
-            auto lambda = [solver, test]()
-            {
-                execute_test_and_destroy_solver(solver(), test);
-            };
+            auto lambda = [solver, test]() { execute_test_and_destroy_solver(solver(), test); };
             // Since we use a functor and a name, we avoid using one of the macros and create a test case directly.
             suite->add( boost::unit_test::make_test_case(lambda, test_name.data(), __FILE__, __LINE__) );
         }
-        // Add the current solver to the IlpSolverT testsuite.
-        IlpSolverT->add( suite );
-    }
 
-    // Do the same as above, just for all stubs - this time including the stub-only tests.
-    for (auto& [stub, stub_name] : all_stubs)
-    {
-        boost::unit_test::test_suite* suite = BOOST_TEST_SUITE(stub_name.data());
-        for (auto&[test, test_name] : all_tests)
+        if (solver_name.rfind("Stub") != std::string::npos)
         {
-            auto lambda = [stub, test, solver_exe_name]()
-            {
-                execute_test_and_destroy_solver(stub(solver_exe_name.data()), test);
-            };
-            suite->add(boost::unit_test::make_test_case(lambda, test_name.data(), __FILE__, __LINE__));
+            auto lambda = [solver]() { execute_test_and_destroy_solver(solver(), test_bad_alloc); };
+            suite->add( boost::unit_test::make_test_case(lambda, "BadAlloc", __FILE__, __LINE__) );
         }
-        for (auto&[test, test_name] : stub_tests)
-        {
-            auto lambda = [stub, test, solver_exe_name]()
-            {
-                execute_test_and_destroy_solver(stub(solver_exe_name.data()), test);
-            };
-            suite->add(boost::unit_test::make_test_case(lambda, test_name.data(), __FILE__, __LINE__));
-        }
-        IlpSolverT->add(suite);
+
+        // Add the current solver to the IlpSolverT test suite.
+        IlpSolverT->add( suite );
     }
 
     // Add the whole IlpSolver test suite to the master test suite.
     boost::unit_test::framework::master_test_suite().add(IlpSolverT);
+
+    return 0;
+}
+
+// Automatic registration of the test suites.
+namespace
+{
+    inline const int hidden_registrar{ create_ilp_test_suite() };
 }
