@@ -17,9 +17,9 @@ using std::string;
 using std::vector;
 
 const auto c_eps = 0.0001;
-const auto c_num_performance_test_repetitions = 10000;
+const auto c_num_performance_test_repetitions = 1;
 
-const bool LOGGING = false;
+const bool LOGGING = true;
 
 namespace ilp_solver
 {
@@ -272,8 +272,6 @@ namespace ilp_solver
 
     void test_performance(ILPSolverInterface* p_solver)
     {
-        std::stringstream logging;
-
         // max x+y, -1 <= x, y <= 1
         p_solver->add_variable_continuous(1, -1, 1);
         p_solver->add_variable_continuous(1, -1, 1);
@@ -294,8 +292,6 @@ namespace ilp_solver
         expected_solution.push_back(2.0/3.0);
         expected_solution.push_back(2.0/3.0);
 
-        const auto one_twentieth = c_num_performance_test_repetitions/20;
-
         const auto start_time = GetTickCount();
         for (auto i = 1; i <= c_num_performance_test_repetitions; ++i)
         {
@@ -304,18 +300,11 @@ namespace ilp_solver
 
             BOOST_REQUIRE_CLOSE(solution[0], expected_solution[0], c_eps);
             BOOST_REQUIRE_CLOSE(solution[1], expected_solution[1], c_eps);
-
-            if ((i % one_twentieth) == 0)
-                logging << "*";
         }
         const auto end_time = GetTickCount();
 
-        logging << endl
-             << endl
-             << "Test took " << end_time - start_time << " ms" << endl;
-
         if (LOGGING)
-            cout << logging.str();
+            cout << "Test took " << end_time - start_time << " ms" << endl;
     }
 
 
