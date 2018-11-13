@@ -1,5 +1,6 @@
 #if WITH_CBC == 1
 
+#include <algorithm>
 #include "ilp_solver_cbc.hpp"
 
 #pragma warning(push)
@@ -77,7 +78,7 @@ namespace ilp_solver
 
     void ILPSolverCbc::set_log_level          (int p_level)
     {
-        d_model.messageHandler()->setLogLevel(std::min(std::max(p_level, 0), 4));   // log level must be between 0 and 4
+        d_model.messageHandler()->setLogLevel(std::clamp(p_level, 0, 4));   // log level must be between 0 and 4
     }
 
     void ILPSolverCbc::set_max_seconds        (double p_seconds)
