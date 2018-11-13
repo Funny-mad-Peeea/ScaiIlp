@@ -13,12 +13,18 @@ namespace ilp_solver
 {
     OsiSolverInterface* ILPSolverCbc::do_get_solver()
     {
-        return &d_clp_solver;
+        return d_model.solver();
     }
 
     const OsiSolverInterface* ILPSolverCbc::do_get_solver() const
     {
-        return &d_clp_solver;
+        return d_model.solver();
+    }
+
+    ILPSolverCbc::ILPSolverCbc()
+    {
+        OsiSolverInterface* solver = new OsiClpSolverInterface();
+        d_model.assignSolver(solver, true);
     }
 
     void ILPSolverCbc::do_solve(const std::vector<double>& p_start_solution,
@@ -27,8 +33,6 @@ namespace ilp_solver
         const auto cbc_num_threads = (p_num_threads == 1 ? 0 : p_num_threads);      // peculiarity of Cbc
         const auto cbc_thread_mode = ((p_num_threads > 1 && p_deterministic) ? 1 : 0);
 
-        const auto solver = do_get_solver();
-        d_model = CbcModel(*solver);
         d_model.setNumberThreads(cbc_num_threads);
         d_model.setThreadMode(cbc_thread_mode);
         d_model.messageHandler()->setLogLevel(std::min(std::max(p_log_level, 0), 4));   // log level must be between 0 and 4

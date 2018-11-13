@@ -27,8 +27,9 @@ namespace ilp_solver
 {
     class ILPSolverCbc : public ILPSolverOsiModel
     {
+        public:
+            ILPSolverCbc();
         private:
-            OsiClpSolverInterface d_clp_solver;
             CbcModel d_model;
 
             OsiSolverInterface*       do_get_solver    ()       override;
