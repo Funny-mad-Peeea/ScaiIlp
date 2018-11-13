@@ -4,6 +4,7 @@
 #include <array>
 #include <algorithm>
 #include <iostream>
+#include <string_view>
 
 #include <boost/test/unit_test.hpp>
 
