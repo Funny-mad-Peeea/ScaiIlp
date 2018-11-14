@@ -35,6 +35,8 @@ namespace ilp_solver
 
     void ILPSolverCbc::do_solve(const std::vector<double>& p_start_solution)
     {
+        d_model.resetModel();
+
         if (!p_start_solution.empty())
         {
             assert((int) p_start_solution.size() == d_model.getNumCols());
