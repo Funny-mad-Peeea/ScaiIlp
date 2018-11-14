@@ -41,22 +41,22 @@ namespace ilp_solver
                                                  : SolutionStatus::SUBOPTIMAL);
     }
 
-    void ILPSolverOsi::set_num_threads        ([[maybe_unused]] int p_num_threads)
+    void ILPSolverOsi::set_num_threads        (int)
     {
         // Not supported by OsiSolverInterface.
     }
 
-    void ILPSolverOsi::set_deterministic_mode ([[maybe_unused]] bool p_deterministic)
+    void ILPSolverOsi::set_deterministic_mode (bool)
     {
         // Not supported by OsiSolverInterface.
     }
 
-    void ILPSolverOsi::set_log_level          ([[maybe_unused]] int p_level)
+    void ILPSolverOsi::set_log_level          (int p_level)
     {
         do_get_solver()->messageHandler()->setLogLevel(p_level);
     }
 
-    void ILPSolverOsi::set_max_seconds        ([[maybe_unused]] double p_seconds)
+    void ILPSolverOsi::set_max_seconds        (double)
     {
         // Not supported by OsiSolverInterface.
     }

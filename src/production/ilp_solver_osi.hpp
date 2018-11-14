@@ -27,10 +27,10 @@ namespace ilp_solver
             SolutionStatus            do_get_status    () const override;
 
 
-            virtual void set_num_threads        (int p_num_threads)    override;
-            virtual void set_deterministic_mode (bool p_deterministic) override;
-                    void set_log_level          (int p_level)          override;
-            virtual void set_max_seconds        (double p_seconds)     override;
+            void set_num_threads        (int p_num_threads)    override;
+            void set_deterministic_mode (bool p_deterministic) override;
+            void set_log_level          (int p_level)          override;
+            void set_max_seconds        (double p_seconds)     override;
     };
 }
 
