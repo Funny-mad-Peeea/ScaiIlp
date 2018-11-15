@@ -163,4 +163,13 @@ namespace ilp_solver
         do_prepare_and_solve(d_start_solution);
         d_start_solution.clear();
     }
+
+    void ILPSolverImpl::set_default_parameters()
+    {
+        set_num_threads(c_default_num_threads);
+        set_deterministic_mode(c_default_deterministic);
+        set_log_level(c_default_log_level);
+        set_max_seconds(c_default_max_seconds);
+    }
+
 }

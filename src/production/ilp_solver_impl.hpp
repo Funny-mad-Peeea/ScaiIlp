@@ -40,6 +40,8 @@ namespace ilp_solver
 
         protected:
             ILPSolverImpl();
+            void set_default_parameters();
+
 
         private:
             std::vector<int>    d_all_col_indices;

@@ -8,6 +8,11 @@ namespace ilp_solver
 {
     enum class SolutionStatus { PROVEN_OPTIMAL, PROVEN_INFEASIBLE, SUBOPTIMAL, NO_SOLUTION };
 
+    static constexpr int    c_default_num_threads  { 0 };
+    static constexpr int    c_default_log_level    { 0 };
+    static constexpr bool   c_default_deterministic{ true };
+    static constexpr double c_default_max_seconds  { std::numeric_limits<double>::max() };
+
 
     class SolverExeException : public std::runtime_error
     {

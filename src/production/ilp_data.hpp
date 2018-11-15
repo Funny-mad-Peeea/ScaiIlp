@@ -27,8 +27,13 @@ namespace ilp_solver
         int log_level;
         double max_seconds;
 
-        ILPData() : objective_sense(ObjectiveSense::MINIMIZE),
-                    num_threads(1), deterministic(true), log_level(0), max_seconds(std::numeric_limits<double>::max()) {}
+        ILPData()
+            : objective_sense{ ObjectiveSense::MINIMIZE }
+            , num_threads    { c_default_num_threads }
+            , deterministic  { c_default_deterministic }
+            , log_level      { c_default_log_level }
+            , max_seconds    { c_default_max_seconds }
+        { }
     };
 
 
