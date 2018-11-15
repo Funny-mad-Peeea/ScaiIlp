@@ -2,6 +2,7 @@
 
 #include <algorithm>
 #include "ilp_solver_cbc.hpp"
+#include "CglTreeInfo.hpp" // Needed to deal with the probing_info memory leak in Cbc
 
 #pragma warning(push)
 #pragma warning(disable : 5033) // silence warning in CBC concerning the deprecated keyword 'register'
@@ -32,7 +33,9 @@ namespace ilp_solver
 
     void ILPSolverCbc::do_solve(const std::vector<double>& p_start_solution)
     {
-        d_model.resetModel();
+        auto probing_ptr = d_model.probingInfo();
+        if (probing_ptr)
+            delete probing_ptr;
 
         if (!p_start_solution.empty())
         {
