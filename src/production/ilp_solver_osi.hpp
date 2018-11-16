@@ -18,14 +18,7 @@ namespace ilp_solver
         private:
             OsiSolverInterface* d_ilp_solver;
 
-            OsiSolverInterface*       do_get_solver    ()       override { return d_ilp_solver; }
-            const OsiSolverInterface* do_get_solver    () const override { return d_ilp_solver; }
-
-            void                      do_solve         (const std::vector<double>& p_start_solution) override;
-            const double*             do_get_solution  () const override;
-            double                    do_get_objective () const override;
-            SolutionStatus            do_get_status    () const override;
-
+            OsiSolverInterface*       get_solver    ()       override { return d_ilp_solver; }
 
             void set_num_threads        (int p_num_threads)    override;
             void set_deterministic_mode (bool p_deterministic) override;

@@ -5,8 +5,11 @@
 
 namespace ilp_solver
 {
-    enum class VariableType   { INTEGER, CONTINUOUS };
+    enum class VariableType   { INTEGER, CONTINUOUS, BINARY };
     enum class ObjectiveSense { MINIMIZE, MAXIMIZE };
+
+    void handle( const std::vector<int>*& p_row_indices, const std::vector<int>& p_d_rows, const std::vector<int>*& p_col_indices, const std::vector<int>& p_d_cols) noexcept;
+
 
     class ILPSolverImpl : public ILPSolverInterface
     {
@@ -30,40 +33,23 @@ namespace ilp_solver
             void add_constraint_equality (                                       const std::vector<double>& p_col_values,                                              double p_value,    const std::string& p_name = "") override;
             void add_constraint_equality (const std::vector<int>& p_col_indices, const std::vector<double>& p_col_values,                                              double p_value,    const std::string& p_name = "") override;
 
-            void set_start_solution      (const std::vector<double>& p_solution) override;
-
-            void                      minimize      ()       override;
-            void                      maximize      ()       override;
-            const std::vector<double> get_solution  () const override;
-            double                    get_objective () const override;
-            SolutionStatus            get_status    () const override;
+            void minimize() override;
+            void maximize() override;
 
         protected:
-            ILPSolverImpl();
             void set_default_parameters();
 
 
         private:
-            std::vector<int>    d_all_col_indices;
-            std::vector<int>    d_all_row_indices;
-            std::vector<double> d_start_solution;
+            virtual void add_variable_impl (VariableType p_type, double p_objective, double p_lower_bound, double p_upper_bound,
+                                            const std::string& p_name = "", const std::vector<double>* p_row_values = nullptr,
+                                            const std::vector<int>* p_row_indices = nullptr) = 0;
 
-            virtual void do_add_variable   (const std::vector<int>& p_row_indices, const std::vector<double>& p_row_values, double p_objective,
-                                            double p_lower_bound, double p_upper_bound, const std::string& p_name, VariableType p_type)             = 0;
-            virtual void do_add_constraint (const std::vector<int>& p_col_indices, const std::vector<double>& p_col_values, double p_lower_bound,
-                                            double p_upper_bound, const std::string& p_name)                                                        = 0;
-
-            virtual void           do_set_objective_sense (ObjectiveSense p_sense) = 0;
-            virtual void           do_prepare_and_solve   (const std::vector<double>& p_start_solution) = 0 ; // p_start_solution can be empty
-            virtual const double*  do_get_solution        () const = 0;
-            virtual double         do_get_objective       () const = 0;
-            virtual SolutionStatus do_get_status          () const = 0;
-
-            void add_variable_and_update_index_vector   (const std::vector<int>& p_row_indices, const std::vector<double>& p_row_values,
-                                                         double p_objective, double p_lower_bound, double p_upper_bound, const std::string& p_name, VariableType p_type);
-            void add_constraint_and_update_index_vector (const std::vector<int>& p_col_indices, const std::vector<double>& p_col_values,
-                                                         double p_lower_bound, double p_upper_bound, const std::string& p_name);
-            void solve();
+            virtual void add_constraint_impl (const double* p_lower_bound, const double* p_upper_bound,
+                                              const std::vector<double>& p_col_values, const std::string& p_name = "",
+                                              const std::vector<int>* p_col_indices = nullptr) = 0;
+            virtual void solve_impl() = 0;
+            virtual void set_objective_sense(ObjectiveSense p_sense) = 0;
     };
 }
 

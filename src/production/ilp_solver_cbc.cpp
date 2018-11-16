@@ -13,12 +13,7 @@
 
 namespace ilp_solver
 {
-    OsiSolverInterface* ILPSolverCbc::do_get_solver()
-    {
-        return d_model.solver();
-    }
-
-    const OsiSolverInterface* ILPSolverCbc::do_get_solver() const
+    OsiSolverInterface* ILPSolverCbc::get_solver()
     {
         return d_model.solver();
     }
@@ -31,45 +26,45 @@ namespace ilp_solver
         set_default_parameters();
     }
 
-    void ILPSolverCbc::do_solve(const std::vector<double>& p_start_solution)
+    std::vector<double> ILPSolverCbc::get_solution() const
     {
-        auto probing_ptr = d_model.probingInfo();
-        if (probing_ptr)
-            delete probing_ptr;
-
-        if (!p_start_solution.empty())
-        {
-            assert((int) p_start_solution.size() == d_model.getNumCols());
-            d_model.setBestSolution(p_start_solution.data(), static_cast<int>(p_start_solution.size()), COIN_DBL_MAX, true);
-        }
-        d_model.branchAndBound();
+        const auto* result = d_model.bestSolution();
+        if (!result) return std::vector<double>();
+        return std::vector<double>(result, result + d_model.getNumCols());
     }
 
-    const double* ILPSolverCbc::do_get_solution() const
-    {
-        return d_model.bestSolution();
-    }
-
-    double ILPSolverCbc::do_get_objective() const
+    double ILPSolverCbc::get_objective() const
     {
         return d_model.getObjValue();
     }
 
-    SolutionStatus ILPSolverCbc::do_get_status() const
+    SolutionStatus ILPSolverCbc::get_status() const
     {
         if (d_model.isProvenOptimal())
             return SolutionStatus::PROVEN_OPTIMAL;
         else if (d_model.isProvenInfeasible())
             return SolutionStatus::PROVEN_INFEASIBLE;
         else
-            return (do_get_solution() == nullptr ? SolutionStatus::NO_SOLUTION
-                                                 : SolutionStatus::SUBOPTIMAL);
+            return (d_model.bestSolution() == nullptr ? SolutionStatus::NO_SOLUTION
+                : SolutionStatus::SUBOPTIMAL);
+    }
+
+    void ILPSolverCbc::set_start_solution(const std::vector<double>& p_solution)
+    {
+        std::cout << "MODEL SENSE: " << d_model.getObjSense() << ' ' << d_model.getObjValue() << ' ';
+        d_model.setBestSolution(p_solution.data(), p_solution.size(), COIN_DBL_MAX, true);
+        std::cout << d_model.getObjValue() << ' ' << d_model.bestSolution()[0]  <<std::endl;
     }
 
     void ILPSolverCbc::set_num_threads        (int p_num_threads)
     {
         const auto cbc_num_threads = (p_num_threads == 1 ? 0 : p_num_threads);      // peculiarity of Cbc
         d_model.setNumberThreads(cbc_num_threads);
+    }
+
+    void ILPSolverCbc::solve_impl()
+    {
+        d_model.branchAndBound();
     }
 
     void ILPSolverCbc::set_deterministic_mode (bool p_deterministic)

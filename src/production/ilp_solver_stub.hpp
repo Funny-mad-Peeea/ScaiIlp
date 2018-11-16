@@ -20,11 +20,11 @@ namespace ilp_solver
 
             ILPSolutionData d_ilp_solution_data;
 
-            void do_solve(const ILPData& p_data) override;
+            void solve_impl() override;
 
-            const double*  do_get_solution  () const override;
-            double         do_get_objective () const override;
-            SolutionStatus do_get_status    () const override;
+            std::vector<double>       get_solution  () const override;
+            double                    get_objective () const override;
+            SolutionStatus            get_status    () const override;
     };
 }
 

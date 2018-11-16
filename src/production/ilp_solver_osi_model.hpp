@@ -26,26 +26,29 @@ namespace ilp_solver
         public:
             ILPSolverOsiModel();
 
+            std::vector<double> get_solution       () const                                override;
+            void                set_start_solution (const std::vector<double>& p_solution) override;
+
+            double              get_objective      () const                                override;
+            SolutionStatus      get_status         () const                                override;
+
         private:
-            CoinPackedMatrix          d_matrix;
-            std::vector<double>       d_objective;
-            std::vector<double>       d_variable_lower, d_variable_upper;
-            std::vector<double>       d_constraint_lower, d_constraint_upper;
-            std::vector<VariableType> d_variable_type;
-            std::vector<std::string>  d_variable_name;
-            std::vector<std::string>  d_constraint_name;
+            std::vector<int> d_rows;
+            std::vector<int> d_cols;
 
-            virtual OsiSolverInterface*       do_get_solver ()       = 0;
-            virtual const OsiSolverInterface* do_get_solver () const = 0;
-            virtual void                      do_solve      (const std::vector<double>& p_start_solution) = 0; // not always implemented as solver().branchAndBound() (see ILPSolverCbc)
+            virtual OsiSolverInterface*       get_solver ()       = 0;
 
-            void do_add_variable   (const std::vector<int>& p_row_indices, const std::vector<double>& p_row_values, double p_objective, double p_lower_bound, double p_upper_bound, const std::string& p_name, VariableType p_type) override;
-            void do_add_constraint (const std::vector<int>& p_col_indices, const std::vector<double>& p_col_values, double p_lower_bound, double p_upper_bound, const std::string& p_name)                                          override;
+            const OsiSolverInterface* get_solver () const;
+            void add_variable_impl (VariableType p_type, double p_objective, double p_lower_bound, double p_upper_bound,
+                [[maybe_unused]] const std::string& p_name = "", const std::vector<double>* p_row_values = nullptr,
+                const std::vector<int>* p_row_indices = nullptr) override;
 
-            void do_set_objective_sense (ObjectiveSense p_sense) override;
-            void do_prepare_and_solve   (const std::vector<double>& p_start_solution) override;
+            void add_constraint_impl (const double* p_lower_bound, const double* p_upper_bound,
+                const std::vector<double>& p_col_values, [[maybe_unused]] const std::string& p_name = "",
+                const std::vector<int>* p_col_indices = nullptr) override;
 
-            void prepare();
+            void solve_impl() override;
+            void set_objective_sense(ObjectiveSense p_sense) override;
     };
 }
 

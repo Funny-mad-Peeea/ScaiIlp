@@ -29,21 +29,23 @@ namespace ilp_solver
     {
         public:
             ILPSolverCbc();
-        private:
-            CbcModel d_model;
 
-            OsiSolverInterface*       do_get_solver    ()       override;
-            const OsiSolverInterface* do_get_solver    () const override;
+            std::vector<double> get_solution  () const override;
+            double              get_objective () const override;
+            SolutionStatus      get_status    () const override;
 
-            void                      do_solve         (const std::vector<double>& p_start_solution) override;
-            const double*             do_get_solution  () const override;
-            double                    do_get_objective () const override;
-            SolutionStatus            do_get_status    () const override;
+            void set_start_solution(const std::vector<double>& p_solution) override;
 
             void set_num_threads        (int p_num_threads)    override;
             void set_deterministic_mode (bool p_deterministic) override;
             void set_log_level          (int p_level)          override;
             void set_max_seconds        (double p_seconds)     override;
+        private:
+            CbcModel d_model;
+
+            OsiSolverInterface*       get_solver    ()       override;
+
+            void solve_impl() override;
     };
 }
 

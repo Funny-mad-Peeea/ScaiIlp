@@ -206,34 +206,32 @@ namespace ilp_solver
         {}
 
 
-    const double* ILPSolverStub::do_get_solution() const
+    std::vector<double> ILPSolverStub::get_solution() const
     {
-        return d_ilp_solution_data.solution.data();
+        return d_ilp_solution_data.solution;
     }
 
-
-    double ILPSolverStub::do_get_objective() const
+    double ILPSolverStub::get_objective() const
     {
         return d_ilp_solution_data.objective;
     }
 
-
-    SolutionStatus ILPSolverStub::do_get_status() const
+    SolutionStatus ILPSolverStub::get_status() const
     {
         return d_ilp_solution_data.solution_status;
     }
 
 
-    void ILPSolverStub::do_solve(const ILPData& p_data)
+    void ILPSolverStub::solve_impl()
     {
-        d_ilp_solution_data = ILPSolutionData(p_data.objective_sense);
+        d_ilp_solution_data = ILPSolutionData(d_ilp_data.objective_sense);
 
         CommunicationParent communicator;
-        const auto shared_memory_name = communicator.write_ilp_data(p_data);
+        const auto shared_memory_name = communicator.write_ilp_data(d_ilp_data);
 
-        auto exit_code = execute_process(d_executable_basename, shared_memory_name, seconds_to_milliseconds (1.5*p_data.max_seconds));
+        auto exit_code = execute_process(d_executable_basename, shared_memory_name, seconds_to_milliseconds (1.5 * d_ilp_data.max_seconds));
         if (exit_code != SolverExitCode::ok)
-            handle_error(p_data.log_level, exit_code);
+            handle_error(d_ilp_data.log_level, exit_code);
         else
             communicator.read_solution_data(&d_ilp_solution_data);
     }

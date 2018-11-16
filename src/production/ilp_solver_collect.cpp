@@ -4,7 +4,6 @@
 
 using std::string;
 using std::vector;
-
 typedef vector< vector<double> > Matrix;
 
 namespace ilp_solver
@@ -27,7 +26,6 @@ namespace ilp_solver
         }
     }
 
-
     static void append_row(Matrix* v_matrix, int p_num_cols, const vector<int>& p_col_indices, const vector<double>& p_col_values)
     {
         // enlarge matrix
@@ -43,42 +41,57 @@ namespace ilp_solver
         }
     }
 
-
-    void ILPSolverCollect::do_add_variable(const vector<int>& p_row_indices, const vector<double>& p_row_values, double p_objective, double p_lower_bound, double p_upper_bound, const string& /* p_name */, VariableType p_type)
+    void ILPSolverCollect::add_variable_impl (VariableType p_type, double p_objective, double p_lower_bound, double p_upper_bound,
+        const std::string& /* p_name */, const std::vector<double>* p_row_values,
+        const std::vector<int>* p_row_indices)
     {
-        assert(p_row_indices.size() == p_row_values.size());
+        if (p_row_values)
+        {
+            if (!p_row_indices) p_row_indices = &d_rows;
+            assert (p_row_values->size() >= p_row_indices->size());
+            assert (p_row_indices->size() <= d_rows.size());
+            append_column(&d_ilp_data.matrix, *p_row_indices, *p_row_values);
+        }
+        else
+        {
+            append_column(&d_ilp_data.matrix, std::vector<int>(), std::vector<double>());
+        }
 
-        append_column(&d_ilp_data.matrix, p_row_indices, p_row_values);
         d_ilp_data.objective.push_back(p_objective);
         d_ilp_data.variable_lower.push_back(p_lower_bound);
         d_ilp_data.variable_upper.push_back(p_upper_bound);
         d_ilp_data.variable_type.push_back(p_type);
+
+        d_cols.push_back(d_cols.size());
     }
 
-
-    void ILPSolverCollect::do_add_constraint(const vector<int>& p_col_indices, const vector<double>& p_col_values, double p_lower_bound, double p_upper_bound, const string& /* p_name */)
+    void ILPSolverCollect::add_constraint_impl (const double* p_lower_bound, const double* p_upper_bound,
+        const std::vector<double>& p_col_values, const std::string& /* p_name */,
+        const std::vector<int>* p_col_indices)
     {
-        assert(p_col_indices.size() == p_col_values.size());
+        if (!p_col_indices) p_col_indices = &d_cols;
+        assert(p_col_values.size() >= p_col_indices->size());
+        assert(p_col_indices->size() <= d_cols.size());
 
-        const auto num_cols = (int) d_ilp_data.objective.size();
+        int n_cols = static_cast<int>(d_ilp_data.objective.size());
+        double lower = (p_lower_bound) ? *p_lower_bound : std::numeric_limits<double>::lowest();
+        double upper = (p_upper_bound) ? *p_upper_bound : std::numeric_limits<double>::max();
 
-        append_row(&d_ilp_data.matrix, num_cols, p_col_indices, p_col_values);
-        d_ilp_data.constraint_lower.push_back(p_lower_bound);
-        d_ilp_data.constraint_upper.push_back(p_upper_bound);
+        append_row(&d_ilp_data.matrix, n_cols, *p_col_indices, p_col_values);
+        d_ilp_data.constraint_lower.push_back(lower);
+        d_ilp_data.constraint_upper.push_back(upper);
+
+        d_rows.push_back(d_rows.size());
     }
 
-
-    void ILPSolverCollect::do_set_objective_sense(ObjectiveSense p_sense)
+    void ILPSolverCollect::set_objective_sense(ObjectiveSense p_sense)
     {
         d_ilp_data.objective_sense = p_sense;
     }
 
-
-    void ILPSolverCollect::do_prepare_and_solve(const std::vector<double>& p_start_solution)
+    void ILPSolverCollect::set_start_solution(const std::vector<double>& p_solution)
     {
-        d_ilp_data.start_solution = p_start_solution;
-
-        do_solve(d_ilp_data);
+        d_ilp_data.start_solution = p_solution;
     }
 
     void ILPSolverCollect::set_num_threads        (int p_num_threads)
