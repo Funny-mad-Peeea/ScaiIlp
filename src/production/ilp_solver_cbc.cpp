@@ -51,9 +51,7 @@ namespace ilp_solver
 
     void ILPSolverCbc::set_start_solution(const std::vector<double>& p_solution)
     {
-        std::cout << "MODEL SENSE: " << d_model.getObjSense() << ' ' << d_model.getObjValue() << ' ';
         d_model.setBestSolution(p_solution.data(), p_solution.size(), COIN_DBL_MAX, true);
-        std::cout << d_model.getObjValue() << ' ' << d_model.bestSolution()[0]  <<std::endl;
     }
 
     void ILPSolverCbc::set_num_threads        (int p_num_threads)
@@ -64,6 +62,9 @@ namespace ilp_solver
 
     void ILPSolverCbc::solve_impl()
     {
+        auto probing_ptr = d_model.probingInfo();
+        if (probing_ptr)
+            delete probing_ptr;
         d_model.branchAndBound();
     }
 
@@ -75,7 +76,9 @@ namespace ilp_solver
 
     void ILPSolverCbc::set_log_level          (int p_level)
     {
-        d_model.messageHandler()->setLogLevel(std::clamp(p_level, 0, 4));   // log level must be between 0 and 4
+        int level = std::clamp(p_level, 0, 4); // log level must be between 0 and 4
+        d_model.messageHandler()->setLogLevel(level);   // Both CBC and the CLP solver must be set.
+        d_model.solver()->messageHandler()->setLogLevel(level);
     }
 
     void ILPSolverCbc::set_max_seconds        (double p_seconds)

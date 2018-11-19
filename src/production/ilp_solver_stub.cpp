@@ -178,6 +178,7 @@ namespace ilp_solver
         switch (p_exit_code)
         {
         case SolverExitCode::out_of_memory:
+            std::cout << "OUT OF MEMORY" << std::endl;
         case SolverExitCode::uncaught_exception_1:
         case SolverExitCode::uncaught_exception_2:
         case SolverExitCode::uncaught_exception_3:
@@ -203,7 +204,9 @@ namespace ilp_solver
 
     ILPSolverStub::ILPSolverStub(const std::string& p_executable_basename)
         : d_executable_basename(p_executable_basename)
-        {}
+    {
+        set_default_parameters();
+    }
 
 
     std::vector<double> ILPSolverStub::get_solution() const

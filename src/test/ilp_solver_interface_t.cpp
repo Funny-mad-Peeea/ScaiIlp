@@ -361,11 +361,11 @@ namespace ilp_solver
         // It is not clear that this is sufficient to provoke a bad_alloc.
         const auto variable_scaling = 10.0;
         const auto num_variables = 500000;
-        for (auto j = 0; j < num_variables; ++j){
-            p_solver->add_variable_integer(rand_double(), variable_scaling*rand_double(), variable_scaling*(1.0 + rand_double())); std::cout << j << std::endl;}
+        for (auto j = 0; j < num_variables; ++j)
+            p_solver->add_variable_integer(rand_double(), variable_scaling*rand_double(), variable_scaling*(1.0 + rand_double()));
 
         const auto constraint_scaling = num_variables*variable_scaling;
-        const auto num_constraints = 100;
+        const auto num_constraints = 150;
         std::vector<double> constraint_vector(num_variables);
         for (auto i = 0; i < num_constraints; ++i)
         {
@@ -373,10 +373,12 @@ namespace ilp_solver
             p_solver->add_constraint(constraint_vector, constraint_scaling*rand_double(), constraint_scaling*(1.0 + rand_double()));
         }
 
+        p_solver->set_max_seconds(10); // Don't waste time if we can build the problem.
         try
         {
             // bad_alloc should be treated as "no solution"
             p_solver->minimize();
+
             BOOST_REQUIRE(p_solver->get_status() == SolutionStatus::NO_SOLUTION);
             BOOST_REQUIRE_EQUAL (p_solver->get_solution().size(), 0u);
         }
