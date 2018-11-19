@@ -3,13 +3,25 @@
 
 #include "ilp_solver_interface.hpp"
 
+
+// The implementation serves to avoid redundant code duplication.
+// When inheriting from ILPSolverImpl, you only need to implement the following functions:
+//     add_variable_impl
+//     add_constraint_impl
+//     solve_impl
+//     set_objective_sense
+//     set_start_solution
+//     get_solution
+//     get_objective
+//     get_status
+//     set_num_threads
+//     set_deterministic_mode
+//     set_log_level
+//     set_max_seconds
 namespace ilp_solver
 {
     enum class VariableType   { INTEGER, CONTINUOUS, BINARY };
     enum class ObjectiveSense { MINIMIZE, MAXIMIZE };
-
-    void handle( const std::vector<int>*& p_row_indices, const std::vector<int>& p_d_rows, const std::vector<int>*& p_col_indices, const std::vector<int>& p_d_cols) noexcept;
-
 
     class ILPSolverImpl : public ILPSolverInterface
     {
@@ -45,9 +57,11 @@ namespace ilp_solver
                                             const std::string& p_name = "", const std::vector<double>* p_row_values = nullptr,
                                             const std::vector<int>* p_row_indices = nullptr) = 0;
 
+
             virtual void add_constraint_impl (const double* p_lower_bound, const double* p_upper_bound,
                                               const std::vector<double>& p_col_values, const std::string& p_name = "",
                                               const std::vector<int>* p_col_indices = nullptr) = 0;
+
             virtual void solve_impl() = 0;
             virtual void set_objective_sense(ObjectiveSense p_sense) = 0;
     };

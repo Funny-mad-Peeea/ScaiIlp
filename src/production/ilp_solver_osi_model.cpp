@@ -42,10 +42,12 @@ namespace ilp_solver
 
         if (p_row_values)
         {
+            // If no indices are given, use all indices.
             if (!p_row_indices) p_row_indices = &d_rows;
             assert (p_row_values->size()  >= p_row_indices->size());
             assert (p_row_indices->size() <= d_rows.size());
 
+            // Osi operates on raw pointers and sizes.
             n_rows = static_cast<int>(p_row_indices->size());
             rows   = p_row_indices->data();
             vals   = p_row_values->data();
@@ -82,22 +84,26 @@ namespace ilp_solver
         const double* vals{ p_col_values.data() };
         int         n_cols{ 0 };
 
+        // Osi supports its own indicator for infinity.
         const double max{  solver->getInfinity() };
         const double min{ -solver->getInfinity() };
 
+        // If no indices are given, use all indices.
         if (!p_col_indices) p_col_indices = &d_cols;
-
         assert( p_col_values.size()   >= p_col_indices->size() );
         assert( p_col_indices->size() <= d_cols.size() );
 
+        // Osi operates on raw pointers and sizes.
         n_cols = static_cast<int>(p_col_indices->size());
         cols   = p_col_indices->data();
 
+        // Anything larger than half of infinity or smaller than half of -infinity is no bound.
         double lower = (p_lower_bound) ? *p_lower_bound : min;
                lower = (lower <= 0.5 * min) ? min : lower;
         double upper = (p_upper_bound) ? *p_upper_bound : max;
                upper = (upper >= 0.5 * max) ? max : upper;
 
+        // If there are no bounds, we do not need to do anything.
         if (lower == min && upper == max) return;
 
         solver->addRow(n_cols, cols, vals, lower, upper);
@@ -111,7 +117,7 @@ namespace ilp_solver
     std::vector<double> ILPSolverOsiModel::get_solution() const
     {
         auto* solver{ get_solver() };
-        const auto* solution_array = solver->getColSolution();
+        const auto* solution_array = solver->getColSolution(); // Returns nullptr if no solution was found.
 
         if (!solution_array) return std::vector<double>();
         return std::vector<double>(solution_array, solution_array + solver->getNumCols());

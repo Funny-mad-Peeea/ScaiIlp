@@ -30,10 +30,10 @@ namespace ilp_solver
         public:
             ILPSolverCbc();
 
+            // We need to reimplement those, since CbcModel stores solution values independently of its solver.
             std::vector<double> get_solution  () const override;
             double              get_objective () const override;
             SolutionStatus      get_status    () const override;
-
             void set_start_solution(const std::vector<double>& p_solution) override;
 
             void set_num_threads        (int p_num_threads)    override;
@@ -45,6 +45,7 @@ namespace ilp_solver
 
             OsiSolverInterface*       get_solver    ()       override;
 
+            // Need to reimplement this again.
             void solve_impl() override;
     };
 }

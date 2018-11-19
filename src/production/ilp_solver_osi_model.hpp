@@ -21,6 +21,19 @@ namespace ilp_solver
 {
     // Implements all methods from ILPSolverInterfaceImpl that can be realized
     // via the model of the OsiSolverInterface.
+    // If inheriting from ILPSolverOsiModel, you only need to implement
+    //     get_solver
+    //     set_num_threads
+    //     set_deterministic_mode
+    //     set_log_level
+    //     set_max_seconds
+    // although you might want to override
+    //     get_solution
+    //     set_start_solution
+    //     get_objective
+    //     get_status
+    //     solve_impl
+    // for the concrete solver.
     class ILPSolverOsiModel : public ILPSolverImpl
     {
         public:
@@ -28,14 +41,15 @@ namespace ilp_solver
 
             std::vector<double> get_solution       () const                                override;
             void                set_start_solution (const std::vector<double>& p_solution) override;
-
             double              get_objective      () const                                override;
             SolutionStatus      get_status         () const                                override;
 
         private:
+            // The indices of constraints and variables, should just be [0, ... , N] and [0, ... , M].
             std::vector<int> d_rows;
             std::vector<int> d_cols;
 
+            // Obtain a pointer to a solver fulfilling the OsiSolverInterface.
             virtual OsiSolverInterface*       get_solver ()       = 0;
 
             const OsiSolverInterface* get_solver () const;

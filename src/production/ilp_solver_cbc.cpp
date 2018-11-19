@@ -20,6 +20,7 @@ namespace ilp_solver
 
     ILPSolverCbc::ILPSolverCbc()
     {
+        // CbcModel assumes ownership over solver and deletes it in its destructor.
         OsiSolverInterface* solver = new OsiClpSolverInterface();
         d_model.assignSolver(solver, true);
 
@@ -28,6 +29,7 @@ namespace ilp_solver
 
     std::vector<double> ILPSolverCbc::get_solution() const
     {
+        // The best solution is stored by CbcModel, not by the solver, thus reimplementation.
         const auto* result = d_model.bestSolution();
         if (!result) return std::vector<double>();
         return std::vector<double>(result, result + d_model.getNumCols());
@@ -35,11 +37,13 @@ namespace ilp_solver
 
     double ILPSolverCbc::get_objective() const
     {
+        // The best objective value is stored by CbcModel, not by the solver, thus reimplementation.
         return d_model.getObjValue();
     }
 
     SolutionStatus ILPSolverCbc::get_status() const
     {
+        // Solution status is stored by CbcModel.
         if (d_model.isProvenOptimal())
             return SolutionStatus::PROVEN_OPTIMAL;
         else if (d_model.isProvenInfeasible())
@@ -51,20 +55,24 @@ namespace ilp_solver
 
     void ILPSolverCbc::set_start_solution(const std::vector<double>& p_solution)
     {
+        // Set the current best solution of Cbc to the given solution, check for feasibility, but not for better objective value.
         d_model.setBestSolution(p_solution.data(), p_solution.size(), COIN_DBL_MAX, true);
     }
 
     void ILPSolverCbc::set_num_threads        (int p_num_threads)
     {
-        const auto cbc_num_threads = (p_num_threads == 1 ? 0 : p_num_threads);      // peculiarity of Cbc
+        const auto cbc_num_threads = (p_num_threads == 1 ? 0 : p_num_threads); // peculiarity of Cbc (1 is 'for testing').
         d_model.setNumberThreads(cbc_num_threads);
     }
 
     void ILPSolverCbc::solve_impl()
     {
+        // The probingInfo is not deleted on successive solves,
+        // but overwritten. Thus, it produces memory leaks if not deleted here.
         auto probing_ptr = d_model.probingInfo();
         if (probing_ptr)
             delete probing_ptr;
+
         d_model.branchAndBound();
     }
 

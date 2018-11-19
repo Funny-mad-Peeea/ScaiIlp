@@ -7,11 +7,14 @@
 namespace ilp_solver
 {
     // Stores all information about the ILP and the solver.
+    // Is used to create a stub.
     class ILPSolverCollect : public ILPSolverImpl
     {
         protected:
             ILPData d_ilp_data;
         private:
+            // We store these here so that we do not need to recreate a span vector for every insertion,
+            // but they are not needed in the ilp_data.
             std::vector<int> d_rows;
             std::vector<int> d_cols;
 
