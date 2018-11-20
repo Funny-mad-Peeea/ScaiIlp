@@ -329,9 +329,9 @@ namespace ilp_solver
                 p_solver->minimize();
             const auto solution = p_solver->get_solution();
 
-           // BOOST_REQUIRE_CLOSE (solution[0], expected_solution[0], c_eps);
-           // BOOST_REQUIRE_CLOSE (solution[1], expected_solution[1], c_eps);
-           // BOOST_REQUIRE_CLOSE (solution[2], expected_solution[2], c_eps);
+            BOOST_REQUIRE_CLOSE (solution[0], expected_solution[0], c_eps);
+            BOOST_REQUIRE_CLOSE (solution[1], expected_solution[1], c_eps);
+            BOOST_REQUIRE_CLOSE (solution[2], expected_solution[2], c_eps);
 
             // Iterate: (0,0,2) -> (1,1,1) -> (2,2,0)
             expected_solution[0] += 1.0;
@@ -415,8 +415,8 @@ int create_ilp_test_suite()
     constexpr std::array<std::pair<FactoryFunction, std::string_view>, num_solvers> all_solvers
     {
 #if WITH_CBC == 1
-        std::pair{create_solver_cbc, "CBC"},
-        std::pair{create_stub,       "CBCStub"},
+        std::pair{create_solver_cbc,    "CBC"},
+        std::pair{create_stub,          "CBCStub"},
 #endif
     };
 
