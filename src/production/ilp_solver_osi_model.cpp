@@ -53,12 +53,14 @@ namespace ilp_solver
             vals   = p_row_values->data();
         }
 
+        auto [lower, upper] = handle_bounds(&p_lower_bound, &p_upper_bound);
+
 #if DO_FORWARD_NAME == true
         if (!p_name.empty())
-            solver->addCol(n_rows, rows, vals, p_lower_bound, p_upper_bound, p_objective, p_name);
+            solver->addCol(n_rows, rows, vals, lower, upper, p_objective, p_name);
         else
 #endif
-            solver->addCol(n_rows, rows, vals, p_lower_bound, p_upper_bound, p_objective);
+            solver->addCol(n_rows, rows, vals, lower, upper, p_objective);
 
         d_cols.push_back(static_cast<int>(d_cols.size()));
         switch ( p_type )
@@ -75,6 +77,13 @@ namespace ilp_solver
         }
     }
 
+    void ILPSolverOsiModel::set_infinity()
+    {
+        auto*         solver{ get_solver() };
+        d_pos_infinity =  solver->getInfinity();
+        d_neg_infinity = -solver->getInfinity();
+    }
+
     void ILPSolverOsiModel::add_constraint_impl (const double* p_lower_bound, const double* p_upper_bound,
         const std::vector<double>& p_col_values, [[maybe_unused]] const std::string& p_name,
         const std::vector<int>* p_col_indices)
@@ -83,10 +92,6 @@ namespace ilp_solver
         const int*    cols{ nullptr };
         const double* vals{ p_col_values.data() };
         int         n_cols{ 0 };
-
-        // Osi supports its own indicator for infinity.
-        const double max{  solver->getInfinity() };
-        const double min{ -solver->getInfinity() };
 
         // If no indices are given, use all indices.
         if (!p_col_indices) p_col_indices = &d_cols;
@@ -97,14 +102,9 @@ namespace ilp_solver
         n_cols = static_cast<int>(p_col_indices->size());
         cols   = p_col_indices->data();
 
-        // Anything larger than half of infinity or smaller than half of -infinity is no bound.
-        double lower = (p_lower_bound) ? *p_lower_bound : min;
-               lower = (lower <= 0.5 * min) ? min : lower;
-        double upper = (p_upper_bound) ? *p_upper_bound : max;
-               upper = (upper >= 0.5 * max) ? max : upper;
-
+        auto [lower, upper] = handle_bounds(p_lower_bound, p_upper_bound);
         // If there are no bounds, we do not need to do anything.
-        if (lower == min && upper == max) return;
+        if (lower == d_neg_infinity && upper == d_pos_infinity) return;
 
         solver->addRow(n_cols, cols, vals, lower, upper);
 

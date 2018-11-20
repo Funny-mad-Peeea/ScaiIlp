@@ -18,6 +18,7 @@
 //     set_deterministic_mode
 //     set_log_level
 //     set_max_seconds
+//     set_infinity
 namespace ilp_solver
 {
     enum class VariableType   { INTEGER, CONTINUOUS, BINARY };
@@ -50,9 +51,14 @@ namespace ilp_solver
 
         protected:
             void set_default_parameters();
+            std::pair<double, double> handle_bounds(const double* p_lower_bound, const double* p_upper_bound);
 
+            double d_pos_infinity;
+            double d_neg_infinity;
 
         private:
+            virtual void set_infinity();
+
             virtual void add_variable_impl (VariableType p_type, double p_objective, double p_lower_bound, double p_upper_bound,
                                             const std::string& p_name = "", const std::vector<double>* p_row_values = nullptr,
                                             const std::vector<int>* p_row_indices = nullptr) = 0;

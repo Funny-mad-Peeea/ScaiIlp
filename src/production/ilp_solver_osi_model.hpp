@@ -49,6 +49,8 @@ namespace ilp_solver
             std::vector<int> d_rows;
             std::vector<int> d_cols;
 
+            void set_infinity() override;
+
             // Obtain a pointer to a solver fulfilling the OsiSolverInterface.
             virtual OsiSolverInterface*       get_solver ()       = 0;
 

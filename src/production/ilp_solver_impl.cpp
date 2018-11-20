@@ -96,12 +96,29 @@ namespace ilp_solver
         add_constraint_impl (&p_value, &p_value, p_col_values, p_name, &p_col_indices);
     }
 
+    std::pair<double, double> ILPSolverImpl::handle_bounds(const double* p_lower_bound, const double* p_upper_bound)
+    {
+        double lb{ (p_lower_bound) ? *p_lower_bound : d_neg_infinity };
+        double ub{ (p_upper_bound) ? *p_upper_bound : d_pos_infinity };
+        lb = (lb < std::numeric_limits<double>::lowest() / 2) ? d_neg_infinity : lb;
+        ub = (ub > std::numeric_limits<double>::max()    / 2) ? d_pos_infinity : ub;
+
+        return {lb, ub};
+    }
+
     void ILPSolverImpl::set_default_parameters()
     {
         set_num_threads(c_default_num_threads);
         set_deterministic_mode(c_default_deterministic);
         set_log_level(c_default_log_level);
         set_max_seconds(c_default_max_seconds);
+        set_infinity();
+    }
+
+    void ILPSolverImpl::set_infinity()
+    {
+        d_neg_infinity = std::numeric_limits<double>::lowest();
+        d_pos_infinity = std::numeric_limits<double>::max();
     }
 
     void ILPSolverImpl::minimize()
