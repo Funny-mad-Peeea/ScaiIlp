@@ -62,7 +62,7 @@ namespace ilp_solver
         d_ilp_data.variable_upper.push_back(p_upper_bound);
         d_ilp_data.variable_type.push_back(p_type);
 
-        d_cols.push_back(d_cols.size());
+        d_cols.push_back(static_cast<int>(d_cols.size()));
     }
 
     void ILPSolverCollect::add_constraint_impl (const double* p_lower_bound, const double* p_upper_bound,
@@ -81,7 +81,7 @@ namespace ilp_solver
         d_ilp_data.constraint_lower.push_back(lower);
         d_ilp_data.constraint_upper.push_back(upper);
 
-        d_rows.push_back(d_rows.size());
+        d_rows.push_back(static_cast<int>(d_rows.size()));
     }
 
     void ILPSolverCollect::set_objective_sense(ObjectiveSense p_sense)

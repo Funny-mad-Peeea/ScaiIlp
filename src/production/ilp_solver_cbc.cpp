@@ -56,7 +56,7 @@ namespace ilp_solver
     void ILPSolverCbc::set_start_solution(const std::vector<double>& p_solution)
     {
         // Set the current best solution of Cbc to the given solution, check for feasibility, but not for better objective value.
-        d_model.setBestSolution(p_solution.data(), p_solution.size(), COIN_DBL_MAX, true);
+        d_model.setBestSolution(p_solution.data(), static_cast<int>(p_solution.size()), COIN_DBL_MAX, true);
     }
 
     void ILPSolverCbc::set_num_threads        (int p_num_threads)

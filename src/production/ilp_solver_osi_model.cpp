@@ -60,7 +60,7 @@ namespace ilp_solver
 #endif
             solver->addCol(n_rows, rows, vals, p_lower_bound, p_upper_bound, p_objective);
 
-        d_cols.push_back(d_cols.size());
+        d_cols.push_back(static_cast<int>(d_cols.size()));
         switch ( p_type )
         {
             case VariableType::BINARY:    [[fallthrough]];
@@ -108,7 +108,7 @@ namespace ilp_solver
 
         solver->addRow(n_cols, cols, vals, lower, upper);
 
-        d_rows.push_back(d_rows.size());
+        d_rows.push_back(static_cast<int>(d_rows.size()));
 #if DO_FORWARD_NAME == true
             if (!p_name.empty()) solver->setRowName(d_rows.back(), p_name);
 #endif
