@@ -36,43 +36,43 @@ namespace ilp_solver
         const std::vector<int>* p_row_indices)
     {
         auto*         solver{get_solver()};
-        const int*    rows{nullptr};
-        const double* vals{nullptr};
-        int         n_rows{0};
+        CoinPackedVector col;
 
         if (p_row_values)
         {
-            // If no indices are given, use all indices.
-            if (!p_row_indices) p_row_indices = &d_rows;
-            assert (p_row_values->size()  == p_row_indices->size());
-            assert (p_row_indices->size() <= d_rows.size());
-
-            // Osi operates on raw pointers and sizes.
-            n_rows = static_cast<int>(p_row_indices->size());
-            rows   = p_row_indices->data();
-            vals   = p_row_values->data();
+            if (p_row_indices)
+            {
+                assert (p_row_indices->size() == p_row_values->size());
+                assert (static_cast<int>(p_row_indices->size()) <= solver->getNumRows());
+                col = CoinPackedVector(static_cast<int>(p_row_indices->size()), p_row_indices->data(), p_row_values->data(), true); // do check for duplicate indices
+            }
+            else
+            {
+                assert (static_cast<int>(p_row_values->size()) == solver->getNumRows());
+                col = CoinPackedVector(solver->getNumRows(), p_row_values->data(), false); // do not check for duplicate indices
+            }
         }
 
         auto [lower, upper] = handle_bounds(&p_lower_bound, &p_upper_bound);
 
 #if DO_FORWARD_NAME == true
         if (!p_name.empty())
-            solver->addCol(n_rows, rows, vals, lower, upper, p_objective, p_name);
+            solver->addCol(col, lower, upper, p_objective, p_name);
         else
 #endif
-            solver->addCol(n_rows, rows, vals, lower, upper, p_objective);
+            solver->addCol(col, lower, upper, p_objective);
 
-        d_cols.push_back(static_cast<int>(d_cols.size()));
+        int index = solver->getNumCols() - 1;
         switch ( p_type )
         {
             case VariableType::BINARY:    [[fallthrough]];
             // OSI does not support a dedicated binary type. A binary variable is just an integer variable with bounds [0,1] or fixed to 0 or 1.
             case VariableType::INTEGER:
-                solver->setInteger(d_cols.back());
+                solver->setInteger(index);
             break;
 
             case VariableType::CONTINUOUS:
-                solver->setContinuous(d_cols.back());
+                solver->setContinuous(index);
             break;
         }
     }
@@ -88,30 +88,33 @@ namespace ilp_solver
         const std::vector<double>& p_col_values, [[maybe_unused]] const std::string& p_name,
         const std::vector<int>* p_col_indices)
     {
+        CoinPackedVector row;
         auto*         solver{ get_solver() };
-        const int*    cols{ nullptr };
-        const double* vals{ p_col_values.data() };
-        int         n_cols{ 0 };
 
-        // If no indices are given, use all indices.
-        if (!p_col_indices) p_col_indices = &d_cols;
-        assert( p_col_values.size()   == p_col_indices->size() );
-        assert( p_col_indices->size() <= d_cols.size() );
+        if (p_col_indices)
+        {
+            assert( p_col_values.size()   == p_col_indices->size() );
+            assert( static_cast<int>(p_col_indices->size()) <= solver->getNumCols() );
+            int n_cols = static_cast<int>(p_col_indices->size());
 
-        // Osi operates on raw pointers and sizes.
-        n_cols = static_cast<int>(p_col_indices->size());
-        cols   = p_col_indices->data();
+            row = CoinPackedVector(n_cols, p_col_indices->data(), p_col_values.data(), true); // do check for duplicate indicies
+        }
+        else
+        {
+            assert( static_cast<int>(p_col_values.size()) == solver->getNumCols() );
+            row = CoinPackedVector(solver->getNumCols(), p_col_values.data(), false); // do not check for duplicate indicies
+        }
 
-        auto [lower, upper] = handle_bounds(p_lower_bound, p_upper_bound);
+        auto[lower, upper] = handle_bounds(p_lower_bound, p_upper_bound);
         // If there are no bounds, we do not need to do anything.
         if (lower == d_neg_infinity && upper == d_pos_infinity) return;
 
-        solver->addRow(n_cols, cols, vals, lower, upper);
-
-        d_rows.push_back(static_cast<int>(d_rows.size()));
 #if DO_FORWARD_NAME == true
-            if (!p_name.empty()) solver->setRowName(d_rows.back(), p_name);
+        if (!p_name.empty())
+            solver->addRow(row, lower, upper, p_name);
+        else
 #endif
+            solver->addRow(row, lower, upper);
     }
 
     std::vector<double> ILPSolverOsiModel::get_solution() const
