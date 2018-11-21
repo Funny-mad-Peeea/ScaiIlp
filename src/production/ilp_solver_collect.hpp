@@ -13,10 +13,6 @@ namespace ilp_solver
         protected:
             ILPData d_ilp_data;
         private:
-            // We store these here so that we do not need to recreate a span vector for every insertion,
-            // but they are not needed in the ilp_data.
-            std::vector<int> d_rows;
-            std::vector<int> d_cols;
 
             void add_variable_impl (VariableType p_type, double p_objective, double p_lower_bound, double p_upper_bound,
                 const std::string& p_name = "", const std::vector<double>* p_row_values = nullptr,

@@ -8,6 +8,17 @@ typedef vector< vector<double> > Matrix;
 
 namespace ilp_solver
 {
+    static void append_column(Matrix* v_matrix, const vector<double>& p_row_values)
+    {
+        if (v_matrix->empty())
+            return;
+
+        // set specified values
+        for (int i = 0; i < static_cast<int>(v_matrix->size()); i++)
+            (*v_matrix)[i].push_back(p_row_values[i]);
+    }
+
+
     static void append_column(Matrix* v_matrix, const vector<int>& p_row_indices, const vector<double>& p_row_values)
     {
         if (v_matrix->empty())
@@ -24,6 +35,12 @@ namespace ilp_solver
             const auto value = p_row_values[i];
             (*v_matrix)[row_index].back() = value;
         }
+    }
+
+    static void append_row(Matrix* v_matrix, const vector<double>& p_col_values)
+    {
+        // enlarge matrix
+        v_matrix->emplace_back(p_col_values);
     }
 
     static void append_row(Matrix* v_matrix, int p_num_cols, const vector<int>& p_col_indices, const vector<double>& p_col_values)
@@ -47,13 +64,21 @@ namespace ilp_solver
     {
         if (p_row_values)
         {
-            if (!p_row_indices) p_row_indices = &d_rows;
-            assert (p_row_values->size() == p_row_indices->size());
-            assert (p_row_indices->size() <= d_rows.size());
-            append_column(&d_ilp_data.matrix, *p_row_indices, *p_row_values);
+            if (!p_row_indices)
+            {
+                assert (p_row_values->size() == d_ilp_data.matrix.size());
+                append_column(&d_ilp_data.matrix, *p_row_values);
+            }
+            else
+            {
+                assert (p_row_values->size() == p_row_indices->size());
+                assert (p_row_indices->size() <= d_ilp_data.matrix.size());
+                append_column(&d_ilp_data.matrix, *p_row_indices, *p_row_values);
+            }
         }
         else
         {
+            assert( p_row_indices == nullptr );
             append_column(&d_ilp_data.matrix, std::vector<int>(), std::vector<double>());
         }
 
@@ -61,27 +86,31 @@ namespace ilp_solver
         d_ilp_data.variable_lower.push_back(p_lower_bound);
         d_ilp_data.variable_upper.push_back(p_upper_bound);
         d_ilp_data.variable_type.push_back(p_type);
-
-        d_cols.push_back(static_cast<int>(d_cols.size()));
     }
 
     void ILPSolverCollect::add_constraint_impl (const double* p_lower_bound, const double* p_upper_bound,
         const std::vector<double>& p_col_values, const std::string& /* p_name */,
         const std::vector<int>* p_col_indices)
     {
-        if (!p_col_indices) p_col_indices = &d_cols;
-        assert(p_col_values.size() == p_col_indices->size());
-        assert(p_col_indices->size() <= d_cols.size());
+        if (!p_col_indices)
+        {
+            assert( p_col_values.size() == d_ilp_data.objective.size() );
+            append_row(&d_ilp_data.matrix, p_col_values);
+        }
+        else
+        {
+            assert(p_col_values.size() == p_col_indices->size());
+            assert(p_col_indices->size() <= d_ilp_data.objective.size());
 
-        int n_cols = static_cast<int>(d_ilp_data.objective.size());
+            int n_cols = static_cast<int>(d_ilp_data.objective.size());
+            append_row(&d_ilp_data.matrix, n_cols, *p_col_indices, p_col_values);
+        }
+
         double lower = (p_lower_bound) ? *p_lower_bound : std::numeric_limits<double>::lowest();
         double upper = (p_upper_bound) ? *p_upper_bound : std::numeric_limits<double>::max();
 
-        append_row(&d_ilp_data.matrix, n_cols, *p_col_indices, p_col_values);
         d_ilp_data.constraint_lower.push_back(lower);
         d_ilp_data.constraint_upper.push_back(upper);
-
-        d_rows.push_back(static_cast<int>(d_rows.size()));
     }
 
     void ILPSolverCollect::set_objective_sense_impl(ObjectiveSense p_sense)
