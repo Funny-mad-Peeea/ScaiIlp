@@ -45,7 +45,7 @@ namespace ilp_solver
             SolutionStatus      get_status         () const                                override;
 
         private:
-            // The indices of constraints and variables, should just be [0, ... , N] and [0, ... , M].
+            // The indices of constraints and variables, should just be [0, ... , N-1] and [0, ... , M-1].
             std::vector<int> d_rows;
             std::vector<int> d_cols;
 

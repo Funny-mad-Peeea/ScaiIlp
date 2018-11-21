@@ -106,6 +106,8 @@ namespace ilp_solver
         return {lb, ub};
     }
 
+    // Should be called by constructors of derived classes to set their parameters to defaults.
+    // Must not be called by constructor of IlpSolverImpl because overriding of virtual functions has not happened yet.
     void ILPSolverImpl::set_default_parameters()
     {
         set_num_threads(c_default_num_threads);
