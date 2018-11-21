@@ -5,7 +5,7 @@
 
 #pragma comment(lib, "scip.lib")
 
-#include "ilp_solver_interface.hpp"
+#include "ilp_solver_impl.hpp"
 
 namespace ilp_solver
 {
@@ -19,59 +19,54 @@ namespace ilp_solver
     enum    SCIP_Vartype : int;
     typedef SCIP_Vartype SCIP_VARTYPE;
 
-    class ILPSolverSCIP : public ILPSolverInterface
+    // Final Implementation of SCIP inside ScaiILP.
+    class ILPSolverSCIP : public ILPSolverImpl
     {
     public:
 
-        void add_variable_boolean(                                                                                double p_objective, const std::string& p_name = "") override;
-        void add_variable_boolean(                                       const std::vector<double>& p_row_values, double p_objective, const std::string& p_name = "") override;
-        void add_variable_boolean(const std::vector<int>& p_row_indices, const std::vector<double>& p_row_values, double p_objective, const std::string& p_name = "") override;
+        ILPSolverSCIP();
+        ~ILPSolverSCIP();
 
-        void add_variable_integer(                                                                                double p_objective, double p_lower_bound, double p_upper_bound, const std::string& p_name = "") override;
-        void add_variable_integer(                                       const std::vector<double>& p_row_values, double p_objective, double p_lower_bound, double p_upper_bound, const std::string& p_name = "") override;
-        void add_variable_integer(const std::vector<int>& p_row_indices, const std::vector<double>& p_row_values, double p_objective, double p_lower_bound, double p_upper_bound, const std::string& p_name = "") override;
+        int get_num_constraints() const override;
+        int get_num_variables()   const override;
 
-        void add_variable_continuous(                                                                                double p_objective, double p_lower_bound, double p_upper_bound, const std::string& p_name = "") override;
-        void add_variable_continuous(                                       const std::vector<double>& p_row_values, double p_objective, double p_lower_bound, double p_upper_bound, const std::string& p_name = "") override;
-        void add_variable_continuous(const std::vector<int>& p_row_indices, const std::vector<double>& p_row_values, double p_objective, double p_lower_bound, double p_upper_bound, const std::string& p_name = "") override;
+        std::vector<double> get_solution()  const override;
+        double              get_objective() const override;
+        SolutionStatus      get_status()    const override;
 
-        void add_constraint(                                       const std::vector<double>& p_col_values, double p_lower_bound, double p_upper_bound, const std::string& p_name = "") override;
-        void add_constraint(const std::vector<int>& p_col_indices, const std::vector<double>& p_col_values, double p_lower_bound, double p_upper_bound, const std::string& p_name = "") override;
-
-        void add_constraint_upper(                                       const std::vector<double>& p_col_values, double p_upper_bound, const std::string& p_name = "") override;
-        void add_constraint_upper(const std::vector<int>& p_col_indices, const std::vector<double>& p_col_values, double p_upper_bound, const std::string& p_name = "") override;
-
-        void add_constraint_lower(                                       const std::vector<double>& p_col_values, double p_lower_bound, const std::string& p_name = "") override;
-        void add_constraint_lower(const std::vector<int>& p_col_indices, const std::vector<double>& p_col_values, double p_lower_bound, const std::string& p_name = "") override;
-
-        void add_constraint_equality(                                       const std::vector<double>& p_col_values, double p_value, const std::string& p_name = "") override;
-        void add_constraint_equality(const std::vector<int>& p_col_indices, const std::vector<double>& p_col_values, double p_value, const std::string& p_name = "") override;
+        void                reset_solution()      override;
 
         void set_start_solution(const std::vector<double>& p_solution) override;
-
-        void minimize() override;
-        void maximize() override;
-
-        const std::vector<double> get_solution()  const override;
-        double                    get_objective() const override;
-        SolutionStatus            get_status()    const override;
 
         void set_num_threads(int p_num_threads)           override;
         void set_deterministic_mode(bool p_deterministic) override;
         void set_log_level(int p_level)                   override;
+        void set_presolve(bool p_presolve)                override;
+
         void set_max_seconds(double p_seconds)            override;
+        void set_max_nodes(int p_nodes)                   override;
+        void set_max_solutions(int p_solutions)           override;
+        void set_max_abs_gap(double p_gap)                override;
+        void set_max_rel_gap(double p_gap)                override;
 
+        void print_mps_file(const std::string& p_path)    override;
 
-        ILPSolverSCIP();
-        ~ILPSolverSCIP();
     private:
         SCIP* d_scip;
 
         std::vector<SCIP_CONS*>   d_rows;
         std::vector<SCIP_VAR*>    d_cols;
 
-        void add_variable         (const std::vector<int>* p_row_indices, const std::vector<double>* p_row_values, double p_lower_bound, double p_upper_bound, double p_objective, SCIP_VARTYPE p_type, const std::string& p_name);
-        void add_constraint_intern(const std::vector<int>* p_col_indices, const std::vector<double>& p_col_values, double p_lhs,         double p_rhs,                                                  const std::string& p_name);
+        void set_objective_sense_impl(ObjectiveSense p_sense) override;
+        void solve_impl() override;
+        void add_variable_impl (VariableType p_type, double p_objective, double p_lower_bound, double p_upper_bound,
+            const std::string& p_name = "", const std::vector<double>* p_row_values = nullptr,
+            const std::vector<int>* p_row_indices = nullptr) override;
+
+
+        void add_constraint_impl (double p_lower_bound, double p_upper_bound,
+            const std::vector<double>& p_col_values, const std::string& p_name = "",
+            const std::vector<int>* p_col_indices = nullptr) override;
     };
 }
 

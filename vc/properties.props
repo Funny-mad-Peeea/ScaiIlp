@@ -9,14 +9,14 @@
     <BOOST_LIB_PATH>$(BOOST_DIR)\lib</BOOST_LIB_PATH>
     <BOOST_INCLUDE_PATH>$(BOOST_DIR)\include\boost-$(BOOST_VERSION)</BOOST_INCLUDE_PATH>
     <COIN_LIB_PATH>$(COIN_DIR)\Cbc\MSVisualStudio\$(PlatformToolset)\$(Platform)-$(PlatformToolset)-$(Configuration)</COIN_LIB_PATH>
-    <COIN_INCLUDE_PATHS>$(COIN_DIR)\clp\src;$(COIN_DIR)\Osi\src\Osi;$(COIN_DIR)\CoinUtils\src;$(COIN_DIR)\clp\src\osiclp;$(COIN_DIR)\cbc\src</COIN_INCLUDE_PATHS>
+    <COIN_INCLUDE_PATHS>$(COIN_DIR)\clp\src;$(COIN_DIR)\Osi\src\Osi;$(COIN_DIR)\CoinUtils\src;$(COIN_DIR)\clp\src\osiclp;$(COIN_DIR)\cbc\src;$(COIN_DIR)\Cgl\src</COIN_INCLUDE_PATHS>
     <SCIP_LIB_PATH>$(SCIP_DIR)\lib</SCIP_LIB_PATH>
     <SCIP_INCLUDE_PATH>$(SCIP_DIR)\include</SCIP_INCLUDE_PATH>
   </PropertyGroup>
   <PropertyGroup />
   <ItemDefinitionGroup>
     <ClCompile>
-      <PreprocessorDefinitions>WITH_OSI=1;WITH_CBC=1;WITH_SCIP=0;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WITH_OSI=1;WITH_CBC=1;WITH_SCIP=1;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
