@@ -610,7 +610,7 @@ namespace
     // and we somehow need to get a different file path per solver.
     int global_current_index{0};
 
-    constexpr int num_solvers = 2 * (WITH_CBC) + (WITH_SCIP);
+    constexpr int num_solvers = 2 * (WITH_CBC) + (WITH_SCIP) + (WITH_GUROBI);
 
     constexpr std::array<std::pair<FactoryFunction, std::string_view>, num_solvers> all_solvers
     {
@@ -620,6 +620,9 @@ namespace
 #endif
 #if WITH_SCIP == 1
         std::pair{create_solver_scip,   "SCIP"},
+#endif
+#if (WITH_GUROBI == 1) && (_WIN64 == 1)
+        std::pair{create_solver_gurobi, "Gurobi"},
 #endif
     };
 }

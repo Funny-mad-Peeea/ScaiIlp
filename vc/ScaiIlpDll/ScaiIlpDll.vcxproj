@@ -109,7 +109,7 @@
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>$(BOOST_LIB_PATH);$(COIN_LIB_PATH);$(SCIP_LIB_PATH)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(BOOST_LIB_PATH);$(COIN_LIB_PATH);$(SCIP_LIB_PATH);$(GUROBI_LIB_PATH)</AdditionalLibraryDirectories>
       <AdditionalDependencies>kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <ModuleDefinitionFile>
       </ModuleDefinitionFile>
@@ -131,7 +131,7 @@
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>$(BOOST_LIB_PATH);$(COIN_LIB_PATH);$(SCIP_LIB_PATH)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(BOOST_LIB_PATH);$(COIN_LIB_PATH);$(SCIP_LIB_PATH);$(GUROBI_LIB_PATH)</AdditionalLibraryDirectories>
       <AdditionalDependencies>kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <ModuleDefinitionFile>
       </ModuleDefinitionFile>
@@ -156,7 +156,7 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalLibraryDirectories>$(BOOST_LIB_PATH);$(COIN_LIB_PATH);$(SCIP_LIB_PATH)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(BOOST_LIB_PATH);$(COIN_LIB_PATH);$(SCIP_LIB_PATH);$(GUROBI_LIB_PATH)</AdditionalLibraryDirectories>
       <AdditionalDependencies>kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <ModuleDefinitionFile>
       </ModuleDefinitionFile>
@@ -181,7 +181,7 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalLibraryDirectories>$(BOOST_LIB_PATH);$(COIN_LIB_PATH);$(SCIP_LIB_PATH)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(BOOST_LIB_PATH);$(COIN_LIB_PATH);$(SCIP_LIB_PATH);$(GUROBI_LIB_PATH)</AdditionalLibraryDirectories>
       <AdditionalDependencies>kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <ModuleDefinitionFile>
       </ModuleDefinitionFile>

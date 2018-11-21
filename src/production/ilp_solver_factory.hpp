@@ -23,6 +23,13 @@ namespace ilp_solver
 
 
     extern "C"
+#if (WITH_GUROBI == 1) && (_WIN64 == 1)
+    __declspec (dllexport)
+#endif
+    ILPSolverInterface* __stdcall create_solver_gurobi();
+
+
+    extern "C"
 #if (WITH_CBC == 1)
     __declspec (dllexport)
 #endif
