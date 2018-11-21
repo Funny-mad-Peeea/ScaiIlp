@@ -47,6 +47,7 @@ namespace ilp_solver
 
             // Need to reimplement this again.
             void solve_impl() override;
+            void set_objective_sense_impl(ObjectiveSense p_sense) override;
     };
 }
 

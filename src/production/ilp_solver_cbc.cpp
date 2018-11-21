@@ -94,6 +94,30 @@ namespace ilp_solver
         d_model.setMaximumSeconds(p_seconds);
     }
 
+    void ILPSolverCbc::set_objective_sense_impl(ObjectiveSense p_sense)
+    {
+        // CBCs objective value depends on the sense.
+        // When changing the sense, the objective value gets multiplied by -1.
+        // If we have set a start solution, we probably do not want that, and fix it.
+
+        double old_sense{ d_model.getObjSense() };
+        double sense{ (p_sense == ObjectiveSense::MINIMIZE) ? 1.0 : -1.0 };
+        double old_value{ d_model.getObjValue() };
+
+        d_model.setObjSense(sense); // ObjValue will be flipped here, if the senses differ.
+
+        // If the senses differ, we need to fix the change from beforehand.
+        // Both infinities are special cases.
+        if (sense * old_sense < 0.)
+        {
+            old_value = (old_value == d_neg_infinity) ? d_pos_infinity
+                : (old_value == d_pos_infinity) ? d_neg_infinity
+                : old_value;
+            d_model.setObjValue(old_value);
+
+        }
+    }
+
 }
 
 #endif
