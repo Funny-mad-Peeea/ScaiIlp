@@ -610,7 +610,11 @@ namespace
     // and we somehow need to get a different file path per solver.
     int global_current_index{0};
 
-    constexpr int num_solvers = 2 * (WITH_CBC) + (WITH_SCIP) + (WITH_GUROBI);
+    constexpr int num_solvers = 2 * (WITH_CBC) + (WITH_SCIP)
+#if _WIN64 == 1
+                              + (WITH_GUROBI)
+#endif
+    ;
 
     constexpr std::array<std::pair<FactoryFunction, std::string_view>, num_solvers> all_solvers
     {
@@ -675,7 +679,6 @@ int create_ilp_test_suite()
 
     return 0;
 }
-
 
 // Automatic registration of the test suites.
 namespace

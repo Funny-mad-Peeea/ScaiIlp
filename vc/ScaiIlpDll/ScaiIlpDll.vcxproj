@@ -231,6 +231,12 @@
       <Message>Copy %(Filename)%(Extension)</Message>
       <Outputs>$(OutDir)\%(Filename)%(Extension)</Outputs>
     </CustomBuild>
+    <CustomBuild Include="$(GUROBI_DIR)/bin/gurobi80.dll" Condition="'$(WITH_GUROBI)' == 'true'">
+      <FileType>Document</FileType>
+      <Command>copy "%(FullPath)" "$(OutDir)\"</Command>
+      <Message>Copy %(Filename)%(Extension)</Message>
+      <Outputs>$(OutDir)\%(Filename)%(Extension)</Outputs>
+    </CustomBuild>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="ScaiIlp.rc" />
@@ -238,6 +244,9 @@
   <ItemGroup>
     <CustomBuild Include="$(SCIP_DIR)\bin\scip.dll">
         <ExcludedFromBuild Condition="'$(WITH_SCIP)' != 'true'">true</ExcludedFromBuild>
+    </CustomBuild>
+    <CustomBuild Include="$(GUROBI_DIR)/bin/gurobi80.dll">
+        <ExcludedFromBuild Condition="'$(WITH_GUROBI)' != 'true'">true</ExcludedFromBuild>
     </CustomBuild>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

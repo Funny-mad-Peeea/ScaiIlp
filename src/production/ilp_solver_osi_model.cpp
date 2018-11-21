@@ -15,6 +15,11 @@
 using std::string;
 using std::vector;
 
+// Specify name of variable or constraint only in debug mode:
+#ifdef _DEBUG
+#define DO_FORWARD_NAME true
+#endif
+
 // States whether consecutive elements of each column are contiguous in memory.
 // (If not, consecutive elements of each row are contiguous in memory.)
 constexpr auto c_column_ordered = false;

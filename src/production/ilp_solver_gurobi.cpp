@@ -1,111 +1,119 @@
 #if (WITH_GUROBI == 1) && (_WIN64 == 1)
 
 #include <cassert>
+#include <algorithm>
 #include "ilp_solver_gurobi.hpp"
 
-namespace {
-
-    inline void check_gurobi_error(int p_ret, const char* p_error = "");
-
+namespace
+{
     class GurobiEnvSingleton
     {
     public:
-        GurobiEnvSingleton()
-        {}
 
-        void create_environment()
+        static GRBenv* environment()
         {
-            if (!d_environment_set){
-                check_gurobi_error( GRBloadenv(&d_environment_ptr, nullptr)
-                                  , "Could not create Gurobi environment.");
-                d_environment_set = true;
-            }
+            static GurobiEnvSingleton grb;
+            return grb.d_grbenv;
         }
 
-        GRBenv* environment()
-        {
-            return d_environment_ptr;
-        }
-
-        const GRBenv* environment() const
-        {
-            return d_environment_ptr;
-        }
-
-
-        ~GurobiEnvSingleton() noexcept
-        {
-            if (d_environment_set)
-                GRBfreeenv(d_environment_ptr);
-        }
     private:
-        GRBenv* d_environment_ptr{ nullptr };
-        bool    d_environment_set{ false };
+        GurobiEnvSingleton();
+        ~GurobiEnvSingleton() noexcept;
+        GRBenv* d_grbenv;
     };
 
-    GurobiEnvSingleton global_gurobi_environment{};
 
-    inline void check_gurobi_error(int p_ret, const char* p_error)
+    // A template instead of the macro expansion to handle return codes.
+    // If the Gurobi function call was unsuccessful, throw an error.
+    template<typename F, typename... Args>
+    static __forceinline void call_gurobi(F p_f, Args... p_args)
     {
-        if (p_ret != 0)
+        auto retcode = p_f(p_args...);
+        if (retcode != 0)
         {
-            const char* error = GRBgeterrormsg(global_gurobi_environment.environment());
-            auto ret = std::string(p_error) + "[" + error + "]";
+            const char* error = GRBgeterrormsg(GurobiEnvSingleton::environment());
+            auto ret = std::string("Gurobi Error: \"") + error + '"';
             throw std::exception(ret.c_str());
         }
     }
 
+    GurobiEnvSingleton::GurobiEnvSingleton()
+    {
+        call_gurobi(GRBloadenv, &d_grbenv, nullptr);
+    }
+
+    GurobiEnvSingleton::~GurobiEnvSingleton() noexcept
+    {
+        GRBfreeenv(d_grbenv);
+    }
+
+    inline void update_index_vector(std::vector<int>& p_vec, int p_size)
+    {
+        int old_size{static_cast<int>(p_vec.size())};
+        if (p_size > old_size)
+        {
+            p_vec.reserve(p_size);
+            for (int i = old_size; i < p_size; ++i) p_vec.push_back(i);
+        }
+    }
 }
 
 namespace ilp_solver
 {
+
     ILPSolverGurobi::ILPSolverGurobi()
     {
-        global_gurobi_environment.create_environment();
-        check_gurobi_error( GRBnewmodel(global_gurobi_environment.environment(), &d_model, "", 0, nullptr, nullptr, nullptr, nullptr, nullptr)
-                          , "Could not create empty Gurobi model.");
-        set_default_parameters();
+        call_gurobi( GRBnewmodel, GurobiEnvSingleton::environment(), &d_model, "", 0, nullptr, nullptr, nullptr, nullptr, nullptr);
+        set_default_parameters(this);
     }
+
 
     ILPSolverGurobi::~ILPSolverGurobi() noexcept
     {
-        check_gurobi_error( GRBfreemodel(d_model)
-                          , "Could not destroy Gurobi model.");
+        call_gurobi( GRBfreemodel, d_model );
     }
 
-    void ILPSolverGurobi::set_start_solution(const std::vector<double>& p_solution)
+
+    int ILPSolverGurobi::get_num_constraints() const
     {
-        assert( p_solution.size() >= d_cols.size() );
-        check_gurobi_error ( GRBsetdblattrarray(d_model, GRB_DBL_ATTR_START, 0, static_cast<int>(p_solution.size()), const_cast<double*>(p_solution.data()))
-                           , "Could not set Gurobi start solution");
+        return d_num_cons;
     }
+
+
+    int ILPSolverGurobi::get_num_variables  () const
+    {
+        return d_num_vars;
+    }
+
 
     std::vector<double> ILPSolverGurobi::get_solution() const
     {
-        int cols{ static_cast<int>(d_cols.size()) };
-        std::vector<double> solution(cols);
-        check_gurobi_error( GRBgetdblattrarray(d_model, GRB_DBL_ATTR_X, 0, cols, &solution.front())
-                          , "Could not query the solution.");
-
-        return solution;
+        int sol_count{ 0 };
+        call_gurobi(GRBgetintattr, d_model, GRB_INT_ATTR_SOLCOUNT, &sol_count);
+        if (sol_count > 0)
+        {
+            std::vector<double> solution(d_num_vars);
+            call_gurobi( GRBgetdblattrarray, d_model, GRB_DBL_ATTR_X, 0, d_num_vars, solution.data() );
+            return solution;
+        }
+        return std::vector<double>();
     }
+
 
     double ILPSolverGurobi::get_objective() const
     {
         double result{0.};
-        check_gurobi_error( GRBgetdblattr(d_model, GRB_DBL_ATTR_OBJVAL, &result)
-                          , "Could not query the Gurobi objective value.");
+        call_gurobi( GRBgetdblattr, d_model, GRB_DBL_ATTR_OBJVAL, &result );
         return result;
     }
+
 
     SolutionStatus ILPSolverGurobi::get_status() const
     {
         int status{0};
-        check_gurobi_error( GRBgetintattr(d_model, GRB_INT_ATTR_STATUS, &status)
-                          , "Could not query problem status.");
+        call_gurobi( GRBgetintattr, d_model, GRB_INT_ATTR_STATUS, &status  );
         int sol_count{0};
-        check_gurobi_error( GRBgetintattr(d_model, GRB_INT_ATTR_SOLCOUNT, &sol_count)
-                          , "Could not query number of feasible solutions found.");
+        call_gurobi( GRBgetintattr, d_model, GRB_INT_ATTR_SOLCOUNT, &sol_count );
 
         SolutionStatus current_status = (sol_count > 0) ? SolutionStatus::SUBOPTIMAL : SolutionStatus::NO_SOLUTION;
         switch (status)
@@ -129,12 +137,27 @@ namespace ilp_solver
         }
     }
 
+
+    void ILPSolverGurobi::set_start_solution(const std::vector<double>& p_solution)
+    {
+        assert(static_cast<int>(p_solution.size()) == d_num_vars);
+        call_gurobi (GRBsetdblattrarray, d_model, GRB_DBL_ATTR_VARHINTVAL, 0, d_num_vars, const_cast<double*>(p_solution.data()));
+        call_gurobi (GRBsetdblattrarray, d_model, GRB_DBL_ATTR_START, 0, d_num_vars, const_cast<double*>(p_solution.data()));
+    }
+
+
+    void ILPSolverGurobi::reset_solution()
+    {
+        call_gurobi (GRBreset, d_model, false);
+    }
+
+
     void ILPSolverGurobi::set_num_threads(int p_num_threads)
     {
         assert( p_num_threads >= 0 );
-        check_gurobi_error( GRBsetintparam(GRBgetenv(d_model), GRB_INT_PAR_THREADS, p_num_threads)
-                          , "Could not set number of threads for Gurobi.");
+        call_gurobi( GRBsetintparam, GRBgetenv(d_model), GRB_INT_PAR_THREADS, p_num_threads );
     }
+
 
     void ILPSolverGurobi::set_deterministic_mode(bool)
     {
@@ -142,32 +165,75 @@ namespace ilp_solver
         // Therefore, this function is empty.
     }
 
+
     void ILPSolverGurobi::set_log_level(int p_level)
     {
         p_level = (p_level < 0) ? 0 : p_level;
         if (p_level == 0)
-            check_gurobi_error( GRBsetintparam(GRBgetenv(d_model), GRB_INT_PAR_OUTPUTFLAG, 0) // 0 means no output.
-                              , "Could not turn off Gurobi logging.");
+            call_gurobi( GRBsetintparam, GRBgetenv(d_model), GRB_INT_PAR_OUTPUTFLAG, 0  ); // 0 means no output.
         else
         {
-            check_gurobi_error( GRBsetintparam(GRBgetenv(d_model), GRB_INT_PAR_OUTPUTFLAG, 1)
-                              , "Could not turn on Gurobi logging.");
-            check_gurobi_error( GRBsetintparam(GRBgetenv(d_model), GRB_INT_PAR_LOGTOCONSOLE, 1)
-                              , "Could not turn on Gurobi Console logging.");
+            call_gurobi( GRBsetintparam, GRBgetenv(d_model), GRB_INT_PAR_OUTPUTFLAG, 1 );
+            call_gurobi( GRBsetintparam, GRBgetenv(d_model), GRB_INT_PAR_LOGTOCONSOLE, 1 );
+
             p_level = 1 + 9 / p_level;
             // Gurobi prints log lines every DisplayInterval seconds.
             // We chose 10 seconds as the maximum, while 1 second is the Gurobi minimum (reached for p_level > 9).
-            check_gurobi_error( GRBsetintparam(GRBgetenv(d_model), GRB_INT_PAR_DISPLAYINTERVAL, p_level)
-                              , "Could not set logging frequency.");
+            call_gurobi( GRBsetintparam, GRBgetenv(d_model), GRB_INT_PAR_DISPLAYINTERVAL, p_level );
         }
     }
 
+
+    void ILPSolverGurobi::set_presolve     (bool p_preprocessing)
+    {
+        if (p_preprocessing)
+            GRBsetintparam(GRBgetenv(d_model), GRB_INT_PAR_PRESOLVE, -1); // -1 is automatic setting and Gurobi default.
+        else
+            GRBsetintparam(GRBgetenv(d_model), GRB_INT_PAR_PRESOLVE,  0); // off.
+    }
+
+
     void ILPSolverGurobi::set_max_seconds(double p_seconds)
     {
-        assert( p_seconds > 0 );
-        check_gurobi_error(GRBsetdblparam(GRBgetenv(d_model), GRB_DBL_PAR_TIMELIMIT, p_seconds)
-            , "Could not set time limit for Gurobi.");
+        assert(p_seconds >= 0.);
+        call_gurobi(GRBsetdblparam, GRBgetenv(d_model), GRB_DBL_PAR_TIMELIMIT, p_seconds);
     }
+
+
+    void ILPSolverGurobi::set_max_nodes(int p_nodes)
+    {
+        assert(p_nodes >= 0);
+        call_gurobi(GRBsetdblparam, GRBgetenv(d_model), GRB_DBL_PAR_NODELIMIT, p_nodes);
+    }
+
+
+    void ILPSolverGurobi::set_max_solutions(int p_solutions)
+    {
+        p_solutions = std::clamp(p_solutions, 1, 2000000000); // Gurobi MAXINT
+        call_gurobi(GRBsetintparam, GRBgetenv(d_model), GRB_INT_PAR_SOLUTIONLIMIT, p_solutions);
+    }
+
+
+    void ILPSolverGurobi::set_max_abs_gap(double p_abs_gap)
+    {
+        assert(p_abs_gap >= 0.);
+        call_gurobi(GRBsetdblparam, GRBgetenv(d_model), GRB_DBL_PAR_MIPGAPABS, p_abs_gap);
+    }
+
+
+    void ILPSolverGurobi::set_max_rel_gap(double p_rel_gap)
+    {
+        assert(p_rel_gap >= 0.);
+        call_gurobi(GRBsetdblparam, GRBgetenv(d_model), GRB_DBL_PAR_MIPGAP, p_rel_gap);
+    }
+
+
+    void ILPSolverGurobi::print_mps_file(const std::string& p_filename)
+    {
+        assert(p_filename.substr(p_filename.size() - 4, 4) == ".mps");
+        call_gurobi(GRBwrite, d_model, p_filename.c_str());
+    }
+
 
     void ILPSolverGurobi::add_variable_impl (VariableType p_type, double p_objective, double p_lower_bound, double p_upper_bound,
         const std::string& p_name, const std::vector<double>* p_row_values, const std::vector<int>* p_row_indices)
@@ -177,79 +243,94 @@ namespace ilp_solver
         double* values{nullptr};
         if (p_row_values)
         {
-            p_row_indices = (p_row_indices) ? p_row_indices : &d_rows;
-            assert( p_row_values->size() >= p_row_indices->size() );
-            assert( p_row_indices->size() <= d_rows.size() );
+            if (p_row_indices)
+            {
+                num     = static_cast<int>(p_row_indices->size());
+                indices = const_cast<int*>(p_row_indices->data());
+            }
+            else
+            {
+                num = d_num_cons;
+                update_index_vector(d_indices, num);
+                indices = const_cast<int*>(d_indices.data());
 
-            num     = static_cast<int>(p_row_indices->size());
-            indices = const_cast<int*>(p_row_indices->data());
+            }
+
             values  = const_cast<double*>(p_row_values->data());
+            assert( static_cast<int>(p_row_values->size())  == num );
         }
-        auto [lower, upper] = handle_bounds(&p_lower_bound, &p_upper_bound);
+
         char type = (p_type == VariableType::INTEGER)    ? GRB_INTEGER
                   : (p_type == VariableType::CONTINUOUS) ? GRB_CONTINUOUS
                   :                                        GRB_BINARY;
 
-        check_gurobi_error( GRBaddvar(d_model, num, indices, values, p_objective, lower, upper, type, p_name.c_str())
-                          , "Could not add variable to Gurobi model.");
-
+        call_gurobi( GRBaddvar, d_model, num, indices, values, p_objective, p_lower_bound, p_upper_bound, type, p_name.c_str() );
+        ++d_num_vars;
     }
 
 
-    void ILPSolverGurobi::add_constraint_impl (const double* p_lower_bound, const double* p_upper_bound,
+    void ILPSolverGurobi::add_constraint_impl (double p_lower_bound, double p_upper_bound,
         const std::vector<double>& p_col_values, const std::string& p_name, const std::vector<int>* p_col_indices)
     {
-        p_col_indices = (p_col_indices) ? p_col_indices : &d_cols;
-        assert( p_col_indices->size() <= p_col_values.size() );
-        assert( p_col_indices->size() <= d_cols.size() );
+        int     num{0};
+        int*    indices{nullptr};
+        double* values{ const_cast<double*>(p_col_values.data()) };
 
-        int     num    { static_cast<int>    ((p_col_indices) ? p_col_indices->size() : d_cols.size()) };
-        int*    indices{  const_cast<int*>   ((p_col_indices) ? p_col_indices->data() : d_cols.data()) };
-        double* values {  const_cast<double*>(p_col_values.data()) };
+        if (p_col_indices)
+        {
+            num     = static_cast<int>(p_col_indices->size());
+            indices = const_cast<int*>(p_col_indices->data());
 
-        auto [lower, upper] = handle_bounds(p_lower_bound, p_upper_bound);
-        if (lower == upper)
-            check_gurobi_error( GRBaddconstr(d_model, num, indices, values, GRB_EQUAL, lower, p_name.c_str())
-                              , "Could not add a Gurobi equality constraint.");
+            assert( p_col_indices->size() == p_col_values.size() );
+            assert( num <= d_num_vars );
+        }
         else
         {
-            if (lower != d_neg_infinity)
+            num     = d_num_vars;
+            update_index_vector(d_indices, num);
+            indices = const_cast<int*>(d_indices.data());
+
+            assert( static_cast<int>(p_col_values.size()) == num );
+        }
+
+        if (p_lower_bound == p_upper_bound)
+        {
+            call_gurobi( GRBaddconstr, d_model, num, indices, values, GRB_EQUAL, p_lower_bound, p_name.c_str() );
+            ++d_num_cons;
+        }
+        else
+        {
+            if (p_lower_bound >= c_neg_inf_bound)
             {
-                if (upper != d_pos_infinity)
-                    check_gurobi_error( GRBaddrangeconstr(d_model, num, indices, values, lower, upper, p_name.c_str())
-                                      , "Could not add a Gurobi constraint.");
+                if (p_upper_bound <= c_pos_inf_bound)
+                    call_gurobi( GRBaddrangeconstr, d_model, num, indices, values, p_lower_bound, p_upper_bound, p_name.c_str() );
                 else
-                    check_gurobi_error( GRBaddconstr(d_model, num, indices, values, GRB_GREATER_EQUAL, lower, p_name.c_str())
-                                      , "Could not add a Gurobi constraint.");
+                    call_gurobi( GRBaddconstr, d_model, num, indices, values, GRB_GREATER_EQUAL, p_lower_bound, p_name.c_str() );
+                ++d_num_cons;
             }
             else
             {
-                if (upper != d_pos_infinity)
-                    check_gurobi_error( GRBaddrangeconstr(d_model, num, indices, values, GRB_LESS_EQUAL, upper, p_name.c_str())
-                                      , "Could not add a Gurobi constraint.");
+                if (p_upper_bound <= c_pos_inf_bound)
+                {
+                    call_gurobi( GRBaddconstr, d_model, num, indices, values, GRB_LESS_EQUAL, p_upper_bound, p_name.c_str() );
+                    ++d_num_cons;
+                }
             }
         }
     }
 
-    void ILPSolverGurobi::set_infinity()
-    {
-        d_pos_infinity =  GRB_INFINITY;
-        d_neg_infinity = -GRB_INFINITY;
-    }
 
     void ILPSolverGurobi::solve_impl()
     {
-        check_gurobi_error( GRBoptimize(d_model)
-                          , "Could not optimize the Gurobi model.");
+        call_gurobi( GRBoptimize, d_model );
     }
+
 
     void ILPSolverGurobi::set_objective_sense_impl(ObjectiveSense p_sense)
     {
         int sense{ (p_sense == ObjectiveSense::MINIMIZE) ? 1 : -1 };
-        check_gurobi_error( GRBsetintattr(d_model, GRB_INT_ATTR_MODELSENSE, sense)
-                          , "Could not set Gurobi model sense.");
+        call_gurobi( GRBsetintattr, d_model, GRB_INT_ATTR_MODELSENSE, sense );
     }
-
 }
 
 #endif
