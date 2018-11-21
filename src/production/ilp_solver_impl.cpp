@@ -20,7 +20,7 @@ namespace ilp_solver
 
     void ILPSolverImpl::add_variable_boolean(const vector<int>& p_row_indices, const vector<double>& p_row_values, double p_objective, const string& p_name)
     {
-        assert(p_row_values.size() >= p_row_indices.size());
+        assert(p_row_values.size() == p_row_indices.size());
         add_variable_impl (VariableType::BINARY, p_objective, 0., 1., p_name, &p_row_values, &p_row_indices);
     }
 
@@ -36,7 +36,7 @@ namespace ilp_solver
 
     void ILPSolverImpl::add_variable_integer(const vector<int>& p_row_indices, const vector<double>& p_row_values, double p_objective, double p_lower_bound, double p_upper_bound, const string& p_name)
     {
-        assert(p_row_values.size() >= p_row_indices.size());
+        assert(p_row_values.size() == p_row_indices.size());
         add_variable_impl (VariableType::INTEGER, p_objective, p_lower_bound, p_upper_bound, p_name, &p_row_values, &p_row_indices);
     }
 
@@ -52,7 +52,7 @@ namespace ilp_solver
 
     void ILPSolverImpl::add_variable_continuous(const vector<int>& p_row_indices, const vector<double>& p_row_values, double p_objective, double p_lower_bound, double p_upper_bound, const string& p_name)
     {
-        assert(p_row_values.size() >= p_row_indices.size());
+        assert(p_row_values.size() == p_row_indices.size());
         add_variable_impl (VariableType::CONTINUOUS, p_objective, p_lower_bound, p_upper_bound, p_name, &p_row_values, &p_row_indices);
     }
 

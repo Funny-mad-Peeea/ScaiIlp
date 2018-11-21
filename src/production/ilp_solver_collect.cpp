@@ -48,7 +48,7 @@ namespace ilp_solver
         if (p_row_values)
         {
             if (!p_row_indices) p_row_indices = &d_rows;
-            assert (p_row_values->size() >= p_row_indices->size());
+            assert (p_row_values->size() == p_row_indices->size());
             assert (p_row_indices->size() <= d_rows.size());
             append_column(&d_ilp_data.matrix, *p_row_indices, *p_row_values);
         }
@@ -70,7 +70,7 @@ namespace ilp_solver
         const std::vector<int>* p_col_indices)
     {
         if (!p_col_indices) p_col_indices = &d_cols;
-        assert(p_col_values.size() >= p_col_indices->size());
+        assert(p_col_values.size() == p_col_indices->size());
         assert(p_col_indices->size() <= d_cols.size());
 
         int n_cols = static_cast<int>(d_ilp_data.objective.size());

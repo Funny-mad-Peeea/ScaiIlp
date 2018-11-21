@@ -44,7 +44,7 @@ namespace ilp_solver
         {
             // If no indices are given, use all indices.
             if (!p_row_indices) p_row_indices = &d_rows;
-            assert (p_row_values->size()  >= p_row_indices->size());
+            assert (p_row_values->size()  == p_row_indices->size());
             assert (p_row_indices->size() <= d_rows.size());
 
             // Osi operates on raw pointers and sizes.
@@ -95,7 +95,7 @@ namespace ilp_solver
 
         // If no indices are given, use all indices.
         if (!p_col_indices) p_col_indices = &d_cols;
-        assert( p_col_values.size()   >= p_col_indices->size() );
+        assert( p_col_values.size()   == p_col_indices->size() );
         assert( p_col_indices->size() <= d_cols.size() );
 
         // Osi operates on raw pointers and sizes.
@@ -126,7 +126,7 @@ namespace ilp_solver
     void ILPSolverOsiModel::set_start_solution(const std::vector<double>& p_solution)
     {
         auto* solver{ get_solver() };
-        assert( static_cast<int>(p_solution.size()) >= solver->getNumCols() );
+        assert( static_cast<int>(p_solution.size()) == solver->getNumCols() );
 
         solver->setColSolution(p_solution.data());
     }
