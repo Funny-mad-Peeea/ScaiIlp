@@ -151,7 +151,7 @@ namespace ilp_solver
         return SolutionStatus::NO_SOLUTION;
     }
 
-    void ILPSolverOsiModel::set_objective_sense(ObjectiveSense p_sense)
+    void ILPSolverOsiModel::set_objective_sense_impl(ObjectiveSense p_sense)
     {
         auto* solver{ get_solver() };
         if (p_sense == ObjectiveSense::MINIMIZE )

@@ -64,7 +64,7 @@ namespace ilp_solver
                 const std::vector<int>* p_col_indices = nullptr) override;
 
             void solve_impl() override;
-            void set_objective_sense(ObjectiveSense p_sense) override;
+            void set_objective_sense_impl(ObjectiveSense p_sense) override;
     };
 }
 

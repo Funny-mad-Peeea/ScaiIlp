@@ -25,7 +25,7 @@ namespace ilp_solver
             void add_constraint_impl (const double* p_lower_bound, const double* p_upper_bound,
                 const std::vector<double>& p_col_values, const std::string& p_name = "",
                 const std::vector<int>* p_col_indices = nullptr) override;
-            void set_objective_sense(ObjectiveSense p_sense) override;
+            void set_objective_sense_impl(ObjectiveSense p_sense) override;
 
             void set_start_solution     (const std::vector<double>& p_solution) override;
 

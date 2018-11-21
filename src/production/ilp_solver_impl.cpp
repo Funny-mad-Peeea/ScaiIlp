@@ -125,13 +125,13 @@ namespace ilp_solver
 
     void ILPSolverImpl::minimize()
     {
-        set_objective_sense(ObjectiveSense::MINIMIZE);
+        set_objective_sense_impl(ObjectiveSense::MINIMIZE);
         solve_impl();
     }
 
     void ILPSolverImpl::maximize()
     {
-        set_objective_sense(ObjectiveSense::MAXIMIZE);
+        set_objective_sense_impl(ObjectiveSense::MAXIMIZE);
         solve_impl();
     }
 }

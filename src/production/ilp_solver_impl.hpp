@@ -69,7 +69,7 @@ namespace ilp_solver
                                               const std::vector<int>* p_col_indices = nullptr) = 0;
 
             virtual void solve_impl() = 0;
-            virtual void set_objective_sense(ObjectiveSense p_sense) = 0;
+            virtual void set_objective_sense_impl(ObjectiveSense p_sense) = 0;
     };
 }
 

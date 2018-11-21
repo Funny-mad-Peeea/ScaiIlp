@@ -84,7 +84,7 @@ namespace ilp_solver
         d_rows.push_back(static_cast<int>(d_rows.size()));
     }
 
-    void ILPSolverCollect::set_objective_sense(ObjectiveSense p_sense)
+    void ILPSolverCollect::set_objective_sense_impl(ObjectiveSense p_sense)
     {
         d_ilp_data.objective_sense = p_sense;
     }
