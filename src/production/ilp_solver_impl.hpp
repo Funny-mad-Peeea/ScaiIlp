@@ -9,7 +9,7 @@
 //     add_variable_impl
 //     add_constraint_impl
 //     solve_impl
-//     set_objective_sense
+//     set_objective_sense_impl
 //     set_start_solution
 //     get_solution
 //     get_objective

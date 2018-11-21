@@ -33,6 +33,8 @@ namespace ilp_solver
     //     get_objective
     //     get_status
     //     solve_impl
+    //     set_objective_sense_impl
+    //     set_infinity
     // for the concrete solver.
     class ILPSolverOsiModel : public ILPSolverImpl
     {
