@@ -50,6 +50,8 @@ namespace ilp_solver
             void maximize() override;
 
         protected:
+            ILPSolverImpl() {}
+
             void set_default_parameters();
             std::pair<double, double> handle_bounds(const double* p_lower_bound, const double* p_upper_bound);
 

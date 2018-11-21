@@ -143,8 +143,10 @@ namespace ilp_solver
 
         if ( solver->isProvenOptimal() )
             return SolutionStatus::PROVEN_OPTIMAL;
-        if ( solver->isProvenPrimalInfeasible() || solver->isProvenDualInfeasible() )
+        if ( solver->isProvenPrimalInfeasible() )
             return SolutionStatus::PROVEN_INFEASIBLE;
+        if ( solver->isProvenDualInfeasible() )
+            return SolutionStatus::PROVEN_UNBOUNDED;
 
         const auto* solution_array = solver->getColSolution();
         if (solution_array) return SolutionStatus::SUBOPTIMAL;

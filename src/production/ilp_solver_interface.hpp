@@ -6,7 +6,7 @@
 
 namespace ilp_solver
 {
-    enum class SolutionStatus { PROVEN_OPTIMAL, PROVEN_INFEASIBLE, SUBOPTIMAL, NO_SOLUTION };
+    enum class SolutionStatus { PROVEN_OPTIMAL, PROVEN_INFEASIBLE, PROVEN_UNBOUNDED, SUBOPTIMAL, NO_SOLUTION };
 
 
     static constexpr int    c_default_num_threads  { 1 };

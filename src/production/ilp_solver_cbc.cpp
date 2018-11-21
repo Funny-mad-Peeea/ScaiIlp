@@ -48,14 +48,17 @@ namespace ilp_solver
             return SolutionStatus::PROVEN_OPTIMAL;
         else if (d_model.isProvenInfeasible())
             return SolutionStatus::PROVEN_INFEASIBLE;
+        else if (d_model.isProvenDualInfeasible())
+            return SolutionStatus::PROVEN_UNBOUNDED;
         else
-            return (d_model.bestSolution() == nullptr ? SolutionStatus::NO_SOLUTION
-                : SolutionStatus::SUBOPTIMAL);
+            return ((d_model.bestSolution() == nullptr) ? SolutionStatus::NO_SOLUTION
+                                                        : SolutionStatus::SUBOPTIMAL);
     }
 
     void ILPSolverCbc::set_start_solution(const std::vector<double>& p_solution)
     {
         // Set the current best solution of Cbc to the given solution, check for feasibility, but not for better objective value.
+        assert( static_cast<int>(p_solution.size()) == d_model.getNumCols() );
         d_model.setBestSolution(p_solution.data(), static_cast<int>(p_solution.size()), COIN_DBL_MAX, true);
     }
 
@@ -111,9 +114,9 @@ namespace ilp_solver
         if (sense * old_sense < 0.)
         {
             old_value = (old_value == d_neg_infinity) ? d_pos_infinity
-                : (old_value == d_pos_infinity) ? d_neg_infinity
-                : old_value;
-            d_model.setObjValue(old_value);
+                      : (old_value == d_pos_infinity) ? d_neg_infinity
+                      :  old_value;
+            d_model.setObjValue( old_value );
 
         }
     }
