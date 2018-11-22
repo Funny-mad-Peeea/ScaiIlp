@@ -10,6 +10,7 @@
 #include "OsiSolverInterface.hpp"
 #pragma warning(pop)
 
+#include <optional>
 #include <cassert>
 
 using std::string;
@@ -28,6 +29,47 @@ constexpr auto c_test_for_duplicate_index = false;
 
 namespace ilp_solver
 {
+    namespace
+    {
+
+        // Prune zeros before constructing a coin-packed vector.
+        // Returns newly constructed vectors only if there are zeroes in p_values.
+        //     If p_indices == nullptr, constructs a new index array for all non-zeroes in p_values.
+        //     Otherwise, only keeps the indices corresponding to non-zero values.
+        std::optional<std::pair<std::vector<int>, std::vector<double>>> prune_zeros(const std::vector<double>& p_values, const std::vector<int>* p_indices = nullptr)
+        {
+            assert ( (p_indices != nullptr) ? p_indices->size() == p_values.size() : true);
+
+            std::vector<int>    indices;
+            std::vector<double> values;
+
+            int num_zeros { static_cast<int>(std::count(p_values.begin(), p_values.end(), 0.)) };
+
+            if (num_zeros > 0)
+            {
+                // New size is independent from the existence of an index vector.
+                int new_size = static_cast<int>(p_values.size()) - num_zeros;
+                indices.reserve( new_size );
+                 values.reserve( new_size );
+
+                for (int i = 0; i < static_cast<int>(p_values.size()); i++)
+                {
+                    auto value = p_values[i];
+                    // Construct the new vectors. If we have no indices, use the current index.
+                    if (value != 0.)
+                    {
+                        indices.push_back( (p_indices != nullptr) ? (*p_indices)[i] : i );
+                        values.push_back(value);
+                    }
+                }
+
+                return {std::pair(std::move(indices), std::move(values))};
+            }
+            // Return a default-constructed (empty) optional.
+            return {};
+        }
+    }
+
     ILPSolverOsiModel::ILPSolverOsiModel()
     { }
 
@@ -35,22 +77,26 @@ namespace ilp_solver
         [[maybe_unused]] const std::string& p_name, const std::vector<double>* p_row_values,
         const std::vector<int>* p_row_indices)
     {
-        auto*         solver{get_solver()};
+        auto*            solver{get_solver()};
         CoinPackedVector col;
 
         if (p_row_values)
         {
-            if (p_row_indices)
+            // Reduce the vectors, if necessary.
+            auto optional_reduction = prune_zeros(*p_row_values, p_row_indices);
+            if (optional_reduction)
             {
-                assert (p_row_indices->size() == p_row_values->size());
-                assert (static_cast<int>(p_row_indices->size()) <= solver->getNumRows());
-                col = CoinPackedVector(static_cast<int>(p_row_indices->size()), p_row_indices->data(), p_row_values->data(), true); // do check for duplicate indices
+                p_row_indices = &(optional_reduction->first);
+                p_row_values  = &(optional_reduction->second);
             }
+
+            assert ((p_row_indices != nullptr) ? static_cast<int>(p_row_indices->size()) <= solver->getNumRows()
+                                               : static_cast<int>(p_row_values->size()) == solver->getNumRows());
+
+            if ( p_row_indices )
+                col = CoinPackedVector(static_cast<int>(p_row_indices->size()), p_row_indices->data(), p_row_values->data(), c_test_for_duplicate_index);
             else
-            {
-                assert (static_cast<int>(p_row_values->size()) == solver->getNumRows());
-                col = CoinPackedVector(solver->getNumRows(), p_row_values->data(), false); // do not check for duplicate indices
-            }
+                col = CoinPackedVector(solver->getNumRows(), p_row_values->data(), false); // do not check for duplicate indices because they can't occur.
         }
 
         auto [lower, upper] = handle_bounds(&p_lower_bound, &p_upper_bound);
@@ -79,7 +125,7 @@ namespace ilp_solver
 
     void ILPSolverOsiModel::set_infinity()
     {
-        auto*         solver{ get_solver() };
+        auto*             solver{ get_solver() };
         d_pos_infinity =  solver->getInfinity();
         d_neg_infinity = -solver->getInfinity();
     }
@@ -90,19 +136,27 @@ namespace ilp_solver
     {
         CoinPackedVector row;
         auto*         solver{ get_solver() };
+        const std::vector<double>* values{ &p_col_values };
+
+        // Reduce the vectors, if necessary.
+        auto optional_reduction{ prune_zeros(p_col_values, p_col_indices) };
+        if (optional_reduction)
+        {
+            p_col_indices = &(optional_reduction->first);
+            values        = &(optional_reduction->second);
+        }
 
         if (p_col_indices)
         {
-            assert( p_col_values.size()   == p_col_indices->size() );
             assert( static_cast<int>(p_col_indices->size()) <= solver->getNumCols() );
             int n_cols = static_cast<int>(p_col_indices->size());
 
-            row = CoinPackedVector(n_cols, p_col_indices->data(), p_col_values.data(), true); // do check for duplicate indicies
+            row = CoinPackedVector(n_cols, p_col_indices->data(), values->data(), c_test_for_duplicate_index);
         }
         else
         {
-            assert( static_cast<int>(p_col_values.size()) == solver->getNumCols() );
-            row = CoinPackedVector(solver->getNumCols(), p_col_values.data(), false); // do not check for duplicate indicies
+            assert( static_cast<int>(values->size()) == solver->getNumCols() );
+            row = CoinPackedVector(solver->getNumCols(), values->data(), false); // do not check for duplicate indices
         }
 
         auto[lower, upper] = handle_bounds(p_lower_bound, p_upper_bound);
