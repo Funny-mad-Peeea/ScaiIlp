@@ -17,7 +17,7 @@ using std::string;
 using std::vector;
 
 const auto c_eps = 0.0001;
-const auto c_num_performance_test_repetitions = 1;
+const auto c_num_performance_test_repetitions = 10000;
 
 const bool LOGGING = true;
 
@@ -33,6 +33,31 @@ namespace ilp_solver
     {
         return -0.5 + (1.0*rand())/RAND_MAX;
     }
+
+    static std::pair<int, int> generate_random_problem(ILPSolverInterface* p_solver, int p_num_variables, int p_num_constraints)
+    {
+        srand(3);
+        static constexpr double variable_scaling = 10.0;
+        static const double   constraint_scaling = p_num_variables * variable_scaling;
+
+        const auto start_time = GetTickCount();
+
+        for (auto j = 0; j < p_num_variables; ++j)
+            p_solver->add_variable_integer(rand_double(), variable_scaling*rand_double(), variable_scaling*(1.0 + rand_double()));
+
+        const auto middle_time = GetTickCount();
+
+        std::vector<double> constraint_vector(p_num_variables);
+
+        for (auto i = 0; i < p_num_constraints; ++i)
+        {
+            std::generate(std::begin(constraint_vector), std::end(constraint_vector), []() { return rand_double(); });
+            p_solver->add_constraint(constraint_vector, constraint_scaling*rand_double(), constraint_scaling*(1.0 + rand_double()));
+        }
+        const auto end_time = GetTickCount();
+        return {middle_time - start_time, end_time - middle_time};
+    }
+
 
     using TestFunction    = void(*)(ILPSolverInterface*);
     using FactoryFunction = ILPSolverInterface* (__stdcall *)(void);
@@ -72,6 +97,9 @@ namespace ilp_solver
 
         // Add constraints
         logging << "Initial array: ";
+
+        vector<double> values{1., -1.};
+        vector<int> indices{0, 0};
         for (auto i = 0; i < num_vars; ++i)
         {
             for (auto j = i+1; j < num_vars; ++j)
@@ -82,14 +110,8 @@ namespace ilp_solver
                 if (numbers[k] < numbers[l])
                     std::swap(k, l);
 
-                vector<int> indices;
-                vector<double> values;
-
-                indices.push_back(k);
-                values.push_back(1);
-
-                indices.push_back(l);
-                values.push_back(-1);
+                indices[0] = k;
+                indices[1] = l;
 
                 p_solver->add_constraint_lower(indices, values, 1.0, "x" + std::to_string(k) + ">x" + std::to_string(l));
             }
@@ -297,9 +319,64 @@ namespace ilp_solver
         const auto end_time = GetTickCount();
 
         if (LOGGING)
-            cout << "Test took " << end_time - start_time << " ms" << endl;
+            cout << "Test for multiple solves took " << end_time - start_time << " ms" << endl;
     }
 
+    void test_performance_big(ILPSolverInterface* p_solver)
+    {
+        static constexpr int c_num_constraints{ 50 };
+        static constexpr int c_num_variables  { 50000 };
+        const auto start_time = GetTickCount();
+
+        auto [var_time, cons_time] = generate_random_problem(p_solver, c_num_variables, c_num_constraints);
+
+        // Check before finalizing.
+        BOOST_REQUIRE_EQUAL( p_solver->get_num_constraints(), c_num_constraints );
+        BOOST_REQUIRE_EQUAL( p_solver->get_num_variables(),   c_num_variables );
+
+        const auto middle_time = GetTickCount();
+        p_solver->set_max_seconds(0.001);
+        p_solver->minimize();
+
+        // Check after finalizing.
+        BOOST_REQUIRE_EQUAL(p_solver->get_num_constraints(), c_num_constraints);
+        BOOST_REQUIRE_EQUAL(p_solver->get_num_variables(),   c_num_variables);
+
+        const auto end_time = GetTickCount();
+
+        if (LOGGING)
+            cout << "Test for creating a big problem took " << end_time - start_time << " ms.\n"
+                 << "\t" <<  var_time              << " for creating the variables.\n"
+                 << "\t" << cons_time              << " for creating the constraints.\n"
+                 << "\t" << end_time - middle_time << " for finalizing the problem." << endl;
+
+    }
+
+    void test_performance_zero(ILPSolverInterface* p_solver)
+    {
+        const auto start_time = GetTickCount();
+        for(int i = 0; i < 1000; i++)
+            p_solver->add_variable_integer(1., 0., 2.);
+        p_solver->add_variable_integer(-1., 0., 2.);
+
+        std::vector<double> constraint(1001, 0.);
+        constraint[0] = 1.;
+        p_solver->add_constraint(constraint, -1., 1.);
+        for (int j = 1; j < 1001; j++)
+        {
+            constraint[j-1] = 0.;
+            constraint[j]   = 1.;
+            p_solver->add_constraint(constraint, -1., 1.);
+        }
+        p_solver->minimize();
+        const auto objective = p_solver->get_objective();
+
+        const auto end_time = GetTickCount();
+        BOOST_REQUIRE_CLOSE( objective, -1., c_eps );
+
+        if (LOGGING)
+            cout << "Test for zero-pruning took " << end_time - start_time << " ms" << endl;
+    }
 
     void test_start_solution(ILPSolverInterface* p_solver, double p_sense)
     {
@@ -359,19 +436,7 @@ namespace ilp_solver
         srand(3);
         p_solver->set_num_threads(8);
         // It is not clear that this is sufficient to provoke a bad_alloc.
-        const auto variable_scaling = 10.0;
-        const auto num_variables = 500000;
-        for (auto j = 0; j < num_variables; ++j)
-            p_solver->add_variable_integer(rand_double(), variable_scaling*rand_double(), variable_scaling*(1.0 + rand_double()));
-
-        const auto constraint_scaling = num_variables*variable_scaling;
-        const auto num_constraints = 150;
-        std::vector<double> constraint_vector(num_variables);
-        for (auto i = 0; i < num_constraints; ++i)
-        {
-            std::generate(std::begin(constraint_vector), std::end(constraint_vector), [](){ return rand_double(); });
-            p_solver->add_constraint(constraint_vector, constraint_scaling*rand_double(), constraint_scaling*(1.0 + rand_double()));
-        }
+        generate_random_problem(p_solver, 500000, 150);
 
         p_solver->set_max_seconds(10); // Don't waste time if we can build the problem.
         try
@@ -402,12 +467,14 @@ int create_ilp_test_suite()
     using namespace ilp_solver;
 
 
-    constexpr std::array<std::pair<TestFunction, std::string_view>, 5> all_tests
+    constexpr std::array<std::pair<TestFunction, std::string_view>, 7> all_tests
     { std::pair{test_sorting, "Sorting"}
     , std::pair{test_linear_programming, "LinProgr"}
     , std::pair{test_start_solution_minimization, "StartSolutionMin"}
     , std::pair{test_start_solution_maximization, "StartSolutionMax"}
     , std::pair{test_performance, "Performance"}
+    , std::pair{test_performance_big, "PerformanceBig"}
+    , std::pair{test_performance_zero, "PerformanceZero"}
     };
 
     constexpr int num_solvers = 2 * (WITH_CBC);

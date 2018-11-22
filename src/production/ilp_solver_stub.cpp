@@ -178,7 +178,6 @@ namespace ilp_solver
         switch (p_exit_code)
         {
         case SolverExitCode::out_of_memory:
-            std::cout << "OUT OF MEMORY" << std::endl;
         case SolverExitCode::uncaught_exception_1:
         case SolverExitCode::uncaught_exception_2:
         case SolverExitCode::uncaught_exception_3:
