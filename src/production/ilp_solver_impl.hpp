@@ -19,6 +19,11 @@
 //     set_log_level
 //     set_max_seconds
 //     set_infinity
+//     get_num_constraints
+//     get_num_variables
+// If there is any action you need to be done after constructing the problem, but before solving it,
+// (e.g. integrating a cache) you may also want to implement
+//     prepare_impl
 namespace ilp_solver
 {
     enum class VariableType   { INTEGER, CONTINUOUS, BINARY };
@@ -53,13 +58,14 @@ namespace ilp_solver
             ILPSolverImpl() {}
 
             void set_default_parameters();
+
             std::pair<double, double> handle_bounds(const double* p_lower_bound, const double* p_upper_bound);
 
             double d_pos_infinity;
             double d_neg_infinity;
-
         private:
             virtual void set_infinity();
+            virtual void prepare_impl();
 
             virtual void add_variable_impl (VariableType p_type, double p_objective, double p_lower_bound, double p_upper_bound,
                                             const std::string& p_name = "", const std::vector<double>* p_row_values = nullptr,

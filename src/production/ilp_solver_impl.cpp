@@ -114,8 +114,12 @@ namespace ilp_solver
         set_deterministic_mode(c_default_deterministic);
         set_log_level(c_default_log_level);
         set_max_seconds(c_default_max_seconds);
+        set_objective_sense_impl(ObjectiveSense::MINIMIZE);
         set_infinity();
     }
+
+    void ILPSolverImpl::prepare_impl()
+    { }
 
     void ILPSolverImpl::set_infinity()
     {
@@ -125,12 +129,14 @@ namespace ilp_solver
 
     void ILPSolverImpl::minimize()
     {
+        prepare_impl();
         set_objective_sense_impl(ObjectiveSense::MINIMIZE);
         solve_impl();
     }
 
     void ILPSolverImpl::maximize()
     {
+        prepare_impl();
         set_objective_sense_impl(ObjectiveSense::MAXIMIZE);
         solve_impl();
     }

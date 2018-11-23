@@ -68,27 +68,40 @@ namespace ilp_solver
             // Return a default-constructed (empty) optional.
             return {};
         }
+
+        std::vector<int> global_index_vector;
+
+        void update_global_index_vector(int new_size)
+        {
+            if (static_cast<int>(global_index_vector.size()) < new_size)
+            {
+                global_index_vector.reserve(std::max(static_cast<size_t>(new_size), 2 * global_index_vector.capacity()));
+                for (int i = static_cast<int>(global_index_vector.size()); i < new_size; i++)
+                    global_index_vector.push_back(i);
+            }
+        }
+    }
+
+    int ILPSolverOsiModel::get_num_variables() const
+    {
+        return d_cache.numberColumns();
+    }
+
+    int ILPSolverOsiModel::get_num_constraints() const
+    {
+        return d_cache.numberRows();
     }
 
     ILPSolverOsiModel::ILPSolverOsiModel()
     { }
 
-    int ILPSolverOsiModel::get_num_variables() const
-    {
-        return get_solver()->getNumCols();
-    }
-
-    int ILPSolverOsiModel::get_num_constraints() const
-    {
-        return get_solver()->getNumRows();
-    }
-
     void ILPSolverOsiModel::add_variable_impl (VariableType p_type, double p_objective, double p_lower_bound, double p_upper_bound,
         [[maybe_unused]] const std::string& p_name, const std::vector<double>* p_row_values,
         const std::vector<int>* p_row_indices)
     {
-        auto*            solver{get_solver()};
-        CoinPackedVector col;
+        const int*    rows{nullptr};
+        int         n_rows{0};
+        const double* vals{nullptr};
 
         if (p_row_values)
         {
@@ -96,40 +109,46 @@ namespace ilp_solver
             auto optional_reduction = prune_zeros(*p_row_values, p_row_indices);
             if (optional_reduction)
             {
-                p_row_indices = &(optional_reduction->first);
-                p_row_values  = &(optional_reduction->second);
+                rows   = optional_reduction->first.data();
+                vals   = optional_reduction->second.data();
+                n_rows = optional_reduction->first.size();
+            }
+            else
+            {
+                vals   = p_row_values->data();
+                n_rows = p_row_values->size();
+                if (p_row_indices)
+                    rows = p_row_indices->data();
+                else
+                {
+                    update_global_index_vector(n_rows);
+                    rows = global_index_vector.data();
+                }
             }
 
-            assert ((p_row_indices != nullptr) ? static_cast<int>(p_row_indices->size()) <= solver->getNumRows()
-                                               : static_cast<int>(p_row_values->size()) == solver->getNumRows());
-
-            if ( p_row_indices )
-                col = CoinPackedVector(static_cast<int>(p_row_indices->size()), p_row_indices->data(), p_row_values->data(), c_test_for_duplicate_index);
-            else
-                col = CoinPackedVector(solver->getNumRows(), p_row_values->data(), false); // do not check for duplicate indices because they can't occur.
+            assert (n_rows <= get_num_constraints() );
         }
 
         auto [lower, upper] = handle_bounds(&p_lower_bound, &p_upper_bound);
 
+        // OSI has no special case for binary variables.
+        bool is_integer_or_binary{ (p_type == VariableType::CONTINUOUS) ? false : true };
 #if DO_FORWARD_NAME == true
         if (!p_name.empty())
-            solver->addCol(col, lower, upper, p_objective, p_name);
+            d_cache.addCol(n_rows, rows, vals, lower, upper, p_objective, p_name.c_str(), is_integer_or_binary);
         else
 #endif
-            solver->addCol(col, lower, upper, p_objective);
+            d_cache.addCol(n_rows, rows, vals, lower, upper, p_objective, NULL, is_integer_or_binary);
+        d_cache_changed = true;
+    }
 
-        int index = solver->getNumCols() - 1;
-        switch ( p_type )
+    void ILPSolverOsiModel::prepare_impl()
+    {
+        auto* solver{ get_solver() };
+        if (d_cache_changed && (d_cache.numberColumns() > 0 || d_cache.numberRows() > 0))
         {
-            case VariableType::BINARY:    [[fallthrough]];
-            // OSI does not support a dedicated binary type. A binary variable is just an integer variable with bounds [0,1] or fixed to 0 or 1.
-            case VariableType::INTEGER:
-                solver->setInteger(index);
-            break;
-
-            case VariableType::CONTINUOUS:
-                solver->setContinuous(index);
-            break;
+            solver->loadFromCoinModel(d_cache, true);
+            d_cache_changed = false;
         }
     }
 
@@ -144,29 +163,29 @@ namespace ilp_solver
         const std::vector<double>& p_col_values, [[maybe_unused]] const std::string& p_name,
         const std::vector<int>* p_col_indices)
     {
-        CoinPackedVector row;
-        auto*         solver{ get_solver() };
-        const std::vector<double>* values{ &p_col_values };
+        const int*    cols{nullptr};
+        int         n_cols{0};
+        const double* vals{nullptr};
 
         // Reduce the vectors, if necessary.
         auto optional_reduction{ prune_zeros(p_col_values, p_col_indices) };
         if (optional_reduction)
         {
-            p_col_indices = &(optional_reduction->first);
-            values        = &(optional_reduction->second);
-        }
-
-        if (p_col_indices)
-        {
-            assert( static_cast<int>(p_col_indices->size()) <= solver->getNumCols() );
-            int n_cols = static_cast<int>(p_col_indices->size());
-
-            row = CoinPackedVector(n_cols, p_col_indices->data(), values->data(), c_test_for_duplicate_index);
+            cols = optional_reduction->first.data();
+            vals = optional_reduction->second.data();
+            n_cols = optional_reduction->first.size();
         }
         else
         {
-            assert( static_cast<int>(values->size()) == solver->getNumCols() );
-            row = CoinPackedVector(solver->getNumCols(), values->data(), false); // do not check for duplicate indices
+            vals = p_col_values.data();
+            n_cols = p_col_values.size();
+            if (p_col_indices)
+                cols = p_col_indices->data();
+            else
+            {
+                update_global_index_vector(n_cols);
+                cols =  global_index_vector.data();
+            }
         }
 
         auto[lower, upper] = handle_bounds(p_lower_bound, p_upper_bound);
@@ -175,10 +194,11 @@ namespace ilp_solver
 
 #if DO_FORWARD_NAME == true
         if (!p_name.empty())
-            solver->addRow(row, lower, upper, p_name);
+            d_cache.addRow(n_cols, cols, vals, lower, upper, p_name.c_str());
         else
 #endif
-            solver->addRow(row, lower, upper);
+            d_cache.addRow(n_cols, cols, vals, lower, upper);
+        d_cache_changed = true;
     }
 
     std::vector<double> ILPSolverOsiModel::get_solution() const
@@ -192,8 +212,8 @@ namespace ilp_solver
 
     void ILPSolverOsiModel::set_start_solution(const std::vector<double>& p_solution)
     {
+        assert( static_cast<int>(p_solution.size()) == get_num_variables() );
         auto* solver{ get_solver() };
-        assert( static_cast<int>(p_solution.size()) == solver->getNumCols() );
 
         solver->setColSolution(p_solution.data());
     }

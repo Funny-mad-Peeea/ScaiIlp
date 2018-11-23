@@ -58,8 +58,8 @@ namespace ilp_solver
     void ILPSolverCbc::set_start_solution(const std::vector<double>& p_solution)
     {
         // Set the current best solution of Cbc to the given solution, check for feasibility, but not for better objective value.
-        assert( static_cast<int>(p_solution.size()) == d_model.getNumCols() );
-        d_model.setBestSolution(p_solution.data(), static_cast<int>(p_solution.size()), COIN_DBL_MAX, true);
+        assert( static_cast<int>(p_solution.size()) == get_num_variables() );
+        d_model.setBestSolution(p_solution.data(), static_cast<int>(p_solution.size()), COIN_DBL_MAX, false);
     }
 
     void ILPSolverCbc::set_num_threads        (int p_num_threads)
@@ -99,25 +99,20 @@ namespace ilp_solver
 
     void ILPSolverCbc::set_objective_sense_impl(ObjectiveSense p_sense)
     {
-        // CBCs objective value depends on the sense.
-        // When changing the sense, the objective value gets multiplied by -1.
-        // If we have set a start solution, we probably do not want that, and fix it.
-
-        double old_sense{ d_model.getObjSense() };
         double sense{ (p_sense == ObjectiveSense::MINIMIZE) ? 1.0 : -1.0 };
-        double old_value{ d_model.getObjValue() };
+        d_model.setObjSense(sense);
 
-        d_model.setObjSense(sense); // ObjValue will be flipped here, if the senses differ.
-
-        // If the senses differ, we need to fix the change from beforehand.
-        // Both infinities are special cases.
-        if (sense * old_sense < 0.)
+        // If we have a current solution, we recompute the objective value.
+        // This is called after prepare and before the solve,
+        // so this is always the correct best objective value found.
+        double* sol = d_model.bestSolution();
+        if (sol)
         {
-            old_value = (old_value == d_neg_infinity) ? d_pos_infinity
-                      : (old_value == d_pos_infinity) ? d_neg_infinity
-                      :  old_value;
-            d_model.setObjValue( old_value );
-
+            const double* coeff = d_model.solver()->getObjCoefficients();
+            double          obj = 0.;
+            for (int i = 0; i < get_num_variables(); i++)
+                obj += coeff[i] * sol[i];
+            d_model.setObjValue(obj);
         }
     }
 

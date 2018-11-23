@@ -11,6 +11,7 @@
 #include "ilp_solver_impl.hpp"
 
 #include "CoinPackedMatrix.hpp"
+#include "CoinModel.hpp"
 
 #include <string>
 #include <vector>
@@ -47,8 +48,12 @@ namespace ilp_solver
             SolutionStatus      get_status         () const                                override;
             int                 get_num_constraints() const                                override;
             int                 get_num_variables  () const                                override;
-
+        protected:
+            void prepare_impl() override;
         private:
+            CoinModel d_cache{};
+            bool      d_cache_changed{false};
+
             void set_infinity() override;
 
             // Obtain a pointer to a solver fulfilling the OsiSolverInterface.
