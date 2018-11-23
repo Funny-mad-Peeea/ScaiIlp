@@ -58,6 +58,16 @@ namespace ilp_solver
         }
     }
 
+    int ILPSolverCollect::get_num_constraints() const
+    {
+        return static_cast<int>(d_ilp_data.constraint_lower.size());
+    }
+
+    int ILPSolverCollect::get_num_variables()   const
+    {
+        return static_cast<int>(d_ilp_data.variable_lower.size());
+    }
+
     void ILPSolverCollect::add_variable_impl (VariableType p_type, double p_objective, double p_lower_bound, double p_upper_bound,
         const std::string& /* p_name */, const std::vector<double>* p_row_values,
         const std::vector<int>* p_row_indices)

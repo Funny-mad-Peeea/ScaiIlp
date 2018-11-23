@@ -45,6 +45,8 @@ namespace ilp_solver
             void                set_start_solution (const std::vector<double>& p_solution) override;
             double              get_objective      () const                                override;
             SolutionStatus      get_status         () const                                override;
+            int                 get_num_constraints() const                                override;
+            int                 get_num_variables  () const                                override;
 
         private:
             void set_infinity() override;

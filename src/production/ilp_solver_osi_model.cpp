@@ -73,6 +73,16 @@ namespace ilp_solver
     ILPSolverOsiModel::ILPSolverOsiModel()
     { }
 
+    int ILPSolverOsiModel::get_num_variables() const
+    {
+        return get_solver()->getNumCols();
+    }
+
+    int ILPSolverOsiModel::get_num_constraints() const
+    {
+        return get_solver()->getNumRows();
+    }
+
     void ILPSolverOsiModel::add_variable_impl (VariableType p_type, double p_objective, double p_lower_bound, double p_upper_bound,
         [[maybe_unused]] const std::string& p_name, const std::vector<double>* p_row_values,
         const std::vector<int>* p_row_indices)

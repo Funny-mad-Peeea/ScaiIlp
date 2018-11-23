@@ -63,6 +63,10 @@ namespace ilp_solver
             virtual void add_constraint_equality (                                       const std::vector<double>& p_col_values,                                              double p_value,    const std::string& p_name = "") = 0;  //      a*x = v
             virtual void add_constraint_equality (const std::vector<int>& p_col_indices, const std::vector<double>& p_col_values,                                              double p_value,    const std::string& p_name = "") = 0;  //      a*x = v
 
+            // Obtain the current number of [constraints | variables].
+            virtual int get_num_constraints() const = 0;
+            virtual int get_num_variables()   const = 0;
+
             // Set a starting solution.
             // Depending on the solver, it may be checked whether the solution is actually valid or not.
             virtual void set_start_solution      (const std::vector<double>& p_solution) = 0;

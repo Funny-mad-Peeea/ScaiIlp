@@ -10,6 +10,9 @@ namespace ilp_solver
     // Is used to create a stub.
     class ILPSolverCollect : public ILPSolverImpl
     {
+        public:
+            int get_num_constraints() const override;
+            int get_num_variables()   const override;
         protected:
             ILPData d_ilp_data;
         private:
