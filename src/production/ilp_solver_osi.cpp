@@ -12,7 +12,7 @@ namespace ilp_solver
     ILPSolverOsi::ILPSolverOsi(OsiSolverInterface* p_ilp_solver)
         : d_ilp_solver(p_ilp_solver)
     {
-        set_default_parameters();
+        set_default_parameters(this);
     }
 
 
@@ -28,7 +28,7 @@ namespace ilp_solver
 
     void ILPSolverOsi::set_log_level          (int p_level)
     {
-        get_solver()->messageHandler()->setLogLevel(p_level);
+        get_solver_osi()->messageHandler()->setLogLevel(p_level);
     }
 
     void ILPSolverOsi::set_max_seconds        (double)

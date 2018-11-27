@@ -68,6 +68,11 @@ namespace ilp_solver
         return static_cast<int>(d_ilp_data.variable_lower.size());
     }
 
+    std::pair<double, double> ILPSolverCollect::get_infinity_impl()
+    {
+        return {std::numeric_limits<double>::lowest(), std::numeric_limits<double>::max()};
+    }
+
     void ILPSolverCollect::add_variable_impl (VariableType p_type, double p_objective, double p_lower_bound, double p_upper_bound,
         const std::string& /* p_name */, const std::vector<double>* p_row_values,
         const std::vector<int>* p_row_indices)
@@ -98,7 +103,7 @@ namespace ilp_solver
         d_ilp_data.variable_type.push_back(p_type);
     }
 
-    void ILPSolverCollect::add_constraint_impl (const double* p_lower_bound, const double* p_upper_bound,
+    void ILPSolverCollect::add_constraint_impl (double p_lower_bound, double p_upper_bound,
         const std::vector<double>& p_col_values, const std::string& /* p_name */,
         const std::vector<int>* p_col_indices)
     {
@@ -116,11 +121,8 @@ namespace ilp_solver
             append_row(&d_ilp_data.matrix, n_cols, *p_col_indices, p_col_values);
         }
 
-        double lower = (p_lower_bound) ? *p_lower_bound : std::numeric_limits<double>::lowest();
-        double upper = (p_upper_bound) ? *p_upper_bound : std::numeric_limits<double>::max();
-
-        d_ilp_data.constraint_lower.push_back(lower);
-        d_ilp_data.constraint_upper.push_back(upper);
+        d_ilp_data.constraint_lower.push_back(p_lower_bound);
+        d_ilp_data.constraint_upper.push_back(p_upper_bound);
     }
 
     void ILPSolverCollect::set_objective_sense_impl(ObjectiveSense p_sense)

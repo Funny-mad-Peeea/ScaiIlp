@@ -26,106 +26,108 @@ namespace ilp_solver
 
     void ILPSolverImpl::add_variable_integer(double p_objective, double p_lower_bound, double p_upper_bound, const string& p_name)
     {
-        add_variable_impl (VariableType::INTEGER, p_objective, p_lower_bound, p_upper_bound, p_name);
+        auto [lower, upper] = handle_bounds(p_lower_bound, p_upper_bound);
+        add_variable_impl (VariableType::INTEGER, p_objective, lower, upper, p_name);
     }
 
     void ILPSolverImpl::add_variable_integer(const vector<double>& p_row_values, double p_objective, double p_lower_bound, double p_upper_bound, const string& p_name)
     {
-        add_variable_impl (VariableType::INTEGER, p_objective, p_lower_bound, p_upper_bound, p_name, &p_row_values);
+        auto [lower, upper] = handle_bounds(p_lower_bound, p_upper_bound);
+        add_variable_impl (VariableType::INTEGER, p_objective, lower, upper, p_name, &p_row_values);
     }
 
     void ILPSolverImpl::add_variable_integer(const vector<int>& p_row_indices, const vector<double>& p_row_values, double p_objective, double p_lower_bound, double p_upper_bound, const string& p_name)
     {
         assert(p_row_values.size() == p_row_indices.size());
-        add_variable_impl (VariableType::INTEGER, p_objective, p_lower_bound, p_upper_bound, p_name, &p_row_values, &p_row_indices);
+        auto [lower, upper] = handle_bounds(p_lower_bound, p_upper_bound);
+        add_variable_impl (VariableType::INTEGER, p_objective, lower, upper, p_name, &p_row_values, &p_row_indices);
     }
 
     void ILPSolverImpl::add_variable_continuous(double p_objective, double p_lower_bound, double p_upper_bound, const string& p_name)
     {
-        add_variable_impl (VariableType::CONTINUOUS, p_objective, p_lower_bound, p_upper_bound, p_name);
+        auto [lower, upper] = handle_bounds(p_lower_bound, p_upper_bound);
+        add_variable_impl (VariableType::CONTINUOUS, p_objective, lower, upper, p_name);
     }
 
     void ILPSolverImpl::add_variable_continuous(const vector<double>& p_row_values, double p_objective, double p_lower_bound, double p_upper_bound, const string& p_name)
     {
-        add_variable_impl (VariableType::CONTINUOUS, p_objective, p_lower_bound, p_upper_bound, p_name, &p_row_values);
+        auto [lower, upper] = handle_bounds(p_lower_bound, p_upper_bound);
+        add_variable_impl (VariableType::CONTINUOUS, p_objective, lower, upper, p_name, &p_row_values);
     }
 
     void ILPSolverImpl::add_variable_continuous(const vector<int>& p_row_indices, const vector<double>& p_row_values, double p_objective, double p_lower_bound, double p_upper_bound, const string& p_name)
     {
         assert(p_row_values.size() == p_row_indices.size());
-        add_variable_impl (VariableType::CONTINUOUS, p_objective, p_lower_bound, p_upper_bound, p_name, &p_row_values, &p_row_indices);
+        auto [lower, upper] = handle_bounds(p_lower_bound, p_upper_bound);
+        add_variable_impl (VariableType::CONTINUOUS, p_objective, lower, upper, p_name, &p_row_values, &p_row_indices);
     }
 
     void ILPSolverImpl::add_constraint(const vector<double>& p_col_values, double p_lower_bound, double p_upper_bound, const string& p_name)
     {
-        add_constraint_impl (&p_lower_bound, &p_upper_bound, p_col_values, p_name);
+        if ( p_upper_bound > std::numeric_limits<double>::max()    / 2
+          && p_lower_bound < std::numeric_limits<double>::lowest() / 2) return;
+        auto [lower, upper] = handle_bounds(p_lower_bound, p_upper_bound);
+        add_constraint_impl (lower, upper, p_col_values, p_name);
     }
 
     void ILPSolverImpl::add_constraint(const vector<int>& p_col_indices, const vector<double>& p_col_values, double p_lower_bound, double p_upper_bound, const string& p_name)
     {
-        add_constraint_impl (&p_lower_bound, &p_upper_bound, p_col_values, p_name, &p_col_indices);
+        if ( p_upper_bound > std::numeric_limits<double>::max()    / 2
+          && p_lower_bound < std::numeric_limits<double>::lowest() / 2) return;
+        auto [lower, upper] = handle_bounds(p_lower_bound, p_upper_bound);
+        add_constraint_impl (lower, upper, p_col_values, p_name, &p_col_indices);
     }
 
     void ILPSolverImpl::add_constraint_upper(const vector<double>& p_col_values, double p_upper_bound, const string& p_name)
     {
-        add_constraint_impl (nullptr, &p_upper_bound, p_col_values, p_name);
+        if (p_upper_bound > std::numeric_limits<double>::max() / 2) return;
+        auto [lower, upper] = handle_bounds(std::numeric_limits<double>::lowest(), p_upper_bound);
+        add_constraint_impl (lower, upper, p_col_values, p_name);
     }
 
     void ILPSolverImpl::add_constraint_upper(const vector<int>& p_col_indices, const vector<double>& p_col_values, double p_upper_bound, const string& p_name)
     {
-        add_constraint_impl (nullptr, &p_upper_bound, p_col_values, p_name, &p_col_indices);
+        if (p_upper_bound > std::numeric_limits<double>::max() / 2) return;
+        auto [lower, upper] = handle_bounds(std::numeric_limits<double>::lowest(), p_upper_bound);
+        add_constraint_impl (lower, upper, p_col_values, p_name, &p_col_indices);
     }
 
     void ILPSolverImpl::add_constraint_lower(const vector<double>& p_col_values, double p_lower_bound, const string& p_name)
     {
-        add_constraint_impl (&p_lower_bound, nullptr, p_col_values, p_name);
+        if (p_lower_bound < std::numeric_limits<double>::lowest() / 2) return;
+        auto [lower, upper] = handle_bounds(p_lower_bound, std::numeric_limits<double>::max());
+        add_constraint_impl (lower, upper, p_col_values, p_name);
     }
 
     void ILPSolverImpl::add_constraint_lower(const vector<int>& p_col_indices, const vector<double>& p_col_values, double p_lower_bound, const string& p_name)
     {
-        add_constraint_impl (&p_lower_bound, nullptr, p_col_values, p_name, &p_col_indices);
+        if (p_lower_bound < std::numeric_limits<double>::lowest() / 2) return;
+        auto [lower, upper] = handle_bounds(p_lower_bound, std::numeric_limits<double>::max());
+        add_constraint_impl (lower, upper, p_col_values, p_name, &p_col_indices);
     }
 
     void ILPSolverImpl::add_constraint_equality(const vector<double>& p_col_values, double p_value, const string& p_name)
     {
-        add_constraint_impl (&p_value, &p_value, p_col_values, p_name);
+        add_constraint_impl (p_value, p_value, p_col_values, p_name);
     }
 
     void ILPSolverImpl::add_constraint_equality(const vector<int>& p_col_indices, const vector<double>& p_col_values, double p_value, const string& p_name)
     {
-        add_constraint_impl (&p_value, &p_value, p_col_values, p_name, &p_col_indices);
+        add_constraint_impl (p_value, p_value, p_col_values, p_name, &p_col_indices);
     }
 
-    std::pair<double, double> ILPSolverImpl::handle_bounds(const double* p_lower_bound, const double* p_upper_bound)
+    std::pair<double, double> ILPSolverImpl::handle_bounds(double p_lower_bound, double p_upper_bound)
     {
-        double lb{ (p_lower_bound) ? *p_lower_bound : d_neg_infinity };
-        double ub{ (p_upper_bound) ? *p_upper_bound : d_pos_infinity };
-        lb = (lb < std::numeric_limits<double>::lowest() / 2) ? d_neg_infinity : lb;
-        ub = (ub > std::numeric_limits<double>::max()    / 2) ? d_pos_infinity : ub;
+        auto [neg_inf, pos_inf] = get_infinity_impl();
 
+        double lb    { (p_lower_bound < std::numeric_limits<double>::lowest() / 2) ? neg_inf : p_lower_bound };
+        double ub    { (p_upper_bound > std::numeric_limits<double>::max()    / 2) ? pos_inf : p_upper_bound };
         return {lb, ub};
-    }
-
-    // Should be called by constructors of derived classes to set their parameters to defaults.
-    // Must not be called by constructor of IlpSolverImpl because overriding of virtual functions has not happened yet.
-    void ILPSolverImpl::set_default_parameters()
-    {
-        set_num_threads(c_default_num_threads);
-        set_deterministic_mode(c_default_deterministic);
-        set_log_level(c_default_log_level);
-        set_max_seconds(c_default_max_seconds);
-        set_objective_sense_impl(ObjectiveSense::MINIMIZE);
-        set_infinity();
     }
 
     void ILPSolverImpl::prepare_impl()
     { }
 
-    void ILPSolverImpl::set_infinity()
-    {
-        d_neg_infinity = std::numeric_limits<double>::lowest();
-        d_pos_infinity = std::numeric_limits<double>::max();
-    }
 
     void ILPSolverImpl::minimize()
     {

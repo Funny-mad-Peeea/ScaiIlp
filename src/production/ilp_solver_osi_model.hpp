@@ -54,22 +54,21 @@ namespace ilp_solver
             CoinModel d_cache{};
             bool      d_cache_changed{false};
 
-            void set_infinity() override;
-
             // Obtain a pointer to a solver fulfilling the OsiSolverInterface.
-            virtual OsiSolverInterface*       get_solver ()       = 0;
+            virtual OsiSolverInterface* get_solver_osi() = 0;
+              const OsiSolverInterface* get_solver_osi() const;
 
-            const OsiSolverInterface* get_solver () const;
             void add_variable_impl (VariableType p_type, double p_objective, double p_lower_bound, double p_upper_bound,
                 [[maybe_unused]] const std::string& p_name = "", const std::vector<double>* p_row_values = nullptr,
                 const std::vector<int>* p_row_indices = nullptr) override;
 
-            void add_constraint_impl (const double* p_lower_bound, const double* p_upper_bound,
+            void add_constraint_impl (double p_lower_bound, double p_upper_bound,
                 const std::vector<double>& p_col_values, [[maybe_unused]] const std::string& p_name = "",
                 const std::vector<int>* p_col_indices = nullptr) override;
 
             void solve_impl() override;
             void set_objective_sense_impl(ObjectiveSense p_sense) override;
+            std::pair<double, double> get_infinity_impl() override;
     };
 }
 

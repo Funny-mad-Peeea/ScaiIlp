@@ -43,7 +43,7 @@ namespace ilp_solver
         private:
             CbcModel d_model;
 
-            OsiSolverInterface*       get_solver    ()       override;
+            OsiSolverInterface*       get_solver_osi    ()       override;
 
             // Need to reimplement this again.
             void solve_impl() override;

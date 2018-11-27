@@ -13,7 +13,7 @@
 
 namespace ilp_solver
 {
-    OsiSolverInterface* ILPSolverCbc::get_solver()
+    OsiSolverInterface* ILPSolverCbc::get_solver_osi()
     {
         return d_model.solver();
     }
@@ -23,8 +23,7 @@ namespace ilp_solver
         // CbcModel assumes ownership over solver and deletes it in its destructor.
         OsiSolverInterface* solver = new OsiClpSolverInterface();
         d_model.assignSolver(solver, true);
-
-        set_default_parameters();
+        set_default_parameters(this);
     }
 
     std::vector<double> ILPSolverCbc::get_solution() const

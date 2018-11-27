@@ -203,9 +203,7 @@ namespace ilp_solver
 
     ILPSolverStub::ILPSolverStub(const std::string& p_executable_basename)
         : d_executable_basename(p_executable_basename)
-    {
-        set_default_parameters();
-    }
+    { }
 
 
     std::vector<double> ILPSolverStub::get_solution() const

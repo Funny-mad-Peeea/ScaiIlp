@@ -21,12 +21,14 @@ namespace ilp_solver
                 const std::string& p_name = "", const std::vector<double>* p_row_values = nullptr,
                 const std::vector<int>* p_row_indices = nullptr) override;
 
-            void add_constraint_impl (const double* p_lower_bound, const double* p_upper_bound,
+            void add_constraint_impl (double p_lower_bound, double p_upper_bound,
                 const std::vector<double>& p_col_values, const std::string& p_name = "",
                 const std::vector<int>* p_col_indices = nullptr) override;
             void set_objective_sense_impl(ObjectiveSense p_sense) override;
 
             void set_start_solution     (const std::vector<double>& p_solution) override;
+
+            std::pair<double, double> get_infinity_impl() override;
 
             void set_num_threads        (int p_num_threads)    override;
             void set_deterministic_mode (bool p_deterministic) override;
