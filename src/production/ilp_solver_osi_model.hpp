@@ -23,7 +23,7 @@ namespace ilp_solver
     // Implements all methods from ILPSolverInterfaceImpl that can be realized
     // via the model of the OsiSolverInterface.
     // If inheriting from ILPSolverOsiModel, you only need to implement
-    //     get_solver
+    //     get_solver_osi
     //     set_num_threads
     //     set_deterministic_mode
     //     set_log_level
@@ -35,7 +35,6 @@ namespace ilp_solver
     //     get_status
     //     solve_impl
     //     set_objective_sense_impl
-    //     set_infinity
     // for the concrete solver.
     class ILPSolverOsiModel : public ILPSolverImpl
     {

@@ -10,20 +10,24 @@
 //     add_constraint_impl
 //     solve_impl
 //     set_objective_sense_impl
+//
 //     set_start_solution
-//     get_solution
-//     get_objective
-//     get_status
 //     set_num_threads
 //     set_deterministic_mode
 //     set_log_level
 //     set_max_seconds
-//     set_infinity
+//
 //     get_num_constraints
 //     get_num_variables
+//     get_solution
+//     get_objective
+//     get_status
+//
 // If there is any action you need to be done after constructing the problem, but before solving it,
 // (e.g. integrating a cache) you may also want to implement
 //     prepare_impl
+// If your solver uses specific values for +/- infinity, you may want to implement
+//     get_infinty_impl
 #include <iostream>
 namespace ilp_solver
 {
@@ -72,20 +76,17 @@ namespace ilp_solver
 
 
         private:
-            virtual void prepare_impl();
+            virtual void                      prepare_impl();
             virtual std::pair<double, double> get_infinity_impl() = 0;
+            virtual void                      add_variable_impl (VariableType p_type, double p_objective, double p_lower_bound, double p_upper_bound,
+                                                                 const std::string& p_name = "", const std::vector<double>* p_row_values = nullptr,
+                                                                 const std::vector<int>* p_row_indices = nullptr) = 0;
+            virtual void                      add_constraint_impl (double p_lower_bound, double p_upper_bound,
+                                                                   const std::vector<double>& p_col_values, const std::string& p_name = "",
+                                                                   const std::vector<int>* p_col_indices = nullptr) = 0;
+            virtual void                      solve_impl() = 0;
+            virtual void                      set_objective_sense_impl(ObjectiveSense p_sense) = 0;
 
-            virtual void add_variable_impl (VariableType p_type, double p_objective, double p_lower_bound, double p_upper_bound,
-                                            const std::string& p_name = "", const std::vector<double>* p_row_values = nullptr,
-                                            const std::vector<int>* p_row_indices = nullptr) = 0;
-
-
-            virtual void add_constraint_impl (double p_lower_bound, double p_upper_bound,
-                                              const std::vector<double>& p_col_values, const std::string& p_name = "",
-                                              const std::vector<int>* p_col_indices = nullptr) = 0;
-
-            virtual void solve_impl() = 0;
-            virtual void set_objective_sense_impl(ObjectiveSense p_sense) = 0;
 
 
             std::pair<double, double> handle_bounds(double p_lower_bound, double p_upper_bound);
