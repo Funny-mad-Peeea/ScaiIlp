@@ -26,7 +26,7 @@ namespace ilp_solver
         const auto* solution_array = d_ilp_solver->getColSolution(); // Returns nullptr if no solution was found.
 
         if (!solution_array) return std::vector<double>();
-        // No virtual call necessary, since prepare is called beforehand.
+        // No virtual call necessary, since the problem is solved.
         return std::vector<double>(solution_array, solution_array + d_ilp_solver->getNumCols());
     }
 
