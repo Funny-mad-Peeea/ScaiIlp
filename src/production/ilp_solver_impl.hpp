@@ -36,7 +36,7 @@ namespace ilp_solver
 
 
     // You may call this free function in the constructor of your fully implemented class.
-    // Can not be called in the constructor of ILPSolverImpl since the functions are not yet implemented.
+    // Can not be called in the constructor of ILPSolverImpl since the virtual functions are not yet overridden.
     void set_default_parameters(ILPSolverInterface* p_solver);
 
 
