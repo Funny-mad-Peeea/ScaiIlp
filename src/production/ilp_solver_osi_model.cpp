@@ -10,6 +10,7 @@
 #include <optional>
 #include <cassert>
 #include <algorithm>
+#include <numeric>
 
 using std::string;
 using std::vector;
@@ -31,20 +32,25 @@ namespace ilp_solver
     {
 
         // Prune zeros before constructing a coin-packed vector.
-        // Returns newly constructed vectors only if there are zeroes in p_values.
+        // Returns newly constructed vectors only if there are zeroes in p_values or if no indices are given.
         //     If p_indices == nullptr, constructs a new index array for all non-zeroes in p_values.
         //     Otherwise, only keeps the indices corresponding to non-zero values.
-        std::optional<std::pair<std::vector<int>, std::vector<double>>> prune_zeros(const std::vector<double>& p_values, const std::vector<int>* p_indices = nullptr)
+        std::pair<std::optional<std::vector<int>>, std::optional<std::vector<double>>> prune_zeros(const std::vector<double>& p_values, const std::vector<int>* p_indices = nullptr)
         {
             assert ( (p_indices != nullptr) ? p_indices->size() == p_values.size() : true);
 
-            std::vector<int>    indices;
-            std::vector<double> values;
+            std::pair<std::optional<std::vector<int>>, std::optional<std::vector<double>>> return_value;
 
             int num_zeros { static_cast<int>(std::count(p_values.begin(), p_values.end(), 0.)) };
 
             if (num_zeros > 0)
             {
+                return_value.first.emplace();
+                return_value.second.emplace();
+
+                std::vector<int>&    indices = *return_value.first;
+                std::vector<double>& values  = *return_value.second;
+
                 // New size is independent from the existence of an index vector.
                 int new_size = static_cast<int>(p_values.size()) - num_zeros;
                 indices.reserve(new_size);
@@ -60,23 +66,16 @@ namespace ilp_solver
                         values.push_back(value);
                     }
                 }
-
-                return {std::pair(std::move(indices), std::move(values))};
             }
-            // Return a default-constructed (empty) optional.
-            return {};
-        }
-
-        std::vector<int> global_index_vector;
-
-        void update_global_index_vector(int new_size)
-        {
-            if (static_cast<int>(global_index_vector.size()) < new_size)
+            else if (!p_indices)
             {
-                global_index_vector.reserve(std::max(static_cast<size_t>(new_size), 2 * global_index_vector.capacity()));
-                for (int i = static_cast<int>(global_index_vector.size()); i < new_size; i++)
-                    global_index_vector.push_back(i);
+                // Create a full vector of 0 to size - 1.
+                return_value.first.emplace(p_values.size(), 0);
+                std::vector<int>& indices = *return_value.first;
+                std::iota(indices.begin(), indices.end(), 0);
             }
+
+            return return_value;
         }
     }
 
@@ -105,24 +104,20 @@ namespace ilp_solver
         if (p_row_values)
         {
             // Reduce the vectors, if necessary.
-            auto optional_reduction = prune_zeros(*p_row_values, p_row_indices);
-            if (optional_reduction)
+            auto [indices, values] = prune_zeros(*p_row_values, p_row_indices);
+            if (indices)
             {
-                rows   = optional_reduction->first.data();
-                vals   = optional_reduction->second.data();
-                n_rows = optional_reduction->first.size();
+                if (values) vals = values->data();
+                else        vals = p_row_values->data();
+
+                rows   = indices->data();
+                n_rows = indices->size();
             }
             else
             {
                 vals   = p_row_values->data();
-                n_rows = p_row_values->size();
-                if (p_row_indices)
-                    rows = p_row_indices->data();
-                else
-                {
-                    update_global_index_vector(n_rows);
-                    rows = global_index_vector.data();
-                }
+                rows   = p_row_indices->data();
+                n_rows = p_row_indices->size();
             }
 
             assert (n_rows <= get_num_constraints() );
@@ -165,24 +160,20 @@ namespace ilp_solver
         const double* vals{nullptr};
 
         // Reduce the vectors, if necessary.
-        auto optional_reduction{ prune_zeros(p_col_values, p_col_indices) };
-        if (optional_reduction)
+        auto[indices, values] = prune_zeros(p_col_values, p_col_indices);
+        if (indices)
         {
-            cols = optional_reduction->first.data();
-            vals = optional_reduction->second.data();
-            n_cols = optional_reduction->first.size();
+            if (values) vals = values->data();
+            else        vals = p_col_values.data();
+
+            cols = indices->data();
+            n_cols = indices->size();
         }
         else
         {
             vals = p_col_values.data();
-            n_cols = p_col_values.size();
-            if (p_col_indices)
-                cols = p_col_indices->data();
-            else
-            {
-                update_global_index_vector(n_cols);
-                cols =  global_index_vector.data();
-            }
+            cols = p_col_indices->data();
+            n_cols = p_col_indices->size();
         }
 
 #if DO_FORWARD_NAME == true
