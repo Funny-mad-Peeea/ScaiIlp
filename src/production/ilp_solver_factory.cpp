@@ -15,11 +15,11 @@ namespace ilp_solver
     }
 
 
-
     extern "C" ILPSolverInterface* __stdcall create_solver_stub(const char* p_executable_basename)
     {
         return new ILPSolverStub(p_executable_basename);
     }
+
 
     extern "C" void __stdcall destroy_solver(ILPSolverInterface* p_solver)
     {

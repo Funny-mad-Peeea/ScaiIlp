@@ -13,11 +13,6 @@
 
 namespace ilp_solver
 {
-    OsiSolverInterface* ILPSolverCbc::get_solver_osi_model()
-    {
-        return d_model.solver();
-    }
-
     ILPSolverCbc::ILPSolverCbc()
     {
         // CbcModel assumes ownership over solver and deletes it in its destructor.
@@ -31,6 +26,13 @@ namespace ilp_solver
         set_default_parameters(this);
     }
 
+
+    OsiSolverInterface* ILPSolverCbc::get_solver_osi_model()
+    {
+        return d_model.solver();
+    }
+
+
     std::vector<double> ILPSolverCbc::get_solution() const
     {
         // The best solution is stored by CbcModel, not by the solver, thus reimplementation.
@@ -40,11 +42,13 @@ namespace ilp_solver
         return std::vector<double>(result, result + d_model.getNumCols());
     }
 
+
     double ILPSolverCbc::get_objective() const
     {
         // The best objective value is stored by CbcModel, not by the solver, thus reimplementation.
         return d_model.getObjValue();
     }
+
 
     SolutionStatus ILPSolverCbc::get_status() const
     {
@@ -60,6 +64,7 @@ namespace ilp_solver
                                                         : SolutionStatus::SUBOPTIMAL);
     }
 
+
     void ILPSolverCbc::set_start_solution(const std::vector<double>& p_solution)
     {
         // Set the current best solution of Cbc to the given solution, check for feasibility, but not for better objective value.
@@ -68,11 +73,13 @@ namespace ilp_solver
         d_model.setBestSolution(p_solution.data(), static_cast<int>(p_solution.size()), COIN_DBL_MAX, false);
     }
 
+
     void ILPSolverCbc::set_num_threads        (int p_num_threads)
     {
         const auto cbc_num_threads = (p_num_threads == 1 ? 0 : p_num_threads); // peculiarity of Cbc (1 is 'for testing').
         d_model.setNumberThreads(cbc_num_threads);
     }
+
 
     void ILPSolverCbc::solve_impl()
     {
@@ -85,11 +92,13 @@ namespace ilp_solver
         d_model.branchAndBound();
     }
 
+
     void ILPSolverCbc::set_deterministic_mode (bool p_deterministic)
     {
         const auto cbc_thread_mode = ((d_model.getNumberThreads() > 1 && p_deterministic) ? 1 : 0);
         d_model.setThreadMode(cbc_thread_mode);
     }
+
 
     void ILPSolverCbc::set_log_level          (int p_level)
     {
@@ -97,10 +106,12 @@ namespace ilp_solver
         d_model.messageHandler()->setLogLevel(level);
     }
 
+
     void ILPSolverCbc::set_max_seconds        (double p_seconds)
     {
         d_model.setMaximumSeconds(p_seconds);
     }
+
 
     void ILPSolverCbc::set_objective_sense_impl(ObjectiveSense p_sense)
     {
@@ -121,7 +132,6 @@ namespace ilp_solver
             d_model.setObjValue(obj);
         }
     }
-
 }
 
 #endif

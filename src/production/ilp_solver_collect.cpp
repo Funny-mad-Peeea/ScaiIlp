@@ -37,11 +37,13 @@ namespace ilp_solver
         }
     }
 
+
     static void append_row(Matrix* v_matrix, const vector<double>& p_col_values)
     {
         // enlarge matrix
         v_matrix->emplace_back(p_col_values);
     }
+
 
     static void append_row(Matrix* v_matrix, int p_num_cols, const vector<int>& p_col_indices, const vector<double>& p_col_values)
     {
@@ -58,20 +60,24 @@ namespace ilp_solver
         }
     }
 
+
     int ILPSolverCollect::get_num_constraints() const
     {
         return static_cast<int>(d_ilp_data.constraint_lower.size());
     }
+
 
     int ILPSolverCollect::get_num_variables()   const
     {
         return static_cast<int>(d_ilp_data.variable_lower.size());
     }
 
+
     std::pair<double, double> ILPSolverCollect::get_infinity_impl()
     {
         return {std::numeric_limits<double>::lowest(), std::numeric_limits<double>::max()};
     }
+
 
     void ILPSolverCollect::add_variable_impl (VariableType p_type, double p_objective, double p_lower_bound, double p_upper_bound,
         const std::string& /* p_name */, const std::vector<double>* p_row_values,
@@ -103,6 +109,7 @@ namespace ilp_solver
         d_ilp_data.variable_type.push_back(p_type);
     }
 
+
     void ILPSolverCollect::add_constraint_impl (double p_lower_bound, double p_upper_bound,
         const std::vector<double>& p_col_values, const std::string& /* p_name */,
         const std::vector<int>* p_col_indices)
@@ -125,30 +132,36 @@ namespace ilp_solver
         d_ilp_data.constraint_upper.push_back(p_upper_bound);
     }
 
+
     void ILPSolverCollect::set_objective_sense_impl(ObjectiveSense p_sense)
     {
         d_ilp_data.objective_sense = p_sense;
     }
+
 
     void ILPSolverCollect::set_start_solution(const std::vector<double>& p_solution)
     {
         d_ilp_data.start_solution = p_solution;
     }
 
+
     void ILPSolverCollect::set_num_threads        (int p_num_threads)
     {
         d_ilp_data.num_threads = p_num_threads;
     }
+
 
     void ILPSolverCollect::set_deterministic_mode (bool p_deterministic)
     {
         d_ilp_data.deterministic = p_deterministic;
     }
 
+
     void ILPSolverCollect::set_log_level          (int p_level)
     {
         d_ilp_data.log_level = p_level;
     }
+
 
     void ILPSolverCollect::set_max_seconds        (double p_seconds)
     {

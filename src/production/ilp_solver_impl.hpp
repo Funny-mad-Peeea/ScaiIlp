@@ -37,13 +37,8 @@ namespace ilp_solver
 
     // You may call this free function in the constructor of your fully implemented class.
     // Can not be called in the constructor of ILPSolverImpl since the functions are not yet implemented.
-    static inline void set_default_parameters(ILPSolverInterface* p_solver)
-    {
-        p_solver->set_num_threads(c_default_num_threads);
-        p_solver->set_deterministic_mode(c_default_deterministic);
-        p_solver->set_log_level(c_default_log_level);
-        p_solver->set_max_seconds(c_default_max_seconds);
-    }
+    void set_default_parameters(ILPSolverInterface* p_solver);
+
 
     class ILPSolverImpl : public ILPSolverInterface
     {

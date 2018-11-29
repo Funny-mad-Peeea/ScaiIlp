@@ -211,10 +211,12 @@ namespace ilp_solver
         return d_ilp_solution_data.solution;
     }
 
+
     double ILPSolverStub::get_objective() const
     {
         return d_ilp_solution_data.objective;
     }
+
 
     SolutionStatus ILPSolverStub::get_status() const
     {

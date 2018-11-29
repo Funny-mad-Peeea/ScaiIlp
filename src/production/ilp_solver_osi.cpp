@@ -21,6 +21,7 @@ namespace ilp_solver
         return d_ilp_solver;
     }
 
+
     std::vector<double> ILPSolverOsi::get_solution() const
     {
         const auto* solution_array = d_ilp_solver->getColSolution(); // Returns nullptr if no solution was found.
@@ -30,10 +31,12 @@ namespace ilp_solver
         return std::vector<double>(solution_array, solution_array + d_ilp_solver->getNumCols());
     }
 
+
     double ILPSolverOsi::get_objective() const
     {
         return d_ilp_solver->getObjValue();
     }
+
 
     SolutionStatus ILPSolverOsi::get_status() const
     {
@@ -49,6 +52,7 @@ namespace ilp_solver
         return SolutionStatus::NO_SOLUTION;
     }
 
+
     void ILPSolverOsi::set_objective_sense_impl(ObjectiveSense p_sense)
     {
         if (p_sense == ObjectiveSense::MINIMIZE)
@@ -56,6 +60,7 @@ namespace ilp_solver
         else
             d_ilp_solver->setObjSense(-1.);
     }
+
 
     void ILPSolverOsi::solve_impl()
     {
@@ -77,15 +82,18 @@ namespace ilp_solver
         // Not supported by OsiSolverInterface.
     }
 
+
     void ILPSolverOsi::set_deterministic_mode (bool)
     {
         // Not supported by OsiSolverInterface.
     }
 
+
     void ILPSolverOsi::set_log_level          (int p_level)
     {
         d_ilp_solver->messageHandler()->setLogLevel(p_level);
     }
+
 
     void ILPSolverOsi::set_max_seconds        (double)
     {
