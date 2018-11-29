@@ -5,29 +5,9 @@
 
 
 // The implementation serves to avoid redundant code duplication.
-// When inheriting from ILPSolverImpl, you only need to implement the following functions:
-//     add_variable_impl
-//     add_constraint_impl
-//     solve_impl
-//     set_objective_sense_impl
-//
-//     set_start_solution
-//     set_num_threads
-//     set_deterministic_mode
-//     set_log_level
-//     set_max_seconds
-//
-//     get_num_constraints
-//     get_num_variables
-//     get_solution
-//     get_objective
-//     get_status
-//
 // If there is any action you need to be done after constructing the problem, but before solving it,
-// (e.g. integrating a cache) you may also want to implement
-//     prepare_impl
-// If your solver uses specific values for +/- infinity, you may want to implement
-//     get_infinty_impl
+// (e.g. integrating a cache) you may want to implement your own overriding version of prepare_impl
+// the default implementation does nothing.
 #include <iostream>
 namespace ilp_solver
 {
