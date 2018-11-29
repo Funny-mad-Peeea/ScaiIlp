@@ -15,10 +15,62 @@ namespace ilp_solver
         set_default_parameters(this);
     }
 
-    OsiSolverInterface* ILPSolverOsi::get_solver_osi()
+
+    OsiSolverInterface* ILPSolverOsi::get_solver_osi_model()
     {
         return d_ilp_solver;
     }
+
+    std::vector<double> ILPSolverOsi::get_solution() const
+    {
+        const auto* solution_array = d_ilp_solver->getColSolution(); // Returns nullptr if no solution was found.
+
+        if (!solution_array) return std::vector<double>();
+        // No virtual call necessary, since prepare is called beforehand.
+        return std::vector<double>(solution_array, solution_array + d_ilp_solver->getNumCols());
+    }
+
+    double ILPSolverOsi::get_objective() const
+    {
+        return d_ilp_solver->getObjValue();
+    }
+
+    SolutionStatus ILPSolverOsi::get_status() const
+    {
+        if (d_ilp_solver->isProvenOptimal())
+            return SolutionStatus::PROVEN_OPTIMAL;
+        if (d_ilp_solver->isProvenPrimalInfeasible())
+            return SolutionStatus::PROVEN_INFEASIBLE;
+        if (d_ilp_solver->isProvenDualInfeasible())
+            return SolutionStatus::PROVEN_UNBOUNDED;
+
+        const auto* solution_array = d_ilp_solver->getColSolution();
+        if (solution_array) return SolutionStatus::SUBOPTIMAL;
+        return SolutionStatus::NO_SOLUTION;
+    }
+
+    void ILPSolverOsi::set_objective_sense_impl(ObjectiveSense p_sense)
+    {
+        if (p_sense == ObjectiveSense::MINIMIZE)
+            d_ilp_solver->setObjSense(1.);
+        else
+            d_ilp_solver->setObjSense(-1.);
+    }
+
+    void ILPSolverOsi::solve_impl()
+    {
+        d_ilp_solver->branchAndBound();
+    }
+
+
+    void ILPSolverOsi::set_start_solution(const std::vector<double>& p_solution)
+    {
+        // get_num_variables necessary since the cache may not be included in the problem.
+        assert(static_cast<int>(p_solution.size()) == get_num_variables());
+
+        d_ilp_solver->setColSolution(p_solution.data());
+    }
+
 
     void ILPSolverOsi::set_num_threads        (int)
     {
@@ -32,7 +84,7 @@ namespace ilp_solver
 
     void ILPSolverOsi::set_log_level          (int p_level)
     {
-        get_solver_osi()->messageHandler()->setLogLevel(p_level);
+        d_ilp_solver->messageHandler()->setLogLevel(p_level);
     }
 
     void ILPSolverOsi::set_max_seconds        (double)

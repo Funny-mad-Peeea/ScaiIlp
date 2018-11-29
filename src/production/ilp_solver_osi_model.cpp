@@ -143,7 +143,7 @@ namespace ilp_solver
 
     void ILPSolverOsiModel::prepare_impl()
     {
-        auto* solver{ get_solver_osi() };
+        auto* solver{ get_solver_osi_model() };
         if (d_cache_changed && (d_cache.numberColumns() > 0 || d_cache.numberRows() > 0))
         {
             solver->loadFromCoinModel(d_cache, true);
@@ -153,7 +153,7 @@ namespace ilp_solver
 
     std::pair<double, double> ILPSolverOsiModel::get_infinity_impl()
     {
-        auto*             solver{ get_solver_osi() };
+        auto*             solver{ get_solver_osi_model() };
         auto inf = solver->getInfinity();
         return {-inf, inf};
     }
@@ -196,63 +196,9 @@ namespace ilp_solver
         d_cache_changed = true;
     }
 
-    std::vector<double> ILPSolverOsiModel::get_solution() const
+    const OsiSolverInterface* ILPSolverOsiModel::const_get_solver_osi_model () const
     {
-        auto* solver{ get_solver_osi() };
-        const auto* solution_array = solver->getColSolution(); // Returns nullptr if no solution was found.
-
-        if (!solution_array) return std::vector<double>();
-        return std::vector<double>(solution_array, solution_array + solver->getNumCols());
-    }
-
-    void ILPSolverOsiModel::set_start_solution(const std::vector<double>& p_solution)
-    {
-        assert( static_cast<int>(p_solution.size()) == get_num_variables() );
-        auto* solver{ get_solver_osi() };
-
-        solver->setColSolution(p_solution.data());
-    }
-
-    double ILPSolverOsiModel::get_objective() const
-    {
-        auto* solver{ get_solver_osi() };
-        return solver->getObjValue();
-    }
-
-    SolutionStatus ILPSolverOsiModel::get_status() const
-    {
-        auto* solver{ get_solver_osi() };
-
-        if ( solver->isProvenOptimal() )
-            return SolutionStatus::PROVEN_OPTIMAL;
-        if ( solver->isProvenPrimalInfeasible() )
-            return SolutionStatus::PROVEN_INFEASIBLE;
-        if ( solver->isProvenDualInfeasible() )
-            return SolutionStatus::PROVEN_UNBOUNDED;
-
-        const auto* solution_array = solver->getColSolution();
-        if (solution_array) return SolutionStatus::SUBOPTIMAL;
-        return SolutionStatus::NO_SOLUTION;
-    }
-
-    void ILPSolverOsiModel::set_objective_sense_impl(ObjectiveSense p_sense)
-    {
-        auto* solver{ get_solver_osi() };
-        if (p_sense == ObjectiveSense::MINIMIZE )
-            solver->setObjSense( 1.);
-        else
-            solver->setObjSense(-1.);
-    }
-
-    void ILPSolverOsiModel::solve_impl()
-    {
-        auto* solver{ get_solver_osi() };
-        solver->branchAndBound();
-    }
-
-    const OsiSolverInterface* ILPSolverOsiModel::get_solver_osi () const
-    {
-        return const_cast<ILPSolverOsiModel*>(this)->get_solver_osi();
+        return const_cast<ILPSolverOsiModel*>(this)->get_solver_osi_model();
     }
 }
 

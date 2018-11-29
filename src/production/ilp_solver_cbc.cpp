@@ -13,7 +13,7 @@
 
 namespace ilp_solver
 {
-    OsiSolverInterface* ILPSolverCbc::get_solver_osi()
+    OsiSolverInterface* ILPSolverCbc::get_solver_osi_model()
     {
         return d_model.solver();
     }
@@ -36,6 +36,7 @@ namespace ilp_solver
         // The best solution is stored by CbcModel, not by the solver, thus reimplementation.
         const auto* result = d_model.bestSolution();
         if (!result) return std::vector<double>();
+        // No virtual call necessary, since the problem is solved.
         return std::vector<double>(result, result + d_model.getNumCols());
     }
 
@@ -62,6 +63,7 @@ namespace ilp_solver
     void ILPSolverCbc::set_start_solution(const std::vector<double>& p_solution)
     {
         // Set the current best solution of Cbc to the given solution, check for feasibility, but not for better objective value.
+        // get_num_variables necessary since the cache may not be included in the problem.
         assert( static_cast<int>(p_solution.size()) == get_num_variables() );
         d_model.setBestSolution(p_solution.data(), static_cast<int>(p_solution.size()), COIN_DBL_MAX, false);
     }
@@ -113,7 +115,8 @@ namespace ilp_solver
         {
             const double* coeff = d_model.solver()->getObjCoefficients();
             double          obj = 0.;
-            for (int i = 0; i < get_num_variables(); i++)
+            // No virtual call necessary, since prepare is called beforehand.
+            for (int i = 0; i < d_model.getNumCols(); i++)
                 obj += coeff[i] * sol[i];
             d_model.setObjValue(obj);
         }

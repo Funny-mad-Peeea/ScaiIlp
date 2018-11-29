@@ -9,8 +9,6 @@
 #pragma comment(lib, "libOsiClp.lib")
 
 #include "ilp_solver_impl.hpp"
-
-#include "CoinPackedMatrix.hpp"
 #include "CoinModel.hpp"
 
 #include <string>
@@ -23,39 +21,39 @@ namespace ilp_solver
     // Implements all methods from ILPSolverInterfaceImpl that can be realized
     // via the model of the OsiSolverInterface.
     // If inheriting from ILPSolverOsiModel, you only need to implement
-    //     get_solver_osi
+    //     get_solver_osi_model
+
     //     set_num_threads
     //     set_deterministic_mode
     //     set_log_level
     //     set_max_seconds
-    // although you might want to override
-    //     get_solution
     //     set_start_solution
+
+    //     get_solution
     //     get_objective
     //     get_status
+
     //     solve_impl
     //     set_objective_sense_impl
     // for the concrete solver.
     class ILPSolverOsiModel : public ILPSolverImpl
     {
         public:
+            int  get_num_constraints() const override;
+            int  get_num_variables  () const override;
+        protected:
             ILPSolverOsiModel();
 
-            std::vector<double> get_solution       () const                                override;
-            void                set_start_solution (const std::vector<double>& p_solution) override;
-            double              get_objective      () const                                override;
-            SolutionStatus      get_status         () const                                override;
-            int                 get_num_constraints() const                                override;
-            int                 get_num_variables  () const                                override;
-        protected:
             void prepare_impl() override;
+
+            // Const version is set here and does not need to be overwritten.
+            const OsiSolverInterface* const_get_solver_osi_model() const;
         private:
             CoinModel d_cache{};
             bool      d_cache_changed{false};
 
             // Obtain a pointer to a solver fulfilling the OsiSolverInterface.
-            virtual OsiSolverInterface* get_solver_osi() = 0;
-              const OsiSolverInterface* get_solver_osi() const;
+            virtual OsiSolverInterface* get_solver_osi_model() = 0;
 
             void add_variable_impl (VariableType p_type, double p_objective, double p_lower_bound, double p_upper_bound,
                 [[maybe_unused]] const std::string& p_name = "", const std::vector<double>* p_row_values = nullptr,
@@ -65,8 +63,6 @@ namespace ilp_solver
                 const std::vector<double>& p_col_values, [[maybe_unused]] const std::string& p_name = "",
                 const std::vector<int>* p_col_indices = nullptr) override;
 
-            void solve_impl() override;
-            void set_objective_sense_impl(ObjectiveSense p_sense) override;
             std::pair<double, double> get_infinity_impl() override;
     };
 }
