@@ -5,9 +5,6 @@
 
 
 // The implementation serves to avoid redundant code duplication.
-// If there is any action you need to be done after constructing the problem, but before solving it,
-// (e.g. integrating a cache) you may want to implement your own overriding version of prepare_impl
-// the default implementation does nothing.
 #include <iostream>
 namespace ilp_solver
 {
@@ -51,6 +48,10 @@ namespace ilp_solver
 
 
         private:
+            // If there is anything that needs to be done before a solve, overwrite prepare_impl.
+            // It will be called before set_objective_sense_impl and solve_impl.
+            // Useful e.g. for cached problems etc.
+            // The default version does nothing.
             virtual void                      prepare_impl();
             virtual std::pair<double, double> get_infinity_impl() = 0;
             virtual void                      add_variable_impl (VariableType p_type, double p_objective, double p_lower_bound, double p_upper_bound,
