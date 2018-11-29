@@ -74,8 +74,8 @@ namespace ilp_solver
 
     void ILPSolverCbc::solve_impl()
     {
-        // The probingInfo is not deleted on successive solves,
-        // but overwritten. Thus, it produces memory leaks if not deleted here.
+        // The probingInfo is not deleted on successive solves, but overwritten.
+        // Thus, it produces memory leaks if not deleted here.
         auto probing_ptr = d_model.probingInfo();
         if (probing_ptr)
             delete probing_ptr;
