@@ -11,7 +11,10 @@ namespace ilp_solver
 {
     struct ILPData
     {
-        std::vector< std::vector<double> > matrix;  // Note: mx0 matrices can be stored, but 0xn matrices cannot.
+        // Inner vectors are rows/constraints, so every entry in the outer vector represents a variable.
+        // Thus, variables not occuring in any constraints can be stored (m x 0),
+        // but constraints without any variables can not (0 x n).
+        std::vector< std::vector<double> > matrix;
         std::vector<double> objective;
         std::vector<double> variable_lower;
         std::vector<double> variable_upper;
