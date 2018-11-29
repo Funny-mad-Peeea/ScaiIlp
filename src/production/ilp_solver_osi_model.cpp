@@ -135,7 +135,7 @@ namespace ilp_solver
             d_cache.addCol(n_rows, rows, vals, p_lower_bound, p_upper_bound, p_objective, p_name.c_str(), is_integer_or_binary);
         else
 #endif
-            d_cache.addCol(n_rows, rows, vals, p_lower_bound, p_upper_bound, p_objective, NULL, is_integer_or_binary);
+            d_cache.addCol(n_rows, rows, vals, p_lower_bound, p_upper_bound, p_objective, nullptr, is_integer_or_binary);
         d_cache_changed = true;
     }
 
