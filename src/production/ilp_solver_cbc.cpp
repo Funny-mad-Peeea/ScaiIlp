@@ -22,6 +22,11 @@ namespace ilp_solver
     {
         // CbcModel assumes ownership over solver and deletes it in its destructor.
         OsiSolverInterface* solver = new OsiClpSolverInterface();
+
+        // Output should come from CBC, not from CBCs solver.
+        solver->messageHandler()->setLogLevel(0);
+        solver->setHintParam(OsiDoReducePrint, 1);
+
         d_model.assignSolver(solver, true);
         set_default_parameters(this);
     }
@@ -86,9 +91,8 @@ namespace ilp_solver
 
     void ILPSolverCbc::set_log_level          (int p_level)
     {
-        int level = std::clamp(p_level, 0, 4); // log level must be between 0 and 4
-        d_model.messageHandler()->setLogLevel(level);   // Both CBC and the CLP solver must be set.
-        d_model.solver()->messageHandler()->setLogLevel(level);
+        int level = std::clamp(p_level, 0, 4);          // log level must be between 0 and 4
+        d_model.messageHandler()->setLogLevel(level);
     }
 
     void ILPSolverCbc::set_max_seconds        (double p_seconds)
