@@ -15,6 +15,10 @@ namespace ilp_solver
         set_default_parameters(this);
     }
 
+    OsiSolverInterface* ILPSolverOsi::get_solver_osi()
+    {
+        return d_ilp_solver;
+    }
 
     void ILPSolverOsi::set_num_threads        (int)
     {

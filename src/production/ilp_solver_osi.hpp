@@ -18,12 +18,12 @@ namespace ilp_solver
         private:
             OsiSolverInterface* d_ilp_solver;
 
-            OsiSolverInterface*       get_solver_osi    ()       override { return d_ilp_solver; }
+            OsiSolverInterface* get_solver_osi         ()                     override;
 
-            void set_num_threads        (int p_num_threads)    override;
-            void set_deterministic_mode (bool p_deterministic) override;
-            void set_log_level          (int p_level)          override;
-            void set_max_seconds        (double p_seconds)     override;
+            void                set_num_threads        (int p_num_threads)    override;
+            void                set_deterministic_mode (bool p_deterministic) override;
+            void                set_log_level          (int p_level)          override;
+            void                set_max_seconds        (double p_seconds)     override;
     };
 }
 

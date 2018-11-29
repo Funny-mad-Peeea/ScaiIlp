@@ -49,8 +49,8 @@ namespace ilp_solver
             {
                 // New size is independent from the existence of an index vector.
                 int new_size = static_cast<int>(p_values.size()) - num_zeros;
-                indices.reserve( new_size );
-                 values.reserve( new_size );
+                indices.reserve(new_size);
+                values.reserve (new_size);
 
                 for (int i = 0; i < static_cast<int>(p_values.size()); i++)
                 {
