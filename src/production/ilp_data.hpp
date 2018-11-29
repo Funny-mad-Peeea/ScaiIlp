@@ -21,21 +21,17 @@ namespace ilp_solver
         std::vector<double> constraint_lower;
         std::vector<double> constraint_upper;
         std::vector<VariableType> variable_type;
-        ObjectiveSense objective_sense;
+        ObjectiveSense objective_sense{ ObjectiveSense::MINIMIZE };
 
         std::vector<double> start_solution;
 
-        int num_threads;
-        bool deterministic;
-        int log_level;
-        double max_seconds;
+        // Defaults will be overwritten in ilp_solver_collect.
+        int num_threads    { c_default_num_threads   };
+        bool deterministic { c_default_deterministic };
+        int log_level      { c_default_log_level     };
+        double max_seconds { c_default_max_seconds   };
 
         ILPData()
-            : objective_sense{ ObjectiveSense::MINIMIZE }
-            , num_threads    { c_default_num_threads }
-            , deterministic  { c_default_deterministic }
-            , log_level      { c_default_log_level }
-            , max_seconds    { c_default_max_seconds }
         { }
     };
 

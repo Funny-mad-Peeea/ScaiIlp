@@ -60,6 +60,10 @@ namespace ilp_solver
         }
     }
 
+    ILPSolverCollect::ILPSolverCollect()
+    {
+        set_default_parameters(this);
+    }
 
     int ILPSolverCollect::get_num_constraints() const
     {

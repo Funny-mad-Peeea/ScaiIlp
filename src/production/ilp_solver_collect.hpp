@@ -13,8 +13,12 @@ namespace ilp_solver
         public:
             int get_num_constraints() const override;
             int get_num_variables()   const override;
+
         protected:
+            ILPSolverCollect();
+
             ILPData d_ilp_data;
+
         private:
 
             void add_variable_impl (VariableType p_type, double p_objective, double p_lower_bound, double p_upper_bound,
