@@ -317,7 +317,7 @@ the class hierarchy.
    Note, however, that the OsiSolverInterface does not provide all the functionality that is
    exposed by ILPSolverInterface. If your solver provides a non-Osi interface, you might prefer
    the latter. If your solver has ways to partially bypass Osi and add the missing functionality,
-   you should override the corresponding functions of IlpSolverOsi.
+   you should derive from IlpSolverOsi and override the corresponding functions.
 
 2. If your solver is based on an LP-Solver it communicates with via the OsiSolverInterface and if
    your solver obtains its model via this LP-solver, then you should derive from ILPSolverOsiModel
