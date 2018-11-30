@@ -32,51 +32,79 @@ namespace ilp_solver
     {
 
         // Prune zeros before constructing a coin-packed vector.
-        // Returns newly constructed vectors only if there are zeroes in p_values or if no indices are given.
-        //     If p_indices == nullptr, constructs a new index array for all non-zeroes in p_values.
-        //     Otherwise, only keeps the indices corresponding to non-zero values.
-        std::pair<std::optional<std::vector<int>>, std::optional<std::vector<double>>> prune_zeros(const std::vector<double>& p_values, const std::vector<int>* p_indices = nullptr)
+        // Takes pointers to the vectors or nullptrs as parameters.
+        // If p_values is a nullptr, does nothing and returns 0, nullptr and nullptr.
+        // If p_values is valid,
+        //     prunes all zeros from it and constructs a new value array if there were any,
+        //     and a new index array if there are any zeros or if p_indices == nullptr.
+        class ZeroPruner
         {
-            assert ( (p_indices != nullptr) ? p_indices->size() == p_values.size() : true);
-
-            std::pair<std::optional<std::vector<int>>, std::optional<std::vector<double>>> return_value;
-
-            int num_zeros { static_cast<int>(std::count(p_values.begin(), p_values.end(), 0.)) };
-
-            if (num_zeros > 0)
+        public:
+            ZeroPruner(const std::vector<int>* p_indices, const std::vector<double>* p_values)
             {
-                return_value.first.emplace();
-                return_value.second.emplace();
+                if (p_values != nullptr){
+                    assert ( (p_indices == nullptr)  || (p_indices->size() == p_values.size()) );
 
-                std::vector<int>&    indices = *return_value.first;
-                std::vector<double>& values  = *return_value.second;
+                    int num_zeros { static_cast<int>(std::count(p_values->begin(), p_values->end(), 0.)) };
 
-                // New size is independent from the existence of an index vector.
-                int new_size = static_cast<int>(p_values.size()) - num_zeros;
-                indices.reserve(new_size);
-                values.reserve (new_size);
-
-                for (int i = 0; i < static_cast<int>(p_values.size()); i++)
-                {
-                    auto value = p_values[i];
-                    // Construct the new vectors. If we have no indices, use the current index.
-                    if (value != 0.)
+                    if (num_zeros > 0)
                     {
-                        indices.push_back( (p_indices != nullptr) ? (*p_indices)[i] : i );
-                        values.push_back(value);
+                        d_num_indices = static_cast<int>(p_values->size()) - num_zeros;
+                        d_owns        = c_owns_values | c_owns_indices;
+                        d_values  = new double[d_num_indices];
+                        d_indices = new int   [d_num_indices];
+
+                        for (int i = 0, j = 0; i < static_cast<int>(p_values->size()); i++)
+                        {
+                            auto value = (*p_values)[i];
+                            // Construct the new arrays. If we have no indices, use the current index.
+                            if (value != 0.)
+                            {
+                                d_values [j]    = value;
+                                d_indices[j++] = (p_indices != nullptr) ? (*p_indices)[i] : i;
+                            }
+                        }
+                    }
+                    else
+                    {
+                        // const_cast is valid since we do not ever manipulate this data
+                        // and the getter-methods return const pointers again.
+                        d_values      = const_cast<double*>(p_values->data());
+                        d_num_indices = static_cast<int>(p_values->size());
+
+                        if (p_indices == nullptr)
+                        {
+                            d_owns = c_owns_indices;
+                            d_indices = new int[d_num_indices];
+                            std::iota(d_indices, d_indices + d_num_indices, 0);
+                        }
+                        else
+                        {
+                            d_owns = 0;
+                            d_indices = const_cast<int*>(p_indices->data());
+                        }
                     }
                 }
             }
-            else if (!p_indices)
+
+            ~ZeroPruner() noexcept
             {
-                // Create a full vector of 0 to size - 1.
-                return_value.first.emplace(p_values.size(), 0);
-                std::vector<int>& indices = *return_value.first;
-                std::iota(indices.begin(), indices.end(), 0);
+                if (d_owns & c_owns_values)  delete[] d_values;
+                if (d_owns & c_owns_indices) delete[] d_indices;
             }
 
-            return return_value;
-        }
+            inline int           size()    const { return d_num_indices; }
+            inline const double* values()  const { return d_values; }
+            inline const int*    indices() const { return d_indices; }
+        private:
+            static constexpr int c_owns_values{2};
+            static constexpr int c_owns_indices{1};
+
+            double* d_values      {nullptr};
+            int*    d_indices     {nullptr};
+            int     d_num_indices {0};
+            int     d_owns        {0};
+        };
     }
 
     int ILPSolverOsiModel::get_num_variables() const
@@ -93,40 +121,17 @@ namespace ilp_solver
         [[maybe_unused]] const std::string& p_name, const std::vector<double>* p_row_values,
         const std::vector<int>* p_row_indices)
     {
-        const int*    rows{nullptr};
-        int         n_rows{0};
-        const double* vals{nullptr};
-
-        if (p_row_values)
-        {
-            // Reduce the vectors, if necessary.
-            auto [indices, values] = prune_zeros(*p_row_values, p_row_indices);
-            if (indices)
-            {
-                if (values) vals = values->data();
-                else        vals = p_row_values->data();
-
-                rows   = indices->data();
-                n_rows = indices->size();
-            }
-            else
-            {
-                vals   = p_row_values->data();
-                rows   = p_row_indices->data();
-                n_rows = p_row_indices->size();
-            }
-
-            assert (n_rows <= get_num_constraints() );
-        }
+        ZeroPruner pruner{p_row_indices, p_row_values};
+        assert (pruner.size() <= get_num_constraints());
 
         // OSI has no special case for binary variables.
         bool is_integer_or_binary{ (p_type == VariableType::CONTINUOUS) ? false : true };
 #if DO_FORWARD_NAME == true
         if (!p_name.empty())
-            d_cache.addCol(n_rows, rows, vals, p_lower_bound, p_upper_bound, p_objective, p_name.c_str(), is_integer_or_binary);
+            d_cache.addCol(pruner.size(), pruner.indices(), pruner.values(), p_lower_bound, p_upper_bound, p_objective, p_name.c_str(), is_integer_or_binary);
         else
 #endif
-            d_cache.addCol(n_rows, rows, vals, p_lower_bound, p_upper_bound, p_objective, nullptr, is_integer_or_binary);
+            d_cache.addCol(pruner.size(), pruner.indices(), pruner.values(), p_lower_bound, p_upper_bound, p_objective, nullptr, is_integer_or_binary);
         d_cache_changed = true;
     }
 
@@ -145,33 +150,14 @@ namespace ilp_solver
         const std::vector<double>& p_col_values, [[maybe_unused]] const std::string& p_name,
         const std::vector<int>* p_col_indices)
     {
-        const int*    cols{nullptr};
-        int         n_cols{0};
-        const double* vals{nullptr};
-
-        // Reduce the vectors, if necessary.
-        auto[indices, values] = prune_zeros(p_col_values, p_col_indices);
-        if (indices)
-        {
-            if (values) vals = values->data();
-            else        vals = p_col_values.data();
-
-            cols = indices->data();
-            n_cols = indices->size();
-        }
-        else
-        {
-            vals = p_col_values.data();
-            cols = p_col_indices->data();
-            n_cols = p_col_indices->size();
-        }
+        ZeroPruner pruner{p_col_indices, &p_col_values};
 
 #if DO_FORWARD_NAME == true
         if (!p_name.empty())
-            d_cache.addRow(n_cols, cols, vals, p_lower_bound, p_upper_bound, p_name.c_str());
+            d_cache.addRow(pruner.size(), pruner.indices(), pruner.values(), p_lower_bound, p_upper_bound, p_name.c_str());
         else
 #endif
-            d_cache.addRow(n_cols, cols, vals, p_lower_bound, p_upper_bound);
+            d_cache.addRow(pruner.size(), pruner.indices(), pruner.values(), p_lower_bound, p_upper_bound);
         d_cache_changed = true;
     }
 }
