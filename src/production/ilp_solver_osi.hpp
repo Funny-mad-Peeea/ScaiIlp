@@ -15,11 +15,6 @@ namespace ilp_solver
         public:
             explicit ILPSolverOsi(OsiSolverInterface* p_ilp_solver);
 
-        private:
-            OsiSolverInterface* d_ilp_solver;
-
-            OsiSolverInterface* get_solver_osi_model   ()                                      override;
-
             std::vector<double> get_solution            () const                                override;
             void                set_start_solution      (const std::vector<double>& p_solution) override;
             double              get_objective           () const                                override;
@@ -29,6 +24,11 @@ namespace ilp_solver
             void                set_deterministic_mode  (bool p_deterministic)                  override;
             void                set_log_level           (int p_level)                           override;
             void                set_max_seconds         (double p_seconds)                      override;
+
+        private:
+            OsiSolverInterface* d_ilp_solver;
+
+            OsiSolverInterface* get_solver_osi_model   ()                                      override;
 
             void                solve_impl              ()                                      override;
             void                set_objective_sense_impl(ObjectiveSense p_sense)                override;
