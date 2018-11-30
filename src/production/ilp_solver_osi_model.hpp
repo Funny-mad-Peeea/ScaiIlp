@@ -30,8 +30,6 @@ namespace ilp_solver
 
             void prepare_impl() override;
 
-            // Const version is set here and does not need to be overwritten.
-            const OsiSolverInterface* const_get_solver_osi_model() const;
         private:
             CoinModel d_cache{};
             bool      d_cache_changed{false};

@@ -174,11 +174,6 @@ namespace ilp_solver
             d_cache.addRow(n_cols, cols, vals, p_lower_bound, p_upper_bound);
         d_cache_changed = true;
     }
-
-    const OsiSolverInterface* ILPSolverOsiModel::const_get_solver_osi_model () const
-    {
-        return const_cast<ILPSolverOsiModel*>(this)->get_solver_osi_model();
-    }
 }
 
 #endif
