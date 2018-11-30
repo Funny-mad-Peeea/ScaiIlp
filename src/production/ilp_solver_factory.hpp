@@ -3,6 +3,9 @@
 
 #include "ilp_solver_interface.hpp"
 
+// List of all solvers usable from the .dll.
+// For new solvers, please follow the declarations below.
+
 namespace ilp_solver
 {
     extern "C"

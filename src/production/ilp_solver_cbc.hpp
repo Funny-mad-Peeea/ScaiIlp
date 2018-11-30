@@ -25,6 +25,7 @@ class OsiSolverInterface;
 
 namespace ilp_solver
 {
+    // Final implementation of CBC in ScaiILP.
     class ILPSolverCbc : public ILPSolverOsiModel
     {
         public:

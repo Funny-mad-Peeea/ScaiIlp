@@ -20,6 +20,9 @@ namespace ilp_solver
 {
     // Implements all methods from ILPSolverInterfaceImpl that can be realized
     // via the pure problem model of the OsiSolverInterface.
+    // If your solver uses an OsiInterface to store the problem model,
+    // but provides an additional interface on top of the OsiInterface
+    // you may want to derive from this class.
     class ILPSolverOsiModel : public ILPSolverImpl
     {
         public:

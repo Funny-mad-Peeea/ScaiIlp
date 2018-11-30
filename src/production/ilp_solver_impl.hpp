@@ -14,7 +14,9 @@ namespace ilp_solver
     // Can not be called in the constructor of ILPSolverImpl since the virtual functions are not yet overridden.
     void set_default_parameters(ILPSolverInterface* p_solver);
 
-
+    // This is the base class for any solver not using some kind of Osi-modeling or full interface.
+    // It implements some methods of ILPSolverInterface by introducing fewer private virtual methods,
+    // collecting multiple cases at once.
     class ILPSolverImpl : public ILPSolverInterface
     {
         public:

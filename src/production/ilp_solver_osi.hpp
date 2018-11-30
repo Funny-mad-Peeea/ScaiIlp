@@ -9,7 +9,9 @@ class OsiSolverInterface;
 
 namespace ilp_solver
 {
-    // Wrapper class for all ILP solvers that implement the OsiSolverInterface
+    // Wrapper class for all ILP solvers that implement the full OsiSolverInterface
+    // A few functions are not expressible in pure OsiSolverInterface terms,
+    // so you may want to derive from this class instead of using it directly if your specific interface provides them.
     class ILPSolverOsi: public ILPSolverOsiModel
     {
         public:
