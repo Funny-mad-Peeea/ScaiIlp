@@ -119,6 +119,9 @@ namespace ilp_solver
         d_model.setObjSense(sense);
 
         // If we have a current solution, we recompute the objective value.
+        // This may be necessary because of two reasons,
+        //     the best solution may have been set before the cache was integrated
+        //     the setObjSense function somehow manipulates the current objective value incorrectly.
         // This is called after prepare and before the solve,
         // so this is always the correct best objective value found.
         double* sol = d_model.bestSolution();
