@@ -471,7 +471,6 @@ int create_ilp_test_suite()
 {
     using namespace ilp_solver;
 
-
     constexpr std::array<std::pair<TestFunction, std::string_view>, 7> all_tests
     { std::pair{test_sorting, "Sorting"}
     , std::pair{test_linear_programming, "LinProgr"}
