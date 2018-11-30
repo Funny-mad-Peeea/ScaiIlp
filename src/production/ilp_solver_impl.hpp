@@ -3,9 +3,7 @@
 
 #include "ilp_solver_interface.hpp"
 
-
 // The implementation serves to avoid redundant code duplication.
-#include <iostream>
 namespace ilp_solver
 {
     enum class VariableType   { INTEGER, CONTINUOUS, BINARY };
@@ -43,9 +41,7 @@ namespace ilp_solver
             void maximize() override;
 
         protected:
-            ILPSolverImpl()
-            { }
-
+            ILPSolverImpl() = default;
 
         private:
             // If there is anything that needs to be done before a solve, overwrite prepare_impl.
@@ -53,7 +49,6 @@ namespace ilp_solver
             // Useful e.g. for cached problems etc.
             // The default version does nothing.
             virtual void                      prepare_impl();
-            virtual std::pair<double, double> get_infinity_impl() = 0;
             virtual void                      add_variable_impl (VariableType p_type, double p_objective, double p_lower_bound, double p_upper_bound,
                                                                  const std::string& p_name = "", const std::vector<double>* p_row_values = nullptr,
                                                                  const std::vector<int>* p_row_indices = nullptr) = 0;
@@ -62,10 +57,6 @@ namespace ilp_solver
                                                                    const std::vector<int>* p_col_indices = nullptr) = 0;
             virtual void                      solve_impl() = 0;
             virtual void                      set_objective_sense_impl(ObjectiveSense p_sense) = 0;
-
-
-
-            std::pair<double, double> handle_bounds(double p_lower_bound, double p_upper_bound);
     };
 }
 

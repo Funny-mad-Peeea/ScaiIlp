@@ -32,8 +32,6 @@ namespace ilp_solver
 
             void set_start_solution     (const std::vector<double>& p_solution) override;
 
-            std::pair<double, double> get_infinity_impl() override;
-
             void set_num_threads        (int p_num_threads)    override;
             void set_deterministic_mode (bool p_deterministic) override;
             void set_log_level          (int p_level)          override;

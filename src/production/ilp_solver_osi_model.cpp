@@ -89,10 +89,6 @@ namespace ilp_solver
         return d_cache.numberRows();
     }
 
-    ILPSolverOsiModel::ILPSolverOsiModel()
-    {
-    }
-
     void ILPSolverOsiModel::add_variable_impl (VariableType p_type, double p_objective, double p_lower_bound, double p_upper_bound,
         [[maybe_unused]] const std::string& p_name, const std::vector<double>* p_row_values,
         const std::vector<int>* p_row_indices)
@@ -144,12 +140,6 @@ namespace ilp_solver
         }
     }
 
-    std::pair<double, double> ILPSolverOsiModel::get_infinity_impl()
-    {
-        auto*             solver{ get_solver_osi_model() };
-        auto inf = solver->getInfinity();
-        return {-inf, inf};
-    }
 
     void ILPSolverOsiModel::add_constraint_impl (double p_lower_bound, double p_upper_bound,
         const std::vector<double>& p_col_values, [[maybe_unused]] const std::string& p_name,

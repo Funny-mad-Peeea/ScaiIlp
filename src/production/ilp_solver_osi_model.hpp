@@ -26,7 +26,7 @@ namespace ilp_solver
             int  get_num_constraints() const override;
             int  get_num_variables  () const override;
         protected:
-            ILPSolverOsiModel();
+            ILPSolverOsiModel() = default;
 
             void prepare_impl() override;
 
@@ -46,8 +46,6 @@ namespace ilp_solver
             void add_constraint_impl (double p_lower_bound, double p_upper_bound,
                 const std::vector<double>& p_col_values, [[maybe_unused]] const std::string& p_name = "",
                 const std::vector<int>* p_col_indices = nullptr) override;
-
-            std::pair<double, double> get_infinity_impl() override;
     };
 }
 

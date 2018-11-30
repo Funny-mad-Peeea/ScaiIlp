@@ -33,8 +33,7 @@ namespace ilp_solver
         int log_level      { c_default_log_level     };
         double max_seconds { c_default_max_seconds   };
 
-        ILPData()
-        { }
+        ILPData() = default;
     };
 
 

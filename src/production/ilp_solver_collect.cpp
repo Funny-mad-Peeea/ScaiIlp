@@ -78,12 +78,6 @@ namespace ilp_solver
     }
 
 
-    std::pair<double, double> ILPSolverCollect::get_infinity_impl()
-    {
-        return {std::numeric_limits<double>::lowest(), std::numeric_limits<double>::max()};
-    }
-
-
     void ILPSolverCollect::add_variable_impl (VariableType p_type, double p_objective, double p_lower_bound, double p_upper_bound,
         const std::string& /* p_name */, const std::vector<double>* p_row_values,
         const std::vector<int>* p_row_indices)
