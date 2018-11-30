@@ -4,10 +4,11 @@
 
 using std::string;
 using std::vector;
-typedef vector< vector<double> > Matrix;
 
 namespace ilp_solver
 {
+    using Matrix = ILPData::Matrix;
+
     static void append_column(Matrix* v_matrix, const vector<double>& p_row_values)
     {
         if (v_matrix->empty())

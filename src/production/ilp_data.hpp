@@ -11,10 +11,12 @@ namespace ilp_solver
 {
     struct ILPData
     {
-        // Inner vectors are rows/constraints, so every entry in the outer vector represents a variable.
-        // Thus, variables not occuring in any constraints can be stored (m x 0),
-        // but constraints without any variables can not (0 x n).
-        std::vector< std::vector<double> > matrix;
+        // Inner vectors are rows/constraints. The size of the outer vector is the number of constraints.
+        // The size of the inner vectors is the number of variables.
+        // If no constraints are given, we can not know the number of variables. (m x 0 can be stored, 0 x n can not).
+        using Matrix = std::vector<std::vector<double>>;
+
+        Matrix              matrix;
         std::vector<double> objective;
         std::vector<double> variable_lower;
         std::vector<double> variable_upper;
