@@ -14,11 +14,13 @@ namespace ilp_solver
 #endif
     ILPSolverInterface* __stdcall create_solver_cbc();
 
+
     extern "C"
 #if (WITH_CBC == 1)
     __declspec (dllexport)
 #endif
     ILPSolverInterface* __stdcall create_solver_stub(const char* p_executable_basename);
+
 
     extern "C"
     __declspec (dllexport)

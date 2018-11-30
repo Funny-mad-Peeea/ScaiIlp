@@ -11,9 +11,6 @@ namespace ilp_solver
 
     static void append_column(Matrix* v_matrix, const vector<double>& p_row_values)
     {
-        if (v_matrix->empty())
-            return;
-
         // set specified values
         for (int i = 0; i < static_cast<int>(v_matrix->size()); i++)
             (*v_matrix)[i].push_back(p_row_values[i]);
@@ -61,10 +58,6 @@ namespace ilp_solver
         }
     }
 
-    ILPSolverCollect::ILPSolverCollect()
-    {
-        set_default_parameters(this);
-    }
 
     int ILPSolverCollect::get_num_constraints() const
     {
@@ -75,6 +68,12 @@ namespace ilp_solver
     int ILPSolverCollect::get_num_variables()   const
     {
         return static_cast<int>(d_ilp_data.variable_lower.size());
+    }
+
+
+    ILPSolverCollect::ILPSolverCollect()
+    {
+        set_default_parameters(this);
     }
 
 

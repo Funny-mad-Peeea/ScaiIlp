@@ -27,12 +27,6 @@ namespace ilp_solver
     }
 
 
-    OsiSolverInterface* ILPSolverCbc::get_solver_osi_model()
-    {
-        return d_model.solver();
-    }
-
-
     std::vector<double> ILPSolverCbc::get_solution() const
     {
         // The best solution is stored by CbcModel, not by the solver, thus reimplementation.
@@ -81,18 +75,6 @@ namespace ilp_solver
     }
 
 
-    void ILPSolverCbc::solve_impl()
-    {
-        // The probingInfo is not deleted on successive solves, but overwritten.
-        // Thus, it produces memory leaks if not deleted here.
-        auto probing_ptr = d_model.probingInfo();
-        if (probing_ptr)
-            delete probing_ptr;
-
-        d_model.branchAndBound();
-    }
-
-
     void ILPSolverCbc::set_deterministic_mode (bool p_deterministic)
     {
         const auto cbc_thread_mode = ((d_model.getNumberThreads() > 1 && p_deterministic) ? 1 : 0);
@@ -110,6 +92,24 @@ namespace ilp_solver
     void ILPSolverCbc::set_max_seconds        (double p_seconds)
     {
         d_model.setMaximumSeconds(p_seconds);
+    }
+
+
+    OsiSolverInterface* ILPSolverCbc::get_solver_osi_model()
+    {
+        return d_model.solver();
+    }
+
+
+    void ILPSolverCbc::solve_impl()
+    {
+        // The probingInfo is not deleted on successive solves, but overwritten.
+        // Thus, it produces memory leaks if not deleted here.
+        auto probing_ptr = d_model.probingInfo();
+        if (probing_ptr)
+            delete probing_ptr;
+
+        d_model.branchAndBound();
     }
 
 

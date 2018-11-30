@@ -107,15 +107,29 @@ namespace ilp_solver
         };
     }
 
-    int ILPSolverOsiModel::get_num_variables() const
-    {
-        return d_cache.numberColumns();
-    }
 
     int ILPSolverOsiModel::get_num_constraints() const
     {
         return d_cache.numberRows();
     }
+
+
+    int ILPSolverOsiModel::get_num_variables() const
+    {
+        return d_cache.numberColumns();
+    }
+
+
+    void ILPSolverOsiModel::prepare_impl()
+    {
+        auto* solver{ get_solver_osi_model() };
+        if (d_cache_changed && (d_cache.numberColumns() > 0 || d_cache.numberRows() > 0))
+        {
+            solver->loadFromCoinModel(d_cache, true);
+            d_cache_changed = false;
+        }
+    }
+
 
     void ILPSolverOsiModel::add_variable_impl (VariableType p_type, double p_objective, double p_lower_bound, double p_upper_bound,
         [[maybe_unused]] const std::string& p_name, const std::vector<double>* p_row_values,
@@ -133,16 +147,6 @@ namespace ilp_solver
 #endif
             d_cache.addCol(pruner.size(), pruner.indices(), pruner.values(), p_lower_bound, p_upper_bound, p_objective, nullptr, is_integer_or_binary);
         d_cache_changed = true;
-    }
-
-    void ILPSolverOsiModel::prepare_impl()
-    {
-        auto* solver{ get_solver_osi_model() };
-        if (d_cache_changed && (d_cache.numberColumns() > 0 || d_cache.numberRows() > 0))
-        {
-            solver->loadFromCoinModel(d_cache, true);
-            d_cache_changed = false;
-        }
     }
 
 

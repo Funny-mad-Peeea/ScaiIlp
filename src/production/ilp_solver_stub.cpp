@@ -200,7 +200,7 @@ namespace ilp_solver
             throw std::exception(("External ILP solver: " + exit_code_to_message(p_exit_code)).c_str());
     }
 
-
+    // set_default_parameters is called in ILPSolverCollect.
     ILPSolverStub::ILPSolverStub(const std::string& p_executable_basename)
         : d_executable_basename(p_executable_basename)
     { }

@@ -16,12 +16,6 @@ namespace ilp_solver
     }
 
 
-    OsiSolverInterface* ILPSolverOsi::get_solver_osi_model()
-    {
-        return d_ilp_solver;
-    }
-
-
     std::vector<double> ILPSolverOsi::get_solution() const
     {
         const auto* solution_array = d_ilp_solver->getColSolution(); // Returns nullptr if no solution was found.
@@ -29,6 +23,15 @@ namespace ilp_solver
         if (!solution_array) return std::vector<double>();
         // No virtual call necessary, since the problem is solved.
         return std::vector<double>(solution_array, solution_array + d_ilp_solver->getNumCols());
+    }
+
+
+    void ILPSolverOsi::set_start_solution(const std::vector<double>& p_solution)
+    {
+        // get_num_variables necessary since the cache may not be included in the problem.
+        assert(static_cast<int>(p_solution.size()) == get_num_variables());
+
+        d_ilp_solver->setColSolution(p_solution.data());
     }
 
 
@@ -53,31 +56,7 @@ namespace ilp_solver
     }
 
 
-    void ILPSolverOsi::set_objective_sense_impl(ObjectiveSense p_sense)
-    {
-        if (p_sense == ObjectiveSense::MINIMIZE)
-            d_ilp_solver->setObjSense(1.);
-        else
-            d_ilp_solver->setObjSense(-1.);
-    }
-
-
-    void ILPSolverOsi::solve_impl()
-    {
-        d_ilp_solver->branchAndBound();
-    }
-
-
-    void ILPSolverOsi::set_start_solution(const std::vector<double>& p_solution)
-    {
-        // get_num_variables necessary since the cache may not be included in the problem.
-        assert(static_cast<int>(p_solution.size()) == get_num_variables());
-
-        d_ilp_solver->setColSolution(p_solution.data());
-    }
-
-
-    void ILPSolverOsi::set_num_threads        (int)
+    void ILPSolverOsi::set_num_threads(int)
     {
         // Not supported by OsiSolverInterface.
     }
@@ -98,6 +77,27 @@ namespace ilp_solver
     void ILPSolverOsi::set_max_seconds        (double)
     {
         // Not supported by OsiSolverInterface.
+    }
+
+
+    OsiSolverInterface* ILPSolverOsi::get_solver_osi_model()
+    {
+        return d_ilp_solver;
+    }
+
+
+    void ILPSolverOsi::solve_impl()
+    {
+        d_ilp_solver->branchAndBound();
+    }
+
+
+    void ILPSolverOsi::set_objective_sense_impl(ObjectiveSense p_sense)
+    {
+        if (p_sense == ObjectiveSense::MINIMIZE)
+            d_ilp_solver->setObjSense(1.);
+        else
+            d_ilp_solver->setObjSense(-1.);
     }
 }
 

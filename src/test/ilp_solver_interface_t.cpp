@@ -34,6 +34,7 @@ namespace ilp_solver
         return -0.5 + (1.0*rand())/RAND_MAX;
     }
 
+
     static std::pair<int, int> generate_random_problem(ILPSolverInterface* p_solver, int p_num_variables, int p_num_constraints)
     {
         srand(3);
@@ -163,6 +164,7 @@ namespace ilp_solver
         if (LOGGING)
             cout << logging.str();
     }
+
 
     void test_linear_programming(ILPSolverInterface* p_solver)
     {
@@ -322,6 +324,7 @@ namespace ilp_solver
             cout << "Test for multiple solves took " << end_time - start_time << " ms" << endl;
     }
 
+
     void test_performance_big(ILPSolverInterface* p_solver)
     {
         static constexpr int c_num_constraints{ 50 };
@@ -352,6 +355,7 @@ namespace ilp_solver
 
     }
 
+
     void test_performance_zero(ILPSolverInterface* p_solver)
     {
         const auto start_time = GetTickCount();
@@ -377,6 +381,7 @@ namespace ilp_solver
         if (LOGGING)
             cout << "Test for zero-pruning took " << end_time - start_time << " ms" << endl;
     }
+
 
     void test_start_solution(ILPSolverInterface* p_solver, double p_sense)
     {
@@ -453,13 +458,13 @@ namespace ilp_solver
         }
     }
 
+
     ILPSolverInterface* __stdcall create_stub()
     {
         constexpr std::string_view solver_exe_name = "ScaiIlpExe.exe";
         return create_solver_stub(solver_exe_name.data());
     }
 }
-
 
 
 int create_ilp_test_suite()
@@ -516,6 +521,7 @@ int create_ilp_test_suite()
 
     return 0;
 }
+
 
 // Automatic registration of the test suites.
 namespace

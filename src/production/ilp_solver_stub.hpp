@@ -15,16 +15,16 @@ namespace ilp_solver
         public:
             explicit ILPSolverStub(const std::string& p_executable_basename);
 
+            std::vector<double>       get_solution  () const override;
+            double                    get_objective () const override;
+            SolutionStatus            get_status    () const override;
+
         private:
             std::string d_executable_basename;
 
             ILPSolutionData d_ilp_solution_data;
 
             void solve_impl() override;
-
-            std::vector<double>       get_solution  () const override;
-            double                    get_objective () const override;
-            SolutionStatus            get_status    () const override;
     };
 }
 
