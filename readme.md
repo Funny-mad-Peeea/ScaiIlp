@@ -279,20 +279,20 @@ executable (in the same directory, should be ScaiIlpExe.exe, unless you rename i
 
     ILPSolverInterface:         Published interface
     |
-    |-> ILPSolverImpl:          Auxiliary base class to simpilfy implementation of any specific solver.
+    |-> ILPSolverImpl:          Auxiliary base class to simplify implementation of any specific solver.
         |                       Implements some methods of ILPSolverInterface
         |                       by calling a smaller number of newly introduced private virtual methods.
         |
-        |-> ILPSolverOsiModel:  Base class for solvers whose modelling functionality is exposed via
+        |-> ILPSolverOsiModel:  Base class for solvers whose modeling functionality is exposed via
         |   |                   the OsiSolverInterface, i.e. have a partial Osi interface.
-        |   |                   Implements all methods they share.                 
+        |   |                   Implements all methods they share.
         |   |
         |   |-> ILPSolverCbc:   Final. To use CBC.
         |   |                   Implements the remaining, solver specific methods for the CBC solver.
         |   |
-        |   |-> ILPSolverOsi:   Base class for solvers who have a complete Osi interface.
+        |   |-> ILPSolverOsi:   Final. Class for solvers who have a complete Osi interface.
         |                       Implements the remaining, solver specific methods.
-        |                       Currently, some functions have empty implementations
+        |                       Currently, some parameter-setting functions have empty implementations
         |                       because the OsiSolverInterface does not provide this functionality.
         |
         |-> ILPSolverCollect:   Implements all input related methods by storing the data in ILPData.
@@ -301,7 +301,7 @@ executable (in the same directory, should be ScaiIlpExe.exe, unless you rename i
             |-> ILPSolverStub:  Final. Solve in a separate process.
                                 solve_impl() writes the ILPData to shared memory and calls an external solver.
                                 The external solver writes the result (in form of ILPSolutionData)
-                                back to the shared memory. 
+                                back to the shared memory.
                                 The solution getter methods of ILPSolverStub simply query ILPSolutionData.
 
 
@@ -311,12 +311,12 @@ executable (in the same directory, should be ScaiIlpExe.exe, unless you rename i
 When you want to support a new solver, you must ask yourself at which level you want to hook into
 the class hierarchy.
 
-1. If you want to communicate with the solver via the OsiSolverInterface, then you derive a class
-   from ILPSolverOsi, construct your solver and implement get_solver_osi_model.
+1. If you want to communicate with the solver via the OsiSolverInterface, can use the ILPSolverOsi class.
+   The constructor takes any valid OsiSolverInterface*.
 
    Note, however, that the OsiSolverInterface does not provide all the functionality that is
    exposed by ILPSolverInterface. If your solver provides a non-Osi interface, you might prefer
-   the latter. If your solver has ways to parially bypass Osi and add the missing functionality,
+   the latter. If your solver has ways to partially bypass Osi and add the missing functionality,
    you should override the corresponding functions of IlpSolverOsi.
 
 2. If your solver is based on an LP-Solver it communicates with via the OsiSolverInterface and if
@@ -324,12 +324,11 @@ the class hierarchy.
    like Cbc does.
 
 3. If you don't use Osi at all, you should derive from ILPSolverImpl.
-   
+
    Most likely you don't want to derive from IlpSolverInterface directly.
 
-If you want your solver to be accessible via the DLL, then you must declare and define a function
+If you want your solver to be accessible via the DLL, then you must declare a function
 
-    extern "C" ILPSolverInterface* __stdcall create_solver_xyz(parameters)
+    extern "C" __declspec (dllexport) ILPSolverInterface* __stdcall create_solver_xyz(parameters);
 
-in ilp_solver_factory.hpp and ilp_solver_factory.cpp, respectively, and add this function in the
-module definition file ScaiIlpDll.def, which can be found in vc\ScaiIlpDll.
+in ilp_solver_factory.hpp and define it in ilp_solver_factory.cpp, respectively.
