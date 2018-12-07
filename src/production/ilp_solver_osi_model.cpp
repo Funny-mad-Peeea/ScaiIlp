@@ -59,7 +59,7 @@ namespace ilp_solver
         ZeroPruner::ZeroPruner(const std::vector<int>* p_indices, const std::vector<double>* p_values)
         {
             if (p_values != nullptr) {
-                assert ((p_indices == nullptr) || (p_indices->size() == p_values.size()));
+                assert ((p_indices == nullptr) || (p_indices->size() == p_values->size()));
 
                 int num_zeros{ static_cast<int>(std::count(p_values->begin(), p_values->end(), 0.)) };
 
