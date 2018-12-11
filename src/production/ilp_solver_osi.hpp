@@ -26,11 +26,11 @@ namespace ilp_solver
             void                set_deterministic_mode  (bool p_deterministic)                  override;
             void                set_log_level           (int p_level)                           override;
             void                set_max_seconds         (double p_seconds)                      override;
-
+            void                set_presolve            (bool p_presolve)                       override;
         private:
             OsiSolverInterface* d_ilp_solver;
 
-            OsiSolverInterface* get_solver_osi_model   ()                                      override;
+            OsiSolverInterface* get_solver_osi_model   ()                                       override;
 
             void                solve_impl              ()                                      override;
             void                set_objective_sense_impl(ObjectiveSense p_sense)                override;

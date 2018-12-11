@@ -15,10 +15,11 @@ namespace ilp_solver
 
     void set_default_parameters(ILPSolverInterface* p_solver)
     {
-        p_solver->set_num_threads(c_default_num_threads);
+        p_solver->set_num_threads       (c_default_num_threads);
         p_solver->set_deterministic_mode(c_default_deterministic);
-        p_solver->set_log_level(c_default_log_level);
-        p_solver->set_max_seconds(c_default_max_seconds);
+        p_solver->set_log_level         (c_default_log_level);
+        p_solver->set_max_seconds       (c_default_max_seconds);
+        p_solver->set_presolve          (c_default_presolve);
     }
 
 

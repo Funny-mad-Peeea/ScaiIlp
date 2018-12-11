@@ -41,6 +41,7 @@ namespace ilp_solver
             void set_deterministic_mode (bool p_deterministic) override;
             void set_log_level          (int p_level)          override;
             void set_max_seconds        (double p_seconds)     override;
+            void set_presolve           (bool p_presolve)      override;
         private:
             CbcModel d_model;
 

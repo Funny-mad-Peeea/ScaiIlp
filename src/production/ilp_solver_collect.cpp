@@ -165,4 +165,10 @@ namespace ilp_solver
     {
         d_ilp_data.max_seconds = p_seconds;
     }
+
+
+    void ILPSolverCollect::set_presolve           (bool p_presolve)
+    {
+        d_ilp_data.presolve = p_presolve;
+    }
 }

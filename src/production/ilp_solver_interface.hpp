@@ -13,6 +13,7 @@ namespace ilp_solver
     static constexpr int    c_default_log_level    { 0 };
     static constexpr bool   c_default_deterministic{ true };
     static constexpr double c_default_max_seconds  { std::numeric_limits<double>::max() };
+    static constexpr bool   c_default_presolve     { true };
 
 
     class SolverExeException : public std::runtime_error
@@ -102,6 +103,12 @@ namespace ilp_solver
             // This may be not followed exactly. The duration may be slightly longer than the given number.
             // May be unsupported by some solvers.
             virtual void set_max_seconds        (double p_seconds)     = 0;
+
+            // Enables or disables preprocessing and presolve directives of the solver.
+            // May be unsupported by some solvers.
+            // true:  on
+            // false: off
+            virtual void set_presolve           (bool p_presolve)      = 0;
 
             virtual ~ILPSolverInterface() noexcept {}
     };

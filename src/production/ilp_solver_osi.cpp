@@ -80,6 +80,16 @@ namespace ilp_solver
     }
 
 
+    void ILPSolverOsi::set_presolve      (bool p_preprocessing)
+    {
+        // Unsure if correct.
+        if (p_preprocessing)
+            d_ilp_solver->setHintParam(OsiDoPresolveInInitial, true,  OsiHintDo);
+        else
+            d_ilp_solver->setHintParam(OsiDoPresolveInInitial, false, OsiHintDo);
+    }
+
+
     OsiSolverInterface* ILPSolverOsi::get_solver_osi_model()
     {
         return d_ilp_solver;

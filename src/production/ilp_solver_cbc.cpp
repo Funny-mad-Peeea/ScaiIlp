@@ -95,6 +95,16 @@ namespace ilp_solver
     }
 
 
+    void ILPSolverCbc::set_presolve      (bool p_preprocessing)
+    {
+        // Unsure if correct.
+        if (p_preprocessing)
+            d_model.setTypePresolve(1);
+        else
+            d_model.setTypePresolve(0);
+    }
+
+
     OsiSolverInterface* ILPSolverCbc::get_solver_osi_model()
     {
         return d_model.solver();

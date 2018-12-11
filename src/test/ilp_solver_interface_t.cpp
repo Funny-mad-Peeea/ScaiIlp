@@ -401,6 +401,8 @@ namespace ilp_solver
         // x+y+2z = (x+z) + (y+z), i.e., optimum <= 4. Optimum is attained at (0,0,2), (1,1,1), (2,2,0)
         vector<double> expected_solution{0., 0., 2.};
 
+        p_solver->set_presolve(false);
+
         for (auto i = 0; i < 3; ++i)
         {
             p_solver->set_start_solution(expected_solution);
