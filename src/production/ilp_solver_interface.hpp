@@ -12,8 +12,13 @@ namespace ilp_solver
     static constexpr int    c_default_num_threads  { 1 };
     static constexpr int    c_default_log_level    { 0 };
     static constexpr bool   c_default_deterministic{ true };
+	static constexpr bool   c_default_presolve     { true };
+	
     static constexpr double c_default_max_seconds  { std::numeric_limits<double>::max() };
-    static constexpr bool   c_default_presolve     { true };
+    static constexpr int    c_default_max_solutions{ std::numeric_limits<int>::max() };
+    static constexpr int    c_default_max_nodes    { std::numeric_limits<int>::max() };
+    static constexpr double c_default_max_abs_gap  { std::numeric_limits<double>::max() };
+    static constexpr double c_default_max_rel_gap  { std::numeric_limits<double>::max() };
 
     constexpr double c_pos_inf_bound{ std::numeric_limits<double>::max() / 2 };
     constexpr double c_neg_inf_bound{ std::numeric_limits<double>::lowest() / 2 };
@@ -108,6 +113,28 @@ namespace ilp_solver
             // This may be not followed exactly. The duration may be slightly longer than the given number.
             // May be unsupported by some solvers.
             virtual void set_max_seconds        (double p_seconds)     = 0;
+
+			// Set the maximum number of nodes in the branch & bound tree after which the solver should terminate.
+            // What exactly constitutes a node may be solver-dependent.
+            // May be unsupported by some solvers.
+            virtual void set_max_nodes          (int p_nodes)          = 0;
+
+            // Set the maximum number of solutions found after which the solver should terminate.
+            // What exactly constitutes a solution may be solver-dependent.
+            // May be unsupported by some solvers.
+            virtual void set_max_solutions      (int p_solutions)      = 0;
+
+            // Instructs the solver to stop when the gap between the objective value of the best known solution
+            // and the current best bound on any solution is less than p_gap.
+            // May be unsupported by some solvers.
+            virtual void set_max_abs_gap        (double p_gap)         = 0;
+
+            // Instructs the solver to stop when the gap between the objective value of the best known solution
+            // and the current best bound on any solution is less than this fraction of the absolute value
+            // of the best known solution.
+            // The computation of the relative gap may be solver-dependent.
+            // May be unsupported by some solvers.
+            virtual void set_max_rel_gap        (double p_gap)         = 0;
 
             // Enables or disables preprocessing and presolve directives of the solver.
             // May be unsupported by some solvers.
