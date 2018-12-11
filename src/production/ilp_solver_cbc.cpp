@@ -89,18 +89,42 @@ namespace ilp_solver
     }
 
 
-    void ILPSolverCbc::set_max_seconds(double p_seconds)
-    {
-        d_model.setMaximumSeconds(p_seconds);
-    }
-
-
     void ILPSolverCbc::set_presolve(bool p_preprocessing)
     {
         if (p_preprocessing)
             d_model.setTypePresolve(1);
         else
             d_model.setTypePresolve(0);
+    }
+
+
+    void ILPSolverCbc::set_max_seconds(double p_seconds)
+    {
+        d_model.setMaximumSeconds(p_seconds);
+    }
+
+
+    void ILPSolverCbc::set_max_nodes          (int p_nodes)
+    {
+        d_model.setMaximumNodes(p_nodes);
+    }
+
+
+    void ILPSolverCbc::set_max_solutions      (int p_solutions)
+    {
+        d_model.setMaximumSolutions(p_solutions);
+    }
+
+
+    void ILPSolverCbc::set_max_abs_gap        (double p_abs_gap)
+    {
+        d_model.setAllowableGap(p_abs_gap);
+    }
+
+
+    void ILPSolverCbc::set_max_rel_gap        (double p_rel_gap)
+    {
+        d_model.setAllowableFractionGap(p_rel_gap);
     }
 
 
