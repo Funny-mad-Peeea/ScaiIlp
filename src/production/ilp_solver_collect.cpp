@@ -304,14 +304,38 @@ namespace ilp_solver
     }
 
 
+	void ILPSolverCollect::set_presolve           (bool p_presolve)
+    {
+        d_ilp_data.presolve = p_presolve;
+    }
+	
+
     void ILPSolverCollect::set_max_seconds(double p_seconds)
     {
         d_ilp_data.max_seconds = p_seconds;
     }
 
 
-    void ILPSolverCollect::set_presolve(bool p_presolve)
+    void ILPSolverCollect::set_max_nodes          (int p_nodes)
     {
-        d_ilp_data.presolve = p_presolve;
+        d_ilp_data.max_nodes = p_nodes;
+    }
+
+
+    void ILPSolverCollect::set_max_solutions      (int p_solutions)
+    {
+        d_ilp_data.max_solutions = p_solutions;
+    }
+
+
+    void ILPSolverCollect::set_max_abs_gap        (double p_abs_gap)
+    {
+        d_ilp_data.max_abs_gap = p_abs_gap;
+    }
+
+
+    void ILPSolverCollect::set_max_rel_gap        (double p_rel_gap)
+    {
+        d_ilp_data.max_rel_gap = p_rel_gap;
     }
 }
