@@ -17,16 +17,22 @@ namespace ilp_solver
         public:
             explicit ILPSolverOsi(OsiSolverInterface* p_ilp_solver);
 
-            std::vector<double> get_solution           () const                                override;
-            void                set_start_solution     (const std::vector<double>& p_solution) override;
-            double              get_objective          () const                                override;
-            SolutionStatus      get_status             () const                                override;
+            std::vector<double> get_solution            () const                                override;
+            void                set_start_solution      (const std::vector<double>& p_solution) override;
+            double              get_objective           () const                                override;
+            SolutionStatus      get_status              () const                                override;
 
-            void                set_num_threads        (int p_num_threads)                     override;
-            void                set_deterministic_mode (bool p_deterministic)                  override;
-            void                set_log_level          (int p_level)                           override;
-            void                set_max_seconds        (double p_seconds)                      override;
-            void                set_presolve           (bool p_presolve)                       override;
+            void                set_num_threads         (int p_num_threads)                     override;
+            void                set_deterministic_mode  (bool p_deterministic)                  override;
+            void                set_log_level           (int p_level)                           override;
+			void                set_presolve            (bool p_presolve)                       override;
+			
+            void                set_max_seconds         (double p_seconds)                      override;
+            void                set_max_nodes           (int p_nodes)                           override;
+            void                set_max_solutions       (int p_solutions)                       override;
+            void                set_max_abs_gap         (double p_gap)                          override;
+            void                set_max_rel_gap         (double p_gap)                          override;
+
         private:
             OsiSolverInterface* d_ilp_solver;
 

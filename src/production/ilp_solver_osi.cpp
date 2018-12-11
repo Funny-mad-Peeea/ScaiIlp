@@ -79,6 +79,29 @@ namespace ilp_solver
         // Not supported by OsiSolverInterface.
     }
 
+    void ILPSolverOsi::set_max_nodes          (int)
+    {
+        // Not supported by OsiSolverInterface.
+    }
+
+
+    void ILPSolverOsi::set_max_solutions      (int)
+    {
+        // Not supported by OsiSolverInterface.
+    }
+
+
+    void ILPSolverOsi::set_max_abs_gap        (double)
+    {
+        // Not supported by OsiSolverInterface.
+    }
+
+
+    void ILPSolverOsi::set_max_rel_gap        (double)
+    {
+        // Not supported by OsiSolverInterface.
+    }
+
 
     void ILPSolverOsi::set_presolve(bool p_preprocessing)
     {
