@@ -1,5 +1,8 @@
 #include "ilp_solver_collect.hpp"
 
+#include <fstream>
+#include <sstream>
+#include <iomanip>
 #include <cassert>
 
 using std::string;
@@ -68,6 +71,146 @@ namespace ilp_solver
     int ILPSolverCollect::get_num_variables()   const
     {
         return static_cast<int>(d_ilp_data.variable_lower.size());
+    }
+
+    namespace
+    {
+        std::string to_name(int p_num, char p_type, int p_alignment = 15)
+        {
+            std::string name{p_type};
+            name += std::to_string(p_num);
+            name.resize(p_alignment, ' ');
+            return name;
+        }
+
+        std::vector<std::string> handle_mps_rows(const ILPData& p_data)
+        {
+            std::vector<std::string> cons_names;
+            cons_names.reserve(p_data.constraint_lower.size() + 2);
+
+            int eq_cons{ 0 };
+            int leq_cons{ 0 };
+            int geq_cons{ 0 };
+            int range_cons{ 0 };
+
+            std::stringstream eq, leq, geq, range;
+            std::stringstream rhs_eq, rhs_leq, rhs_geq, rhs_range1, rhs_range2;
+
+            for (int i = 0; i < static_cast<int>(p_data.constraint_lower.size()); ++i)
+            {
+                const auto lower = p_data.constraint_lower[i];
+                const auto upper = p_data.constraint_upper[i];
+                if (lower == upper)
+                {
+                    cons_names.emplace_back(to_name(eq_cons++, 'E'));
+                    eq << " E  " << cons_names.back() << '\n';
+                    rhs_eq << "    RHS             " << cons_names.back() << ' ' << lower << '\n';
+                }
+                else
+                {
+                    if (lower >= c_neg_inf_bound)
+                    {
+                        if (upper <= c_pos_inf_bound)
+                        {
+                            cons_names.emplace_back(to_name(range_cons++, 'R'));
+                            range << " E  " << cons_names.back() << '\n'; // Ranges are handled differently.
+                            rhs_range1 << "    RHS             " << cons_names.back() << ' ' << lower << '\n';
+                            rhs_range2 << "    RHS             " << cons_names.back() << ' ' << upper - lower << '\n';
+                        }
+                        else
+                        {
+                            cons_names.emplace_back(to_name(geq_cons++, 'G'));
+                            geq << " G  " << cons_names.back() << '\n';
+                            rhs_geq << "    RHS             " << cons_names.back() << ' ' << lower << '\n';
+                        }
+                    }
+                    else
+                    {
+                        if (upper <= c_pos_inf_bound)
+                        {
+                            cons_names.emplace_back(to_name(leq_cons++, 'L'));
+                            leq << " L  " << cons_names.back() << '\n';
+                            rhs_leq << "    RHS             " << cons_names.back() << ' ' << upper << '\n';
+                        }
+                        else
+                        {
+                            cons_names.emplace_back("");
+                        }
+                    }
+                }
+            }
+            cons_names.emplace_back("ROWS\n N  OBJ\n" + eq.str() + leq.str() + geq.str() + range.str());
+            cons_names.emplace_back("RHS\n" + rhs_eq.str() + rhs_leq.str() + rhs_geq.str() + rhs_range1.str());
+            auto ranges = rhs_range2.str();
+            if (!ranges.empty())
+                cons_names.back().append("RANGES\n" + ranges);
+
+            return cons_names;
+        }
+
+        std::string handle_mps_cols(const ILPData& p_data, const std::vector<std::string>& p_names, std::ofstream& v_outstream)
+        {
+            std::stringstream bounds;
+
+            v_outstream << "COLUMNS\n";
+            for (int i = 0; i < static_cast<int>(p_data.objective.size()); ++i)
+            {
+                const auto name = to_name(i, 'X');
+                const auto obj  = p_data.objective[i];
+                const auto ub   = p_data.variable_upper[i];
+                const auto lb   = p_data.variable_lower[i];
+                const auto type = p_data.variable_type[i];
+
+                std::string bound1;
+                std::string bound2;
+
+                if (type == VariableType::BINARY)
+                    bounds << " BV BOUND           " << name << " \n";
+                else if (type == VariableType::INTEGER)
+                {
+                    bounds << " UI BOUND           " << name << ' ' << ub << '\n';
+                    bounds << " LI BOUND           " << name << ' ' << lb << '\n';
+                }
+                else
+                {
+                    bounds << " UP BOUND           " << name << ' ' << ub << '\n';
+                    bounds << " LO BOUND           " << name << ' ' << lb << '\n';
+                }
+
+                v_outstream << "    " << name << ' ' << "OBJ             " << obj << '\n';
+
+                for (int j = 0; j < static_cast<int>(p_data.matrix.size()); ++j)
+                {
+                    v_outstream << "    " << name << ' ' << p_names[j] << ' ' << p_data.matrix[j][i] << '\n';
+                }
+            }
+            return "BOUNDS\n" + bounds.str();
+        }
+    }
+
+    void ILPSolverCollect::print_mps_file(const std::string& p_filename)
+    {
+        std::ofstream outstream{p_filename};
+        assert(outstream);
+        assert(d_ilp_data.constraint_lower.size() == d_ilp_data.constraint_upper.size());
+
+        auto names  = handle_mps_rows(d_ilp_data);
+
+        outstream << "NAME\n";
+        // Print Rows.
+        outstream << names[names.size() - 2];
+
+        // Prints columns;
+        auto bounds = handle_mps_cols(d_ilp_data, names, outstream);
+
+        // Prints RHS and RANGE
+        outstream << names.back();
+
+        // Prints Bounds
+        outstream << bounds;
+
+        // Finished.
+        outstream << "ENDATA\n";
     }
 
 
