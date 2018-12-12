@@ -123,6 +123,18 @@ namespace ilp_solver
     }
 
 
+    void ILPSolverOsiModel::print_mps_file(const std::string& p_filename)
+    {
+        // path,
+        // compression (off),
+        // format (extra precision),
+        // number of values per dataline (1 or 2),
+        // keepStrings (no idea what it does, false is default).
+        if( d_cache.writeMps(p_filename.c_str(), 0, 1, 1, false) )
+            throw std::exception("Could not write mps file.");
+    }
+
+
     void ILPSolverOsiModel::prepare_impl()
     {
         auto* solver{ get_solver_osi_model() };
@@ -145,7 +157,12 @@ namespace ilp_solver
         bool is_integer_or_binary{ (p_type == VariableType::CONTINUOUS) ? false : true };
 #if DO_FORWARD_NAME == true
         if (!p_name.empty())
-            d_cache.addCol(pruner.size(), pruner.indices(), pruner.values(), p_lower_bound, p_upper_bound, p_objective, p_name.c_str(), is_integer_or_binary);
+        {
+            // Spaces are problematic when printing to mps.
+            auto name = p_name;
+            std::replace(name.begin(), name.end(), ' ', '_');
+            d_cache.addCol(pruner.size(), pruner.indices(), pruner.values(), p_lower_bound, p_upper_bound, p_objective, name.c_str(), is_integer_or_binary);
+        }
         else
 #endif
             d_cache.addCol(pruner.size(), pruner.indices(), pruner.values(), p_lower_bound, p_upper_bound, p_objective, nullptr, is_integer_or_binary);
@@ -161,7 +178,12 @@ namespace ilp_solver
 
 #if DO_FORWARD_NAME == true
         if (!p_name.empty())
-            d_cache.addRow(pruner.size(), pruner.indices(), pruner.values(), p_lower_bound, p_upper_bound, p_name.c_str());
+        {
+            // Spaces are problematic when printing to mps.
+            auto name = p_name;
+            std::replace(name.begin(), name.end(), ' ', '_');
+            d_cache.addRow(pruner.size(), pruner.indices(), pruner.values(), p_lower_bound, p_upper_bound, name.c_str());
+        }
         else
 #endif
             d_cache.addRow(pruner.size(), pruner.indices(), pruner.values(), p_lower_bound, p_upper_bound);

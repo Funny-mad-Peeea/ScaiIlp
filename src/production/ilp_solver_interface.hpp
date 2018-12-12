@@ -115,6 +115,10 @@ namespace ilp_solver
             // false: off
             virtual void set_presolve           (bool p_presolve)      = 0;
 
+            // Print a mps-formatted file of the current model.
+            // p_path must be valid path to a file with write-permission.
+            virtual void print_mps_file         (const std::string& p_path)   = 0;
+
             virtual ~ILPSolverInterface() noexcept {}
     };
 }
