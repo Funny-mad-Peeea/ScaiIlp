@@ -5,6 +5,7 @@
 #include <algorithm>
 #include <iostream>
 #include <string_view>
+#include <filesystem>
 
 #include <boost/test/unit_test.hpp>
 
@@ -293,6 +294,31 @@ namespace ilp_solver
     }
 
 
+    // Tests only for file creation and non-null-size.
+    // Correctness of file can only be tested if we implement reading from mps, too.
+    void test_mps_output(ILPSolverInterface* p_solver, const std::string& p_path)
+    {
+        // Disable output for problem construction and solve.
+        std::cout.setstate(std::ios_base::failbit);
+        test_linear_programming(p_solver);
+        std::cout.clear();
+
+        p_solver->print_mps_file(p_path);
+
+        std::filesystem::path path{ p_path };
+        BOOST_REQUIRE(std::filesystem::is_regular_file(path));
+
+        auto size{ std::filesystem::file_size(path) };
+        BOOST_REQUIRE(std::filesystem::file_size(path) > 0);
+
+        if (LOGGING)
+        {
+            cout << "Successfully wrote mps-File to " << std::filesystem::absolute(path).generic_u8string() << ".\n";
+            cout << "\tFilesize is " << size << " Byte." << std::endl;
+        }
+    }
+
+
     void test_performance(ILPSolverInterface* p_solver)
     {
         // max x+y, -1 <= x, y <= 1
@@ -469,9 +495,13 @@ namespace ilp_solver
 }
 
 
-int create_ilp_test_suite()
+namespace
 {
     using namespace ilp_solver;
+
+    // We need this because capturing lambdas are not usable for function pointers
+    // and we somehow need to get a different file path per solver.
+    int global_current_index{0};
 
     constexpr std::array<std::pair<TestFunction, std::string_view>, 7> all_tests
     { std::pair{test_sorting, "Sorting"}
@@ -492,7 +522,10 @@ int create_ilp_test_suite()
         std::pair{create_stub,          "CBCStub"},
 #endif
     };
+}
 
+int create_ilp_test_suite()
+{
     boost::unit_test::test_suite* IlpSolverT = BOOST_TEST_SUITE("IlpSolverT");
 
     // Create a test suite for each kind of solver.
@@ -506,6 +539,10 @@ int create_ilp_test_suite()
             // Since we use a functor and a name, we avoid using one of the macros and create a test case directly.
             suite->add( boost::unit_test::make_test_case(lambda, (std::string(solver_name) + '_' + test_name.data()).c_str(), __FILE__, __LINE__) );
         }
+
+        auto mps_path   = [](ILPSolverInterface* p_solver) -> void {test_mps_output(p_solver, std::string(all_solvers[global_current_index++].second) + "_unittest.mps");};
+        auto mps_lambda = [solver, mps_path]() { execute_test_and_destroy_solver(solver(), mps_path); };
+        suite->add( boost::unit_test::make_test_case(mps_lambda, (std::string(solver_name) + "_MPSOut").c_str(), __FILE__, __LINE__) );
 
         if (solver_name.rfind("Stub") != std::string::npos)
         {
