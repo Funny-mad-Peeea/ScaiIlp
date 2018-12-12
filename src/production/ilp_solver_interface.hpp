@@ -15,6 +15,11 @@ namespace ilp_solver
     static constexpr double c_default_max_seconds  { std::numeric_limits<double>::max() };
     static constexpr bool   c_default_presolve     { true };
 
+    constexpr double c_pos_inf_bound{ std::numeric_limits<double>::max() / 2 };
+    constexpr double c_neg_inf_bound{ std::numeric_limits<double>::lowest() / 2 };
+    constexpr double c_pos_inf      { std::numeric_limits<double>::max() };
+    constexpr double c_neg_inf      { std::numeric_limits<double>::lowest() };
+
 
     class SolverExeException : public std::runtime_error
     {

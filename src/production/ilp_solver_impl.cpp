@@ -8,11 +8,6 @@ using std::vector;
 
 namespace ilp_solver
 {
-    constexpr double c_pos_inf_bound{ std::numeric_limits<double>::max()    / 2 };
-    constexpr double c_neg_inf_bound{ std::numeric_limits<double>::lowest() / 2 };
-    constexpr double c_pos_inf      { std::numeric_limits<double>::max()   };
-    constexpr double c_neg_inf      { std::numeric_limits<double>::lowest()};
-
     void set_default_parameters(ILPSolverInterface* p_solver)
     {
         p_solver->set_num_threads       (c_default_num_threads);
