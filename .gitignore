@@ -15,6 +15,7 @@ vc/UnitTest/Debug/*
 vc/UnitTest/Release/*
 vc/UnitTest/Debug_x64/*
 vc/UnitTest/Release_x64/*
+vc/UnitTest/*.mps
 vc/.vs/*
 *.aps
 *.vcxproj.user
