@@ -13,7 +13,8 @@ namespace ilp_solver
         p_solver->set_num_threads       (c_default_num_threads);
         p_solver->set_deterministic_mode(c_default_deterministic);
         p_solver->set_log_level         (c_default_log_level);
-		p_solver->set_presolve          (c_default_presolve);
+        p_solver->set_presolve          (c_default_presolve);
+
         p_solver->set_max_seconds       (c_default_max_seconds);
         p_solver->set_max_nodes         (c_default_max_nodes);
         p_solver->set_max_solutions     (c_default_max_solutions);

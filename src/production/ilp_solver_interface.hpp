@@ -12,13 +12,13 @@ namespace ilp_solver
     static constexpr int    c_default_num_threads  { 1 };
     static constexpr int    c_default_log_level    { 0 };
     static constexpr bool   c_default_deterministic{ true };
-	static constexpr bool   c_default_presolve     { true };
-	
+    static constexpr bool   c_default_presolve     { true };
+
     static constexpr double c_default_max_seconds  { std::numeric_limits<double>::max() };
     static constexpr int    c_default_max_solutions{ std::numeric_limits<int>::max() };
     static constexpr int    c_default_max_nodes    { std::numeric_limits<int>::max() };
-    static constexpr double c_default_max_abs_gap  { std::numeric_limits<double>::max() };
-    static constexpr double c_default_max_rel_gap  { std::numeric_limits<double>::max() };
+    static constexpr double c_default_max_abs_gap  { 0. };
+    static constexpr double c_default_max_rel_gap  { 0. };
 
     constexpr double c_pos_inf_bound{ std::numeric_limits<double>::max() / 2 };
     constexpr double c_neg_inf_bound{ std::numeric_limits<double>::lowest() / 2 };
@@ -109,12 +109,18 @@ namespace ilp_solver
             // May be unsupported by some solvers.
             virtual void set_log_level          (int p_level)          = 0;
 
+            // Enables or disables preprocessing and presolve directives of the solver.
+            // May be unsupported by some solvers.
+            // true:  on
+            // false: off
+            virtual void set_presolve           (bool p_presolve)      = 0;
+
             // Set the number of seconds after which the solver should terminate.
             // This may be not followed exactly. The duration may be slightly longer than the given number.
             // May be unsupported by some solvers.
             virtual void set_max_seconds        (double p_seconds)     = 0;
 
-			// Set the maximum number of nodes in the branch & bound tree after which the solver should terminate.
+            // Set the maximum number of nodes in the branch & bound tree after which the solver should terminate.
             // What exactly constitutes a node may be solver-dependent.
             // May be unsupported by some solvers.
             virtual void set_max_nodes          (int p_nodes)          = 0;
@@ -135,12 +141,6 @@ namespace ilp_solver
             // The computation of the relative gap may be solver-dependent.
             // May be unsupported by some solvers.
             virtual void set_max_rel_gap        (double p_gap)         = 0;
-
-            // Enables or disables preprocessing and presolve directives of the solver.
-            // May be unsupported by some solvers.
-            // true:  on
-            // false: off
-            virtual void set_presolve           (bool p_presolve)      = 0;
 
             // Print a mps-formatted file of the current model.
             // p_path must be valid path to a file with write-permission.

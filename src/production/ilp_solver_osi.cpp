@@ -74,6 +74,16 @@ namespace ilp_solver
     }
 
 
+    void ILPSolverOsi::set_presolve(bool p_preprocessing)
+    {
+        // Unsure if correct.
+        if (p_preprocessing)
+            d_ilp_solver->setHintParam(OsiDoPresolveInInitial, true, OsiHintDo);
+        else
+            d_ilp_solver->setHintParam(OsiDoPresolveInInitial, false, OsiHintDo);
+    }
+
+
     void ILPSolverOsi::set_max_seconds(double)
     {
         // Not supported by OsiSolverInterface.

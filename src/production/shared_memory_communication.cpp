@@ -47,7 +47,11 @@ namespace ilp_solver
                       << p_data.deterministic
                       << p_data.log_level
                       << p_data.presolve
-                      << p_data.max_seconds;
+                      << p_data.max_seconds
+                      << p_data.max_nodes
+                      << p_data.max_solutions
+                      << p_data.max_abs_gap
+                      << p_data.max_rel_gap;
 
         auto result_address = v_serializer->current_address();
 
@@ -72,7 +76,11 @@ namespace ilp_solver
                         >> r_data->deterministic
                         >> r_data->log_level
                         >> r_data->presolve
-                        >> r_data->max_seconds;
+                        >> r_data->max_seconds
+                        >> r_data->max_nodes
+                        >> r_data->max_solutions
+                        >> r_data->max_abs_gap
+                        >> r_data->max_rel_gap;
 
         return v_deserializer->current_address();
     }
