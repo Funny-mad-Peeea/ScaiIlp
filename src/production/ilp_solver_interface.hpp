@@ -117,6 +117,7 @@ namespace ilp_solver
 
             // Print a mps-formatted file of the current model.
             // p_path must be valid path to a file with write-permission.
+            // Not const because some solvers may apply their caches, e.g. CoinModel.writeMps is not const.
             virtual void print_mps_file         (const std::string& p_path)   = 0;
 
             virtual ~ILPSolverInterface() noexcept {}
