@@ -83,6 +83,7 @@ namespace ilp_solver
             return name;
         }
 
+
         std::vector<std::string> handle_mps_rows(const ILPData& p_data)
         {
             std::vector<std::string> cons_names;
@@ -93,8 +94,7 @@ namespace ilp_solver
             int geq_cons{ 0 };
             int range_cons{ 0 };
 
-            std::stringstream eq, leq, geq, range;
-            std::stringstream rhs_eq, rhs_leq, rhs_geq, rhs_range1, rhs_range2;
+            std::stringstream cons, rhs, rhs_range;
 
             for (int i = 0; i < static_cast<int>(p_data.constraint_lower.size()); ++i)
             {
@@ -103,8 +103,8 @@ namespace ilp_solver
                 if (lower == upper)
                 {
                     cons_names.emplace_back(to_name(eq_cons++, 'E'));
-                    eq << " E  " << cons_names.back() << '\n';
-                    rhs_eq << "    RHS             " << cons_names.back() << ' ' << lower << '\n';
+                    cons << " E  " << cons_names.back() << '\n';
+                    rhs << "    RHS             " << cons_names.back() << ' ' << lower << '\n';
                 }
                 else
                 {
@@ -113,15 +113,15 @@ namespace ilp_solver
                         if (upper <= c_pos_inf_bound)
                         {
                             cons_names.emplace_back(to_name(range_cons++, 'R'));
-                            range << " E  " << cons_names.back() << '\n'; // Ranges are handled differently.
-                            rhs_range1 << "    RHS             " << cons_names.back() << ' ' << lower << '\n';
-                            rhs_range2 << "    RHS             " << cons_names.back() << ' ' << upper - lower << '\n';
+                            cons      << " E  " << cons_names.back() << '\n'; // Ranges are handled differently.
+                            rhs       << "    RHS             " << cons_names.back() << ' ' << lower << '\n';
+                            rhs_range << "    RHS             " << cons_names.back() << ' ' << upper - lower << '\n';
                         }
                         else
                         {
                             cons_names.emplace_back(to_name(geq_cons++, 'G'));
-                            geq << " G  " << cons_names.back() << '\n';
-                            rhs_geq << "    RHS             " << cons_names.back() << ' ' << lower << '\n';
+                            cons << " G  " << cons_names.back() << '\n';
+                            rhs  << "    RHS             " << cons_names.back() << ' ' << lower << '\n';
                         }
                     }
                     else
@@ -129,8 +129,8 @@ namespace ilp_solver
                         if (upper <= c_pos_inf_bound)
                         {
                             cons_names.emplace_back(to_name(leq_cons++, 'L'));
-                            leq << " L  " << cons_names.back() << '\n';
-                            rhs_leq << "    RHS             " << cons_names.back() << ' ' << upper << '\n';
+                            cons << " L  " << cons_names.back() << '\n';
+                            rhs  << "    RHS             " << cons_names.back() << ' ' << upper << '\n';
                         }
                         else
                         {
@@ -139,9 +139,9 @@ namespace ilp_solver
                     }
                 }
             }
-            cons_names.emplace_back("ROWS\n N  OBJ\n" + eq.str() + leq.str() + geq.str() + range.str());
-            cons_names.emplace_back("RHS\n" + rhs_eq.str() + rhs_leq.str() + rhs_geq.str() + rhs_range1.str());
-            auto ranges = rhs_range2.str();
+            cons_names.emplace_back("ROWS\n N  OBJ\n" + cons.str());
+            cons_names.emplace_back("RHS\n" + rhs.str());
+            auto ranges = rhs_range.str();
             if (!ranges.empty())
                 cons_names.back().append("RANGES\n" + ranges);
 
