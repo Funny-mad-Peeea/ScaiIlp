@@ -228,8 +228,13 @@ namespace ilp_solver
         {
             const auto values = vector<double>(a[j], a[j] + num_vars);
 
-            p_solver->add_constraint_lower(values, b[j] - constraint_shift, "x*dir" + std::to_string(j) + " >= b" + std::to_string(j) + " - 10");
-            p_solver->add_constraint_upper(values, b[j],                    "x*dir" + std::to_string(j) + " <= b" + std::to_string(j));
+            if (j % 2)
+            {
+                p_solver->add_constraint_lower(values, b[j] - constraint_shift, "x*dir" + std::to_string(j) + " >= b" + std::to_string(j) + " - 10");
+                p_solver->add_constraint_upper(values, b[j],                    "x*dir" + std::to_string(j) + " <= b" + std::to_string(j));
+            }
+            else
+                p_solver->add_constraint(values, b[j] - constraint_shift, b[j], "b" + std::to_string(j) + " - 10 <= x*dir <= b" + std::to_string(j));
 
             logging << b[j] - constraint_shift << " <= ";
             for (auto i = 0; i < num_vars; ++i)
@@ -503,16 +508,6 @@ namespace
     // and we somehow need to get a different file path per solver.
     int global_current_index{0};
 
-    constexpr std::array<std::pair<TestFunction, std::string_view>, 7> all_tests
-    { std::pair{test_sorting, "Sorting"}
-    , std::pair{test_linear_programming, "LinProgr"}
-    , std::pair{test_start_solution_minimization, "StartSolutionMin"}
-    , std::pair{test_start_solution_maximization, "StartSolutionMax"}
-    , std::pair{test_performance, "Performance"}
-    , std::pair{test_performance_big, "PerformanceBig"}
-    , std::pair{test_performance_zero, "PerformanceZero"}
-    };
-
     constexpr int num_solvers = 2 * (WITH_CBC);
 
     constexpr std::array<std::pair<FactoryFunction, std::string_view>, num_solvers> all_solvers
@@ -526,6 +521,16 @@ namespace
 
 int create_ilp_test_suite()
 {
+    constexpr std::array<std::pair<TestFunction, std::string_view>, 7> all_tests
+    { std::pair{test_sorting, "Sorting"}
+    , std::pair{test_linear_programming, "LinProgr"}
+    , std::pair{test_start_solution_minimization, "StartSolutionMin"}
+    , std::pair{test_start_solution_maximization, "StartSolutionMax"}
+    , std::pair{test_performance, "Performance"}
+    , std::pair{test_performance_big, "PerformanceBig"}
+    , std::pair{test_performance_zero, "PerformanceZero"}
+    };
+
     boost::unit_test::test_suite* IlpSolverT = BOOST_TEST_SUITE("IlpSolverT");
 
     // Create a test suite for each kind of solver.
