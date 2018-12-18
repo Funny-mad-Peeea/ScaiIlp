@@ -68,36 +68,35 @@ namespace ilp_solver
     }
 
 
-    void ILPSolverCbc::set_num_threads        (int p_num_threads)
+    void ILPSolverCbc::set_num_threads(int p_num_threads)
     {
         const auto cbc_num_threads = (p_num_threads == 1 ? 0 : p_num_threads); // peculiarity of Cbc (1 is 'for testing').
         d_model.setNumberThreads(cbc_num_threads);
     }
 
 
-    void ILPSolverCbc::set_deterministic_mode (bool p_deterministic)
+    void ILPSolverCbc::set_deterministic_mode(bool p_deterministic)
     {
         const auto cbc_thread_mode = ((d_model.getNumberThreads() > 1 && p_deterministic) ? 1 : 0);
         d_model.setThreadMode(cbc_thread_mode);
     }
 
 
-    void ILPSolverCbc::set_log_level          (int p_level)
+    void ILPSolverCbc::set_log_level(int p_level)
     {
         int level = std::clamp(p_level, 0, 4);          // log level must be between 0 and 4
         d_model.messageHandler()->setLogLevel(level);
     }
 
 
-    void ILPSolverCbc::set_max_seconds        (double p_seconds)
+    void ILPSolverCbc::set_max_seconds(double p_seconds)
     {
         d_model.setMaximumSeconds(p_seconds);
     }
 
 
-    void ILPSolverCbc::set_presolve      (bool p_preprocessing)
+    void ILPSolverCbc::set_presolve(bool p_preprocessing)
     {
-        // Unsure if correct.
         if (p_preprocessing)
             d_model.setTypePresolve(1);
         else

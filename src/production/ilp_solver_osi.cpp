@@ -62,25 +62,25 @@ namespace ilp_solver
     }
 
 
-    void ILPSolverOsi::set_deterministic_mode (bool)
+    void ILPSolverOsi::set_deterministic_mode(bool)
     {
         // Not supported by OsiSolverInterface.
     }
 
 
-    void ILPSolverOsi::set_log_level          (int p_level)
+    void ILPSolverOsi::set_log_level(int p_level)
     {
         d_ilp_solver->messageHandler()->setLogLevel(p_level);
     }
 
 
-    void ILPSolverOsi::set_max_seconds        (double)
+    void ILPSolverOsi::set_max_seconds(double)
     {
         // Not supported by OsiSolverInterface.
     }
 
 
-    void ILPSolverOsi::set_presolve      (bool p_preprocessing)
+    void ILPSolverOsi::set_presolve(bool p_preprocessing)
     {
         // Unsure if correct.
         if (p_preprocessing)
