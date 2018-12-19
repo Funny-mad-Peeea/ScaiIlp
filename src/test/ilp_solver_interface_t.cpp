@@ -18,7 +18,7 @@ using std::string;
 using std::vector;
 
 const auto c_eps = 0.0001;
-const auto c_num_performance_test_repetitions = 10000;
+const auto c_num_performance_test_repetitions = 1;
 
 const bool LOGGING = true;
 
@@ -470,6 +470,95 @@ namespace ilp_solver
     }
 
 
+    void test_abs_gap_limit(ILPSolverInterface* p_solver)
+    {
+        double      gap{ 0.6 };
+        double      ub{ 2.};
+        std::vector obj{ 1., 0.5 };
+        std::vector row{ 1., 0.5 };
+        std::vector expected_sol{ 1., 1. };
+
+        p_solver->set_log_level(100);
+        p_solver->set_presolve(false);
+
+        p_solver->set_max_rel_gap(0.);
+
+        p_solver->add_variable_integer(obj[0], 0., 2.);
+        p_solver->add_variable_integer(obj[1], 0., 2.);
+
+        p_solver->add_constraint_upper(row, ub);
+
+        p_solver->set_start_solution(expected_sol);
+        p_solver->maximize();
+        auto sol = p_solver->get_solution();
+
+        BOOST_REQUIRE_CLOSE (sol[0], 1., c_eps);
+        BOOST_REQUIRE_CLOSE (sol[1], 2., c_eps);
+
+        double best_objective{ floor(1. / row[0]) * obj[0] + floor(1. / row[1]) * obj[1] };
+
+        if (LOGGING)
+            cout << "Maximal Absolute gap: " << gap << '\n'
+                 << "  Start solution gap: " << fabs(best_objective - (expected_sol[0] * obj[0] + expected_sol[1] * obj[1])) << '\n'
+                 << "   Best Solution gap: " << fabs(best_objective - (sol[0] * obj[0] + sol[1] * obj[1])) << '\n';
+
+        p_solver->set_max_abs_gap(gap);
+        p_solver->set_start_solution(expected_sol);
+
+        p_solver->maximize();
+        sol = p_solver->get_solution();
+        BOOST_REQUIRE_CLOSE (sol[0], expected_sol[0], c_eps);
+        BOOST_REQUIRE_CLOSE (sol[1], expected_sol[1], c_eps);
+
+        if (LOGGING)
+            cout << "  Found solution gap: " << fabs(best_objective - (sol[0] * obj[0] + sol[1] * obj[1])) << '\n';
+    }
+
+
+    void test_rel_gap_limit(ILPSolverInterface* p_solver)
+    {
+        double      gap{ 0.1 };
+        double      ub{ 2. };
+        std::vector obj{ 10., 1. };
+        std::vector row{ 1., 0.5 };
+        std::vector expected_sol{ 1., 1. };
+
+        p_solver->set_presolve(false);
+
+        p_solver->set_max_abs_gap(0.);
+
+        p_solver->add_variable_integer(obj[0], 0., 1.);
+        p_solver->add_variable_integer(obj[1], 0., 2.);
+
+        p_solver->add_constraint_upper(row, ub);
+
+        p_solver->set_start_solution(expected_sol);
+        p_solver->maximize();
+        auto sol = p_solver->get_solution();
+
+        BOOST_REQUIRE_CLOSE (sol[0], 1., c_eps);
+        BOOST_REQUIRE_CLOSE (sol[1], 2., c_eps);
+
+        double best_objective{ floor(1. / row[0]) * obj[0] + floor(1. / row[1]) * obj[1] };
+
+        if (LOGGING)
+            cout << "Maximal Relative gap: " << gap << '\n'
+                 << "  Start solution gap: " << 1. - (expected_sol[0] * obj[0] + expected_sol[1] * obj[1]) / best_objective << '\n'
+                 << "   Best Solution gap: " << 1. - (sol[0] * obj[0] + sol[1] * obj[1]) / best_objective << '\n';
+
+        p_solver->set_max_rel_gap(gap);
+        p_solver->set_start_solution(expected_sol);
+
+        p_solver->maximize();
+        sol = p_solver->get_solution();
+        BOOST_REQUIRE_CLOSE (sol[0], expected_sol[0], c_eps);
+        BOOST_REQUIRE_CLOSE (sol[1], expected_sol[1], c_eps);
+
+        if (LOGGING)
+            cout << "  Found solution gap: " << 1. - (sol[0] * obj[0] + sol[1] * obj[1])  / best_objective << '\n';
+    }
+
+
     void test_bad_alloc(ILPSolverInterface* p_solver)
     {
         srand(3);
@@ -522,14 +611,16 @@ namespace
 
 int create_ilp_test_suite()
 {
-    constexpr std::array<std::pair<TestFunction, std::string_view>, 7> all_tests
-    { std::pair{test_sorting, "Sorting"}
-    , std::pair{test_linear_programming, "LinProgr"}
+    constexpr std::array<std::pair<TestFunction, std::string_view>, 9> all_tests
+    { std::pair{test_sorting,                     "Sorting"}
+    , std::pair{test_linear_programming,          "LinProgr"}
     , std::pair{test_start_solution_minimization, "StartSolutionMin"}
     , std::pair{test_start_solution_maximization, "StartSolutionMax"}
-    , std::pair{test_performance, "Performance"}
-    , std::pair{test_performance_big, "PerformanceBig"}
-    , std::pair{test_performance_zero, "PerformanceZero"}
+    , std::pair{test_abs_gap_limit,               "AbsGapLimit"}
+    , std::pair{test_rel_gap_limit,               "RelGapLimit"}
+    , std::pair{test_performance,                 "Performance"}
+    , std::pair{test_performance_big,             "PerformanceBig"}
+    , std::pair{test_performance_zero,            "PerformanceZero"}
     };
 
     boost::unit_test::test_suite* IlpSolverT = BOOST_TEST_SUITE("IlpSolverT");
