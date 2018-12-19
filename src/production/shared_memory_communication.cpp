@@ -46,6 +46,7 @@ namespace ilp_solver
                       << p_data.num_threads
                       << p_data.deterministic
                       << p_data.log_level
+                      << p_data.presolve
                       << p_data.max_seconds;
 
         auto result_address = v_serializer->current_address();
@@ -70,6 +71,7 @@ namespace ilp_solver
                         >> r_data->num_threads
                         >> r_data->deterministic
                         >> r_data->log_level
+                        >> r_data->presolve
                         >> r_data->max_seconds;
 
         return v_deserializer->current_address();
