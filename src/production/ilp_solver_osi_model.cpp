@@ -123,6 +123,13 @@ namespace ilp_solver
     }
 
 
+    void ILPSolverOsiModel::reset_solution()
+    {
+        get_solver_osi_model()->loadFromCoinModel(d_cache, false);
+        d_cache_changed = false;
+    }
+
+
     void ILPSolverOsiModel::print_mps_file(const std::string& p_filename)
     {
         // path,

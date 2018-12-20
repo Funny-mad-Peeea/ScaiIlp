@@ -95,6 +95,9 @@ namespace ilp_solver
             // Obtain the current status of the solver.
             virtual SolutionStatus            get_status    () const = 0;
 
+            // Delete all information about previous solutions while keeping the model and settings.
+            virtual void                      reset_solution()       = 0;
+
             // Set the maximum number of threads used during the solve.
             // May be unsupported by some solvers.
             virtual void set_num_threads        (int p_num_threads)    = 0;

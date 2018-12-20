@@ -73,6 +73,11 @@ namespace ilp_solver
         return static_cast<int>(d_ilp_data.variable_lower.size());
     }
 
+    void ILPSolverCollect::reset_solution()
+    {
+        d_ilp_data.start_solution.clear();
+    }
+
     namespace
     {
         std::string to_name(int p_num, char p_type, int p_alignment = 15)

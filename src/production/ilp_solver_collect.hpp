@@ -11,8 +11,10 @@ namespace ilp_solver
     class ILPSolverCollect : public ILPSolverImpl
     {
         public:
-            int get_num_constraints() const override;
-            int get_num_variables()   const override;
+            int  get_num_constraints() const override;
+            int  get_num_variables  () const override;
+
+            void reset_solution     ()       override;
 
             void print_mps_file(const std::string& p_filename) override;
         protected:
