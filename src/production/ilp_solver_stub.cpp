@@ -224,6 +224,14 @@ namespace ilp_solver
     }
 
 
+    void ILPSolverStub::reset_solution()
+    {
+        d_ilp_data.start_solution.clear();
+        d_ilp_solution_data = ILPSolutionData(d_ilp_data.objective_sense);
+    }
+
+
+
     void ILPSolverStub::solve_impl()
     {
         d_ilp_solution_data = ILPSolutionData(d_ilp_data.objective_sense);

@@ -19,6 +19,8 @@ namespace ilp_solver
             double                    get_objective () const override;
             SolutionStatus            get_status    () const override;
 
+            void                      reset_solution()       override;
+
         private:
             std::string d_executable_basename;
 
