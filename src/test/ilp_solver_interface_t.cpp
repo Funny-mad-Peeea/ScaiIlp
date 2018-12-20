@@ -344,6 +344,7 @@ namespace ilp_solver
         const auto start_time = GetTickCount();
         for (auto i = 1; i <= c_num_performance_test_repetitions; ++i)
         {
+            p_solver->reset_solution();
             p_solver->maximize();
             const auto solution = p_solver->get_solution();
 
@@ -437,6 +438,7 @@ namespace ilp_solver
 
         for (auto i = 0; i < 3; ++i)
         {
+            p_solver->reset_solution();
             p_solver->set_start_solution(expected_solution);
 
             if (p_sense > 0)
@@ -479,7 +481,6 @@ namespace ilp_solver
         std::vector expected_sol{ 1., 1. }; // Expected when given as start solution due to gap.
 
         p_solver->set_presolve(false);
-
         p_solver->set_max_rel_gap(0.);
 
         p_solver->add_variable_integer(obj[0], 0., 2.);
@@ -499,7 +500,9 @@ namespace ilp_solver
         if (LOGGING)
             cout << "Maximal Absolute gap: " << gap << '\n'
                  << "  Start solution gap: " << fabs(best_objective - (expected_sol[0] * obj[0] + expected_sol[1] * obj[1])) << '\n'
-                 << "   Best Solution gap: " << fabs(best_objective - (sol[0] * obj[0] + sol[1] * obj[1])) << '\n';
+                 << "   Best Solution gap: " << fabs(best_objective - (sol[0] * obj[0] + sol[1] * obj[1])) << std::endl;
+
+        p_solver->reset_solution();
 
         p_solver->set_max_abs_gap(gap);
         p_solver->set_start_solution(expected_sol);
@@ -510,7 +513,7 @@ namespace ilp_solver
         BOOST_REQUIRE_CLOSE (sol[1], expected_sol[1], c_eps);
 
         if (LOGGING)
-            cout << "  Found solution gap: " << fabs(best_objective - (sol[0] * obj[0] + sol[1] * obj[1])) << '\n';
+            cout << "  Found solution gap: " << fabs(best_objective - (sol[0] * obj[0] + sol[1] * obj[1])) << std::endl;
     }
 
 
@@ -523,7 +526,6 @@ namespace ilp_solver
         std::vector expected_sol{ 1., 1. }; // Expected when given as start solution due to gap.
 
         p_solver->set_presolve(false);
-
         p_solver->set_max_abs_gap(0.);
 
         p_solver->add_variable_integer(obj[0], 0., 1.);
@@ -544,6 +546,8 @@ namespace ilp_solver
             cout << "Maximal Relative gap: " << gap << '\n'
                  << "  Start solution gap: " << 1. - (expected_sol[0] * obj[0] + expected_sol[1] * obj[1]) / best_objective << '\n'
                  << "   Best Solution gap: " << 1. - (sol[0] * obj[0] + sol[1] * obj[1]) / best_objective << '\n';
+
+        p_solver->reset_solution();
 
         p_solver->set_max_rel_gap(gap);
         p_solver->set_start_solution(expected_sol);
