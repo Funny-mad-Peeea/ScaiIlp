@@ -18,7 +18,7 @@ using std::string;
 using std::vector;
 
 const auto c_eps = 0.0001;
-const auto c_num_performance_test_repetitions = 1;
+const auto c_num_performance_test_repetitions = 10000;
 
 const bool LOGGING = true;
 
@@ -476,9 +476,8 @@ namespace ilp_solver
         double      ub{ 2.};
         std::vector obj{ 1., 0.5 };
         std::vector row{ 1., 0.5 };
-        std::vector expected_sol{ 1., 1. };
+        std::vector expected_sol{ 1., 1. }; // Expected when given as start solution due to gap.
 
-        p_solver->set_log_level(100);
         p_solver->set_presolve(false);
 
         p_solver->set_max_rel_gap(0.);
@@ -495,7 +494,7 @@ namespace ilp_solver
         BOOST_REQUIRE_CLOSE (sol[0], 1., c_eps);
         BOOST_REQUIRE_CLOSE (sol[1], 2., c_eps);
 
-        double best_objective{ floor(1. / row[0]) * obj[0] + floor(1. / row[1]) * obj[1] };
+        double best_objective{ p_solver->get_objective() };
 
         if (LOGGING)
             cout << "Maximal Absolute gap: " << gap << '\n'
@@ -521,7 +520,7 @@ namespace ilp_solver
         double      ub{ 2. };
         std::vector obj{ 10., 1. };
         std::vector row{ 1., 0.5 };
-        std::vector expected_sol{ 1., 1. };
+        std::vector expected_sol{ 1., 1. }; // Expected when given as start solution due to gap.
 
         p_solver->set_presolve(false);
 
@@ -539,7 +538,7 @@ namespace ilp_solver
         BOOST_REQUIRE_CLOSE (sol[0], 1., c_eps);
         BOOST_REQUIRE_CLOSE (sol[1], 2., c_eps);
 
-        double best_objective{ floor(1. / row[0]) * obj[0] + floor(1. / row[1]) * obj[1] };
+        double best_objective{ p_solver->get_objective() };
 
         if (LOGGING)
             cout << "Maximal Relative gap: " << gap << '\n'

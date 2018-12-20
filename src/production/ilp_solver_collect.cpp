@@ -304,11 +304,11 @@ namespace ilp_solver
     }
 
 
-	void ILPSolverCollect::set_presolve           (bool p_presolve)
+    void ILPSolverCollect::set_presolve           (bool p_presolve)
     {
         d_ilp_data.presolve = p_presolve;
     }
-	
+
 
     void ILPSolverCollect::set_max_seconds(double p_seconds)
     {
