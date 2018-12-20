@@ -74,10 +74,11 @@ namespace ilp_solver
     }
 
 
-    void ILPSolverOsi::set_presolve(bool p_preprocessing)
+    void ILPSolverOsi::set_presolve(bool p_presolve)
     {
-        // Unsure if correct.
-        if (p_preprocessing)
+        // Never tested because we do not use ilp_solver_osi anywhere.
+        // Thus, unsure if this is correct or enough.
+        if (p_presolve)
             d_ilp_solver->setHintParam(OsiDoPresolveInInitial, true, OsiHintDo);
         else
             d_ilp_solver->setHintParam(OsiDoPresolveInInitial, false, OsiHintDo);
@@ -110,17 +111,6 @@ namespace ilp_solver
     void ILPSolverOsi::set_max_rel_gap        (double)
     {
         // Not supported by OsiSolverInterface.
-    }
-
-
-    void ILPSolverOsi::set_presolve(bool p_preprocessing)
-    {
-        // Never tested because we do not use ilp_solver_osi anywhere.
-        // Thus, unsure if this is correct or enough.
-        if (p_preprocessing)
-            d_ilp_solver->setHintParam(OsiDoPresolveInInitial, true,  OsiHintDo);
-        else
-            d_ilp_solver->setHintParam(OsiDoPresolveInInitial, false, OsiHintDo);
     }
 
 
