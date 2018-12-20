@@ -286,31 +286,31 @@ namespace ilp_solver
     }
 
 
-    void ILPSolverCollect::set_num_threads        (int p_num_threads)
+    void ILPSolverCollect::set_num_threads(int p_num_threads)
     {
         d_ilp_data.num_threads = p_num_threads;
     }
 
 
-    void ILPSolverCollect::set_deterministic_mode (bool p_deterministic)
+    void ILPSolverCollect::set_deterministic_mode(bool p_deterministic)
     {
         d_ilp_data.deterministic = p_deterministic;
     }
 
 
-    void ILPSolverCollect::set_log_level          (int p_level)
+    void ILPSolverCollect::set_log_level(int p_level)
     {
         d_ilp_data.log_level = p_level;
     }
 
 
-    void ILPSolverCollect::set_max_seconds        (double p_seconds)
+    void ILPSolverCollect::set_max_seconds(double p_seconds)
     {
         d_ilp_data.max_seconds = p_seconds;
     }
 
 
-    void ILPSolverCollect::set_presolve           (bool p_presolve)
+    void ILPSolverCollect::set_presolve(bool p_presolve)
     {
         d_ilp_data.presolve = p_presolve;
     }

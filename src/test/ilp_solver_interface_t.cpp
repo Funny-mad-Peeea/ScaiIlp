@@ -228,13 +228,14 @@ namespace ilp_solver
         {
             const auto values = vector<double>(a[j], a[j] + num_vars);
 
+            auto j_s{ std::to_string(j) };
             if (j % 2)
             {
-                p_solver->add_constraint_lower(values, b[j] - constraint_shift, "x*dir" + std::to_string(j) + " >= b" + std::to_string(j) + " - 10");
-                p_solver->add_constraint_upper(values, b[j],                    "x*dir" + std::to_string(j) + " <= b" + std::to_string(j));
+                p_solver->add_constraint_lower(values, b[j] - constraint_shift, "x*dir" + j_s + " >= b" + j_s + " - 10");
+                p_solver->add_constraint_upper(values, b[j],                    "x*dir" + j_s + " <= b" + j_s);
             }
             else
-                p_solver->add_constraint(values, b[j] - constraint_shift, b[j], "b" + std::to_string(j) + " - 10 <= x*dir <= b" + std::to_string(j));
+                p_solver->add_constraint(values, b[j] - constraint_shift, b[j], "b" + j_s + " - 10 <= x*dir" + j_s + " <= b" + j_s);
 
             logging << b[j] - constraint_shift << " <= ";
             for (auto i = 0; i < num_vars; ++i)

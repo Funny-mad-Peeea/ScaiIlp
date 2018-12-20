@@ -82,7 +82,8 @@ namespace ilp_solver
 
     void ILPSolverOsi::set_presolve(bool p_preprocessing)
     {
-        // Unsure if correct.
+        // Never tested because we do not use ilp_solver_osi anywhere.
+        // Thus, unsure if this is correct or enough.
         if (p_preprocessing)
             d_ilp_solver->setHintParam(OsiDoPresolveInInitial, true,  OsiHintDo);
         else

@@ -27,7 +27,8 @@ namespace ilp_solver
 
         std::vector<double> start_solution;
 
-        // Defaults will be overwritten in ilp_solver_collect.
+        // Defaults will be overwritten in ilp_solver_collect,
+        // but are initialized to the same constants to be sure.
         int    num_threads    { c_default_num_threads   };
         bool   deterministic  { c_default_deterministic };
         int    log_level      { c_default_log_level     };
