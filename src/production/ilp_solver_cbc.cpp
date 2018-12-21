@@ -62,7 +62,7 @@ namespace ilp_solver
     void ILPSolverCbc::reset_solution()
     {
         d_model.gutsOfDestructor2(); // "Clears enough to reset CbcModel as if no branch and bound done."
-        d_model.solver()->loadFromCoinModel(d_cache);
+        d_model.solver()->loadFromCoinModel(d_cache, false);
         d_cache_changed = false;
     }
 
