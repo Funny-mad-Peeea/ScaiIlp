@@ -59,6 +59,14 @@ namespace ilp_solver
     }
 
 
+    void ILPSolverCbc::reset_solution()
+    {
+        d_model.gutsOfDestructor2(); // "Clears enough to reset CbcModel as if no branch and bound done."
+        d_model.solver()->loadFromCoinModel(d_cache);
+        d_cache_changed = false;
+    }
+
+
     void ILPSolverCbc::set_start_solution(const std::vector<double>& p_solution)
     {
         // Set the current best solution of Cbc to the given solution, check for feasibility, but not for better objective value.

@@ -22,6 +22,8 @@ namespace ilp_solver
             double              get_objective           () const                                override;
             SolutionStatus      get_status              () const                                override;
 
+            void                reset_solution          ()                                      override;
+
             void                set_num_threads         (int p_num_threads)                     override;
             void                set_deterministic_mode  (bool p_deterministic)                  override;
             void                set_log_level           (int p_level)                           override;

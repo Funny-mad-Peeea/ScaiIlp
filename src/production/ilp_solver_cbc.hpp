@@ -35,6 +35,8 @@ namespace ilp_solver
             double              get_objective () const override;
             SolutionStatus      get_status    () const override;
 
+            void                reset_solution()       override;
+
             void set_start_solution(const std::vector<double>& p_solution) override;
 
             void set_num_threads        (int p_num_threads)    override;

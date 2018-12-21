@@ -56,6 +56,13 @@ namespace ilp_solver
     }
 
 
+    void ILPSolverOsi::reset_solution()
+    {
+        get_solver_osi_model()->loadFromCoinModel(d_cache, false);
+        d_cache_changed = false;
+    }
+
+
     void ILPSolverOsi::set_num_threads(int)
     {
         // Not supported by OsiSolverInterface.

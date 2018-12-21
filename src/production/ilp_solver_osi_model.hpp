@@ -29,18 +29,15 @@ namespace ilp_solver
             int  get_num_constraints() const override;
             int  get_num_variables  () const override;
 
-            void reset_solution     ()       override;
-
             void print_mps_file     (const std::string& p_filename) override;
         protected:
             ILPSolverOsiModel() = default;
 
             void prepare_impl() override;
 
-        private:
             CoinModel d_cache{};
-            bool      d_cache_changed{false};
-
+            bool      d_cache_changed{ false };
+        private:
             // Obtain a pointer to a solver fulfilling the OsiSolverInterface.
             virtual OsiSolverInterface* get_solver_osi_model() = 0;
 
