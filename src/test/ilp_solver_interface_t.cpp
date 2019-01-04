@@ -596,6 +596,7 @@ namespace ilp_solver
     }
 }
 
+
 namespace
 {
     using namespace ilp_solver;
@@ -617,6 +618,7 @@ namespace
 #endif
     };
 }
+
 
 int create_ilp_test_suite()
 {

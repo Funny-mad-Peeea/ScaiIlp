@@ -6,19 +6,20 @@
 
 namespace ilp_solver
 {
-    extern "C" ILPSolverInterface* __stdcall create_solver_scip()
+    extern "C" ILPSolverInterface* __stdcall create_solver_cbc()
     {
-#if WITH_SCIP == 1
-        return new ILPSolverSCIP();
+#if WITH_CBC == 1
+        return new ILPSolverCbc();
 #else
         return nullptr;
 #endif
     }
 
-    extern "C" ILPSolverInterface* __stdcall create_solver_cbc()
+
+    extern "C" ILPSolverInterface* __stdcall create_solver_scip()
     {
-#if WITH_CBC == 1
-        return new ILPSolverCbc();
+#if WITH_SCIP == 1
+        return new ILPSolverSCIP();
 #else
         return nullptr;
 #endif
