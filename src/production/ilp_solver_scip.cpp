@@ -194,6 +194,7 @@ namespace ilp_solver
         call_scip(SCIPsetIntParam, d_scip, "parallel/maxnthreads", p_num_threads);
 
         // Number of threads for solving the LP, 0 is automatic.
+        // 64 is the explicit maximal number.
         p_num_threads = (p_num_threads > 64) ? 0 : (p_num_threads < 0) ? 1 : p_num_threads;
         call_scip(SCIPsetIntParam, d_scip, "lp/threads", p_num_threads);
     }
@@ -210,6 +211,16 @@ namespace ilp_solver
     {
         p_level = std::clamp(p_level, 0, 5); // Minimum level is 0 (no output), maximum level is 5.
         call_scip(SCIPsetIntParam, d_scip, "display/verblevel", p_level);
+        if (p_level == 0)
+        {
+            SCIPsetMessagehdlrQuiet(d_scip, true);
+            SCIPmessageSetErrorPrinting(nullptr, nullptr); // suppress error printing.
+        }
+        else
+        {
+            SCIPsetMessagehdlrQuiet(d_scip, false);
+            SCIPmessageSetErrorPrintingDefault(); // print errors to cerr.
+        }
     }
 
 
@@ -247,14 +258,14 @@ namespace ilp_solver
 
     void ILPSolverSCIP::set_max_abs_gap(double p_gap)
     {
-        p_gap = (p_gap < 0.) ? 0. : p_gap; // |primalbound - dualbound|
+        p_gap = std::max(0., p_gap); // |primalbound - dualbound|
         call_scip(SCIPsetRealParam, d_scip, "limits/absgap", p_gap);
     }
 
 
     void ILPSolverSCIP::set_max_rel_gap(double p_gap)
     {
-        p_gap = (p_gap < 0.) ? 0. : p_gap; // |primalbound - dualbound| / |min(primalbound, dualbound)|
+        p_gap = std::max(0., p_gap); // |primalbound - dualbound| / |min(primalbound, dualbound)|
         call_scip(SCIPsetRealParam, d_scip, "limits/gap", p_gap);
     }
 
@@ -301,6 +312,8 @@ namespace ilp_solver
         call_scip( SCIPaddVar, d_scip, var );
         d_cols.push_back(var); // We need to store the variables seperately to access them later on.
 
+        auto n = static_cast<int>(d_rows.size()); // num_constraints.
+
         if (p_row_values) // If we have coefficients given...
         {
             if (p_row_indices) // and indices...
@@ -309,7 +322,7 @@ namespace ilp_solver
                 // Add the corresponding coefficient to every constraint indexed.
                 for (auto i : *p_row_indices)
                 {
-                    assert( i < get_num_constraints() );
+                    assert( i < n );
                     call_scip( SCIPaddCoefLinear, d_scip, d_rows[i], var, (*p_row_values)[i] );
                 }
             }
@@ -317,7 +330,7 @@ namespace ilp_solver
             {
                 assert( p_row_values->size() >= d_rows.size() );
                 // Add the corresponding coefficient to every constraint in the problem.
-                for (int i = 0; i < get_num_constraints(); i++)
+                for (int i = 0; i < n; i++)
                 {
                     call_scip( SCIPaddCoefLinear, d_scip, d_rows[i], var, (*p_row_values)[i] );
                 }
