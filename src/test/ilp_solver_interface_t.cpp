@@ -586,6 +586,11 @@ namespace ilp_solver
             std::cerr << e.what() << std::endl;
             BOOST_FAIL("Bad alloc test failed (threw exception instead of treating as >>no solution<<.");
         }
+        catch (...)
+        {
+            std::cerr << "Stub threw unknown exception." << std::endl;
+            BOOST_FAIL("Bad alloc test failed (threw exception instead of treating as >>no solution<<.");
+        }
     }
 
 

@@ -18,10 +18,9 @@ namespace ilp_solver
         static __forceinline void call_scip(F p_f, Args... p_args)
         {
             auto retcode = p_f(p_args...);
-            if (retcode != SCIP_OKAY)
+            switch (retcode)
             {
-                switch (retcode)
-                {
+                case SCIP_OKAY:               break;
                 case SCIP_ERROR:              throw std::exception("SCIP produced an unspecified error.");
                 case SCIP_NOMEMORY:           throw std::exception("SCIP has insufficient memory.");
                 case SCIP_READERROR:          throw std::exception("SCIP could not read data.");
@@ -41,7 +40,6 @@ namespace ilp_solver
                 case SCIP_MAXDEPTHLEVEL:      throw std::exception("SCIP exceeded the maximal branching depth level.");
                 case SCIP_BRANCHERROR:        throw std::exception("SCIP could not perform the branching.");
                 default:                      throw std::exception("SCIP produced an unknown error.");
-                }
             }
         };
     }
@@ -195,7 +193,7 @@ namespace ilp_solver
 
         // Number of threads for solving the LP, 0 is automatic.
         // 64 is the explicit maximal number.
-        p_num_threads = (p_num_threads > 64) ? 0 : (p_num_threads < 0) ? 1 : p_num_threads;
+        p_num_threads = std::clamp(p_num_threads, 0, 64);
         call_scip(SCIPsetIntParam, d_scip, "lp/threads", p_num_threads);
     }
 
@@ -275,9 +273,9 @@ namespace ilp_solver
         // uses the extension of p_path, so this has to be ".mps".
         assert ( p_path.substr(p_path.rfind('.'), std::string::npos) == ".mps" );
 #if DO_FORWARD_NAME
-        call_scip(SCIPwriteOrigProblem, d_scip, p_path.c_str(), nullptr, false); // The bool is "generic names"
+        call_scip(SCIPwriteOrigProblem, d_scip, p_path.c_str(), nullptr, FALSE); // The bool is "generic names"
 #else
-        call_scip(SCIPwriteOrigProblem, d_scip, p_path.c_str(), nullptr, true);
+        call_scip(SCIPwriteOrigProblem, d_scip, p_path.c_str(), nullptr, TRUE);
 #endif
     }
 
