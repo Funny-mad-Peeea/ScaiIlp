@@ -35,10 +35,18 @@
     <Filter Include="Resource Files">
       <UniqueIdentifier>{a3ffe818-d172-4e28-be8e-85616dd6f112}</UniqueIdentifier>
     </Filter>
+    <Filter Include="binaries">
+      <UniqueIdentifier>{b3e55270-1854-4d12-9fe8-bb64693c889e}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="ScaiIlp.rc">
       <Filter>Resource Files</Filter>
     </ResourceCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="$(SCIP_DIR)/bin/scip.dll">
+      <Filter>binaries</Filter>
+    </CustomBuild>
   </ItemGroup>
 </Project>
