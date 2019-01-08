@@ -11,7 +11,8 @@ Table of Contents
 
     1. Building Cbc with VS 2017
     2. Optional: Building pthreads-win32 with VS 2017
-    3. Building ScaiIlp with VS 2017
+    3. Building SCIP with VS 2017
+    4. Building ScaiIlp with VS 2017
 
 3. Code Structure
 
@@ -56,10 +57,11 @@ A: On the one hand, Osi is quite a complex interface. As it spreads over several
    classes, it is difficult to use as the interface of a DLL.
    On the other hand, some functions that we needed are missing in Osi.
 
-### Q: When should I use IlpSolverStub, a wrapper for IlpSolverCbc in an external process, and ScaiIlpExe?
+### Q: When should I use IlpSolverStub and ScaiIlpExe?
 
-A: Having Cbc in a separate process insulates it from your program.
-   If it crashes, your program can survive this.
+A: IlpSolverStub is a wrapper for IlpSolverCbc.
+   It insulates it from your program.
+   If the solver crashes, your program can survive this.
    On any crashes we know of, IlpSolverStub does silently the same as if the solver just found no
    solution.
    On unknown crashes and unknown problems, IlpSolverStub throws an exception, which can be caught
@@ -204,6 +206,7 @@ A: If you don't experience solver crashes, you can avoid some overhead by using 
 
 2. You may need to overwrite some compiler flags to compile the Release builds.
    In the files ./scip/CMakeLists.txt and ./soplex/CMakeLists.txt in lines 3 and 4 respectively,
+
    set(CMAKE_CXX_FLAGS_RELWITHDEBINFO "${CMAKE_CXX_FLAGS_DEBUG} ${CMAKE_CXX_FLAGS_RELEASE}")
        -> set(CMAKE_CXX_FLAGS_RELWITHDEBINFO "${CMAKE_CXX_FLAGS_RELEASE}")
 
@@ -258,8 +261,8 @@ A: If you don't experience solver crashes, you can avoid some overhead by using 
 The Visual Studio Solution (.sln) contains three projects:
 
 * ScaiIlpDll creates ScaiIlpDll.dll
-    * ScaiIlpDll.dll contains the Cbc solver and a stub to communicate with ScaiIlpExe.exe
-    * It can be linked dynamically into other programs.
+    * ScaiIlpDll.dll contains the Cbc solver, optionally the SCIP solver and a stub to communicate with ScaiIlpExe.exe
+    * It can be linked dynamically into other programs (which may require the dynamic libraries of other included solvers, too).
 
 * ScaiIlpExe creates ScaiIlpExe.exe
     * ScaiIlpExe.exe links ScaiIlpDll.dll dynamically to provide the Cbc solver.
