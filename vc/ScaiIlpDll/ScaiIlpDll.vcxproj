@@ -216,6 +216,14 @@
     <ClCompile Include="..\..\src\production\ilp_solver_stub.cpp" />
     <ClCompile Include="..\..\src\production\shared_memory_communication.cpp" />
   </ItemGroup>
+   <ItemGroup>
+    <CustomBuild Include="$(SCIP_DIR)/bin/scip.dll" Condition="'$(WITH_SCIP)' == 'true'">
+      <FileType>Document</FileType>
+      <Command>copy "%(FullPath)" "$(OutDir)\"</Command>
+      <Message>Copy %(Filename)%(Extension)</Message>
+      <Outputs>$(OutDir)\%(Filename)%(Extension)</Outputs>
+    </CustomBuild>
+  </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="ScaiIlp.rc" />
   </ItemGroup>
