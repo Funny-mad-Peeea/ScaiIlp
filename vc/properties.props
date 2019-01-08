@@ -7,7 +7,7 @@
     <WITH_OSI>true</WITH_OSI>
     <WITH_CBC>true</WITH_CBC>
     <COIN_DIR>$(optsoft)\Cbc-2.9.9_vc$(PlatformToolsetVersion)_full\</COIN_DIR>
-    <WITH_SCIP>true</WITH_SCIP>
+    <WITH_SCIP>false</WITH_SCIP>
     <SCIP_DIR>$(optsoft)\SCIP\$(PlatformTarget)-$(Configuration)</SCIP_DIR>
     <BOOST_LIB_PATH>$(BOOST_DIR)\lib</BOOST_LIB_PATH>
     <BOOST_INCLUDE_PATH>$(BOOST_DIR)\include\boost-$(BOOST_VERSION)</BOOST_INCLUDE_PATH>
