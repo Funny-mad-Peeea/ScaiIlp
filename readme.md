@@ -201,10 +201,13 @@ A: If you don't experience solver crashes, you can avoid some overhead by using 
 2.3 Building SCIP with VS 2017
 ------------------------------
 
-1. Open the CMake script provided with SCIP in VS2017 with File -> Open -> CMake.
+1. To obtain SCIP, visit https://scip.zib.de/index.php#download
+   and download the SCIP Optimization Suite.
+
+2. Open the CMake script provided with SCIP in VS2017 with File -> Open -> CMake.
    The correct file is CMakeLists.txt inside the SCIP Optimization Suite folder.
 
-2. You may need to overwrite some compiler flags to compile the Release builds.
+3. You may need to overwrite some compiler flags to compile the Release builds.
    In the files ./scip/CMakeLists.txt and ./soplex/CMakeLists.txt in lines 3 and 4 respectively,
 
    set(CMAKE_CXX_FLAGS_RELWITHDEBINFO "${CMAKE_CXX_FLAGS_DEBUG} ${CMAKE_CXX_FLAGS_RELEASE}")
@@ -213,11 +216,11 @@ A: If you don't experience solver crashes, you can avoid some overhead by using 
    set(CMAKE_C_FLAGS_RELWITHDEBINFO "${CMAKE_C_FLAGS_DEBUG} ${CMAKE_C_FLAGS_RELEASE}")
        -> set(CMAKE_C_FLAGS_RELWITHDEBINFO "${CMAKE_C_FLAGS_RELEASE}")
 
-3. You may want to set different build/install directories.
+4. You may want to set different build/install directories.
 
-4. Compile the needed configurations [32|64 bit] in [Release | Debug] mode.
+5. Compile the needed configurations [32|64 bit] in [Release | Debug] mode.
 
-5. This version of SCIP will run only single-threaded.
+6. This version of SCIP will run only single-threaded.
    To use SCIP multithreaded you will need to compile it with the Ubiquity Generator (UG) framework.
    The UG-framework does only provide makefiles,
    so doing this on Windows is not easy and we can not provide a guideline for it.
