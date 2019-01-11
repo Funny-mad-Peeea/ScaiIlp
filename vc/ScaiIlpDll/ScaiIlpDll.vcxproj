@@ -229,8 +229,8 @@
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="$(SCIP_DIR)/bin/scip.dll">
-		<ExcludedFromBuild Condition="'$(WITH_SCIP)' != 'true'">true</ExcludedFromBuild>
-	</CustomBuild>
+        <ExcludedFromBuild Condition="'$(WITH_SCIP)' != 'true'">true</ExcludedFromBuild>
+    </CustomBuild>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
