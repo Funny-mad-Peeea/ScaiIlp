@@ -223,6 +223,12 @@
       <Message>Copy %(Filename)%(Extension)</Message>
       <Outputs>$(OutDir)\%(Filename)%(Extension)</Outputs>
     </CustomBuild>
+	<CustomBuild Include="$(PTHREAD_DIR)\$(Platform)-$(PlatformToolset)-$(Configuration)\pthread.dll">
+      <FileType>Document</FileType>
+      <Command>copy "%(FullPath)" "$(OutDir)\"</Command>
+      <Message>Copy %(Filename)%(Extension)</Message>
+      <Outputs>$(OutDir)\%(Filename)%(Extension)</Outputs>
+    </CustomBuild>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="ScaiIlp.rc" />

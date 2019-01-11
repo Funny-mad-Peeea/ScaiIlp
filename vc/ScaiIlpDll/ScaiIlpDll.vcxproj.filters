@@ -48,5 +48,8 @@
     <CustomBuild Include="$(SCIP_DIR)/bin/scip.dll">
       <Filter>binaries</Filter>
     </CustomBuild>
+	<CustomBuild Include="$(PTHREAD_DIR)\$(Platform)-$(PlatformToolset)-$(Configuration)\pthread.dll">
+      <Filter>binaries</Filter>
+    </CustomBuild>
   </ItemGroup>
 </Project>
