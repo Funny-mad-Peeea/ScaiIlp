@@ -130,10 +130,10 @@ A: If you don't experience solver crashes, you can avoid some overhead by using 
     * Right-click onto the project "libCbc" in the Solution Explorer and choose
     * "Properties" -> "Configuration Properties".
     * Select "All Configurations" and "All Platforms" and use the following settings:
-        * C/C++     / General      / Additional Include Directories: prepend "$(PTHREAD_DIR);" (without double quotes)
+        * C/C++     / General      / Additional Include Directories: prepend "[Path-to-Pthreads-Root-Directory];" (without double quotes)
         * C/C++     / Preprocessor / Preprocessor Definitions:       prepend "CBC_THREAD;" (without double quotes)
         * Librarian / General      / Additional Dependencies:        pthread.lib
-        * Librarian / General      / Additional Library Directories: $(PTHREAD_DIR)\$(Platform)-$(PlatformToolset)-$(Configuration)
+        * Librarian / General      / Additional Library Directories: [Path-to-Pthreads-Root-Directory]\$(Platform)-$(PlatformToolset)-$(Configuration)
 
 9. Choose "Build" -> "Batch-Build" and select the following projects and configurations:
     * for 32 bit:
@@ -239,9 +239,10 @@ A: If you don't experience solver crashes, you can avoid some overhead by using 
    If your paths do not follow our examples, you may want to manually edit the include and linker directories or the properties.props outside of VS.
 
 4. [OPTIONAL] If you want to support multithreading,
-   specify the location of pthread by setting the environment variable PTHREAD_DIR,
+   specify the root-location of pthread with the User Macro "PTHREAD_DIR" in the properties.props file
    whereby PTHREAD_DIR has to contain the folders "Win32-v141-Release", "Win32-v141-Debug", "x64-v141-Release" and "x64-v141-Debug",
    each containing the appropriate version of pthread.dll.
+   If your structure does not follow this, you may want to manually edit the include and linker directories.
 
 5. [OPTIONAL] If you want to support SCIP,
    specify the location of SCIP by opening the properties.props file
