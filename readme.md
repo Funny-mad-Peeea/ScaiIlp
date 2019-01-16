@@ -130,7 +130,7 @@ A: If you don't experience solver crashes, you can avoid some overhead by using 
     * Right-click onto the project "libCbc" in the Solution Explorer and choose
     * "Properties" -> "Configuration Properties".
     * Select "All Configurations" and "All Platforms" and use the following settings:
-        * C/C++     / General      / Additional Include Directories: prepend "[Path-to-Pthreads-Root-Directory];" (without double quotes)
+        * C/C++     / General      / Additional Include Directories: prepend [Path-to-Pthreads-Root-Directory];
         * C/C++     / Preprocessor / Preprocessor Definitions:       prepend "CBC_THREAD;" (without double quotes)
         * Librarian / General      / Additional Dependencies:        pthread.lib
         * Librarian / General      / Additional Library Directories: [Path-to-Pthreads-Root-Directory]\$(Platform)-$(PlatformToolset)-$(Configuration)

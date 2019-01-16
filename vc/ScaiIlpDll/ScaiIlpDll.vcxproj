@@ -217,13 +217,13 @@
     <ClCompile Include="..\..\src\production\shared_memory_communication.cpp" />
   </ItemGroup>
    <ItemGroup>
-    <CustomBuild Include="$(SCIP_DIR)/bin/scip.dll" Condition="'$(WITH_SCIP)' == 'true'">
+    <CustomBuild Include="$(SCIP_DIR)\bin\scip.dll" Condition="'$(WITH_SCIP)' == 'true'">
       <FileType>Document</FileType>
       <Command>copy "%(FullPath)" "$(OutDir)\"</Command>
       <Message>Copy %(Filename)%(Extension)</Message>
       <Outputs>$(OutDir)\%(Filename)%(Extension)</Outputs>
     </CustomBuild>
-	<CustomBuild Include="$(PTHREAD_DIR)\$(Platform)-$(PlatformToolset)-$(Configuration)\pthread.dll">
+    <CustomBuild Include="$(PTHREAD_DIR)\$(Platform)-$(PlatformToolset)-$(Configuration)\pthread.dll">
       <FileType>Document</FileType>
       <Command>copy "%(FullPath)" "$(OutDir)\"</Command>
       <Message>Copy %(Filename)%(Extension)</Message>
@@ -234,7 +234,7 @@
     <ResourceCompile Include="ScaiIlp.rc" />
   </ItemGroup>
   <ItemGroup>
-    <CustomBuild Include="$(SCIP_DIR)/bin/scip.dll">
+    <CustomBuild Include="$(SCIP_DIR)\bin\scip.dll">
         <ExcludedFromBuild Condition="'$(WITH_SCIP)' != 'true'">true</ExcludedFromBuild>
     </CustomBuild>
   </ItemGroup>
