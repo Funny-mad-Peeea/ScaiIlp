@@ -242,7 +242,7 @@ A: If you don't experience solver crashes, you can avoid some overhead by using 
    specify the root-location of pthread with the User Macro "PTHREAD_DIR" in the properties.props file
    whereby PTHREAD_DIR has to contain the folders "Win32-v141-Release", "Win32-v141-Debug", "x64-v141-Release" and "x64-v141-Debug",
    each containing the appropriate version of pthread.dll.
-   If your structure does not follow this, you may want to manually edit the include and linker directories.
+   If your structure does not follow this, you may want to manually edit the corresponding CustomBuild setting in ScaiIlpDll.vcxproj.
 
 5. [OPTIONAL] If you want to support SCIP,
    specify the location of SCIP by opening the properties.props file
