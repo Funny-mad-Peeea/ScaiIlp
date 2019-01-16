@@ -20,6 +20,8 @@
     <SCIP_INCLUDE_PATH>$(SCIP_DIR)\include</SCIP_INCLUDE_PATH>
     <GUROBI_INCLUDE_PATH>$(GUROBI_DIR)\include</GUROBI_INCLUDE_PATH>
     <GUROBI_LIB_PATH>$(GUROBI_DIR)\lib</GUROBI_LIB_PATH>
+  </PropertyGroup>
+  <ItemDefinitionGroup>
     <ClCompile>
       <PreprocessorDefinitions Condition="'$(WITH_OSI)' == 'true'">WITH_OSI=1;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <PreprocessorDefinitions Condition="'$(WITH_OSI)' != 'true'">WITH_OSI=0;%(PreprocessorDefinitions)</PreprocessorDefinitions>
