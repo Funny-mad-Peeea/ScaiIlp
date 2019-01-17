@@ -17,6 +17,7 @@ namespace ilp_solver
 #endif
     }
 
+
     extern "C" ILPSolverInterface* __stdcall create_solver_gurobi()
     {
 #if (WITH_GUROBI == 1) && (_WIN64 == 1)
@@ -25,6 +26,7 @@ namespace ilp_solver
         return nullptr;
 #endif
     }
+
 
     extern "C" ILPSolverInterface* __stdcall create_solver_scip()
     {

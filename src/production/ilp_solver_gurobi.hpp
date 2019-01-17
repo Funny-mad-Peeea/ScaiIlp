@@ -7,15 +7,21 @@
 #pragma comment(lib, "gurobi80.lib")
 
 #include "ilp_solver_impl.hpp"
-#include "gurobi_c.h"
 
 namespace ilp_solver
 {
+    struct _GRBmodel;
+    typedef struct _GRBmodel GRBmodel;
+
+    struct _GRBenv;
+    typedef struct _GRBenv GRBenv;
+
+
     class ILPSolverGurobi : public ILPSolverImpl
     {
         public:
             ILPSolverGurobi();
-            ~ILPSolverGurobi() noexcept;
+            ~ILPSolverGurobi();
 
             int get_num_constraints() const override;
             int get_num_variables  () const override;
@@ -41,6 +47,7 @@ namespace ilp_solver
             void print_mps_file(const std::string& p_filename) override;
         private:
             GRBmodel* d_model;
+            GRBenv*   d_env;
 
             // An index shortcut.
             std::vector<int> d_indices;
