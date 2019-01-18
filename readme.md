@@ -29,7 +29,7 @@ Table of Contents
 ---------
 
 ScaiIlp can provide an interface to different ILP solvers.
-Currently, we support Cbc and SCIP.
+Currently, we support Cbc, SCIP and Gurobi.
 
 
 1.2 License
@@ -249,11 +249,17 @@ A: If you don't experience solver crashes, you can avoid some overhead by using 
    and setting the User Macro WITH_SCIP to 'true' and SCIP_DIR to the correct path (if your paths follow our examples).
    If your paths do not follow our examples, you may want to manually edit the include and linker directories or the properties.props outside of VS.
 
-6. Specify the location of Boost by opening the properties.props file
+6. [OPTIONAL] If you want to support Gurobi,
+   specify the location of Gurobi by opening the properties.props file
+   and setting the User Macro WITH_GUROBI to 'true' and GUROBI_DIR to the root directory of your Gurobi Installation.
+   Note that current versions of Gurobi only support 64-bit compilation,
+   and that you require a valid Gurobi license to run ScaiILP with Gurobi.
+
+7. Specify the location of Boost by opening the properties.props file
    and setting the User Macros BOOST_VERSION and BOOST_DIR (if your paths follow our examples)
    or by setting the BOOST_INCLUDE_PATH and BOOST_LIB_PATH manually to the correct paths on your system outside of VS.
 
-7. Build ScaiIlpDll, ScaiIlpExe, and UnitTest.
+8. Build ScaiIlpDll, ScaiIlpExe, and UnitTest.
 
 
 3 Code Structure
@@ -265,8 +271,9 @@ A: If you don't experience solver crashes, you can avoid some overhead by using 
 The Visual Studio Solution (.sln) contains three projects:
 
 * ScaiIlpDll creates ScaiIlpDll.dll
-    * ScaiIlpDll.dll contains the Cbc solver, optionally the SCIP solver and a stub to communicate with ScaiIlpExe.exe
+    * ScaiIlpDll.dll contains the Cbc solver, optionally the SCIP solver, the Gurobi solver, and a stub to communicate with ScaiIlpExe.exe
     * It can be linked dynamically into other programs (which may require the dynamic libraries of other included solvers, too).
+    * The required dynamic libraries are automatically copied to the output folder when building ScaiIlpDll.
 
 * ScaiIlpExe creates ScaiIlpExe.exe
     * ScaiIlpExe.exe links ScaiIlpDll.dll dynamically to provide the Cbc solver.
@@ -335,7 +342,10 @@ executable (in the same directory, should be ScaiIlpExe.exe, unless you rename i
         |                       The solution getter methods of ILPSolverStub simply query ILPSolutionData.
         |
         |-> ILPSolverSCIP:      Final. To use SCIP.
-                                Implements the solver specific methods for the SCIP solver.
+        |                       Implements the solver specific methods for the SCIP solver.
+        |
+        |-> ILPSolverGurobi:    Final. To use Gurobi.
+                                Implements the solver specific methods for the Gurobi solver.
 
 
 3.4 Adding a New Solver

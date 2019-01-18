@@ -680,6 +680,7 @@ int create_ilp_test_suite()
     return 0;
 }
 
+
 // Automatic registration of the test suites.
 namespace
 {
