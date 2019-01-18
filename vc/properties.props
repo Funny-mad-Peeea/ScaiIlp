@@ -10,7 +10,7 @@
     <COIN_DIR>$(optsoft)\Cbc-2.9.9_vc$(PlatformToolsetVersion)_full\</COIN_DIR>
     <WITH_SCIP>false</WITH_SCIP>
     <SCIP_DIR>$(optsoft)\SCIP\$(PlatformTarget)-$(Configuration)</SCIP_DIR>
-    <WITH_GUROBI>true</WITH_GUROBI>
+    <WITH_GUROBI>false</WITH_GUROBI>
     <GUROBI_DIR>$(optsoft)\Gurobi-8.0.1</GUROBI_DIR>
     <BOOST_LIB_PATH>$(BOOST_DIR)\lib</BOOST_LIB_PATH>
     <BOOST_INCLUDE_PATH>$(BOOST_DIR)\include\boost-$(BOOST_VERSION)</BOOST_INCLUDE_PATH>

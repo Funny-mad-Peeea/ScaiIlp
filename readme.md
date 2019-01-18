@@ -271,7 +271,7 @@ A: If you don't experience solver crashes, you can avoid some overhead by using 
 The Visual Studio Solution (.sln) contains three projects:
 
 * ScaiIlpDll creates ScaiIlpDll.dll
-    * ScaiIlpDll.dll contains the Cbc solver, optionally the SCIP solver, the Gurobi solver, and a stub to communicate with ScaiIlpExe.exe
+    * ScaiIlpDll.dll contains the Cbc solver, optionally the SCIP solver, optionally the Gurobi solver, and a stub to communicate with ScaiIlpExe.exe
     * It can be linked dynamically into other programs (which may require the dynamic libraries of other included solvers, too).
     * The required dynamic libraries are automatically copied to the output folder when building ScaiIlpDll.
 
