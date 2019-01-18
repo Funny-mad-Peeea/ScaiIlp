@@ -148,7 +148,7 @@ namespace ilp_solver
 
     void ILPSolverGurobi::set_deterministic_mode(bool)
     {
-        // Gurobi is always deterministic if not using concurrent MIP solving mode, which we do not do.
+        // Gurobi is always deterministic (unless using concurrent MIP solving mode, which we do not do).
         // Therefore, this function is empty.
     }
 

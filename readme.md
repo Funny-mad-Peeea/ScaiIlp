@@ -29,7 +29,7 @@ Table of Contents
 ---------
 
 ScaiIlp can provide an interface to different ILP solvers.
-Currently, we support Cbc, SCIP and Gurobi.
+Currently, we support Cbc, SCIP, and Gurobi.
 
 
 1.2 License
@@ -253,7 +253,7 @@ A: If you don't experience solver crashes, you can avoid some overhead by using 
    specify the location of Gurobi by opening the properties.props file
    and setting the User Macro WITH_GUROBI to 'true' and GUROBI_DIR to the root directory of your Gurobi Installation.
    Note that current versions of Gurobi only support 64-bit compilation,
-   and that you require a valid Gurobi license to run ScaiILP with Gurobi.
+   and that you need a valid Gurobi license to run ScaiILP with Gurobi.
 
 7. Specify the location of Boost by opening the properties.props file
    and setting the User Macros BOOST_VERSION and BOOST_DIR (if your paths follow our examples)
@@ -271,7 +271,8 @@ A: If you don't experience solver crashes, you can avoid some overhead by using 
 The Visual Studio Solution (.sln) contains three projects:
 
 * ScaiIlpDll creates ScaiIlpDll.dll
-    * ScaiIlpDll.dll contains the Cbc solver, optionally the SCIP solver, optionally the Gurobi solver, and a stub to communicate with ScaiIlpExe.exe
+    * ScaiIlpDll.dll contains the Cbc solver and a stub to communicate with ScaiIlpExe.exe.
+      Optionally, it links dynamically to the SCIP solver and the Gurobi solver.
     * It can be linked dynamically into other programs (which may require the dynamic libraries of other included solvers, too).
     * The required dynamic libraries are automatically copied to the output folder when building ScaiIlpDll.
 
