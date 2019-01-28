@@ -1,5 +1,4 @@
-#ifndef _ILP_SOLVER_CBC_HPP
-#define _ILP_SOLVER_CBC_HPP
+#pragma once
 
 #if WITH_CBC == 1
 
@@ -7,12 +6,9 @@ static_assert(WITH_OSI == 1,
     "CBC requires the Osi-Interface and the CoinUtils contained therein. "
     "Please set WITH_OSI=1 or deactivate CBC with WITH_CBC=0.");
 
-// Link with the required CBC Libraries.
-#pragma comment(lib, "libCbc.lib")
-#pragma comment(lib, "libClp.lib")
-#pragma comment(lib, "libCgl.lib")
-
 #include "ilp_solver_osi_model.hpp" // Including this also links with the required COIN Libraries.
+
+class OsiSolverInterface;
 
 #pragma warning(push)
 #pragma warning(disable : 5033) // silence warning in CBC concerning the deprecated keyword 'register'
@@ -21,7 +17,11 @@ static_assert(WITH_OSI == 1,
 #include "OsiClpSolverInterface.hpp"
 #pragma warning(pop)
 
-class OsiSolverInterface;
+// Link with the required CBC Libraries.
+#pragma comment(lib, "libCbc.lib")
+#pragma comment(lib, "libClp.lib")
+#pragma comment(lib, "libCgl.lib")
+
 
 namespace ilp_solver
 {
@@ -58,7 +58,5 @@ namespace ilp_solver
             void set_objective_sense_impl(ObjectiveSense p_sense) override;
     };
 }
-
-#endif
 
 #endif

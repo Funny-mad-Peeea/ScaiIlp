@@ -1,20 +1,21 @@
-#ifndef _ILP_SOLVER_OSI_MODEL_HPP
-#define _ILP_SOLVER_OSI_MODEL_HPP
+#pragma once
 
 #if WITH_OSI == 1
+
+#include "ilp_solver_impl.hpp"
+
+class OsiSolverInterface;
+
+#include "CoinModel.hpp"
 
 // Link with the CoinUtils and Osi Libraries.
 #pragma comment(lib, "libCoinUtils.lib")
 #pragma comment(lib, "libOsi.lib")
 #pragma comment(lib, "libOsiClp.lib")
 
-#include "ilp_solver_impl.hpp"
-#include "CoinModel.hpp"
-
 #include <string>
 #include <vector>
 
-class OsiSolverInterface;
 
 namespace ilp_solver
 {
@@ -50,7 +51,5 @@ namespace ilp_solver
                 const std::vector<int>* p_col_indices = nullptr) override;
     };
 }
-
-#endif
 
 #endif
