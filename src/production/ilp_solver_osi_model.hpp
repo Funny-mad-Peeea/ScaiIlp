@@ -4,8 +4,6 @@
 
 #include "ilp_solver_impl.hpp"
 
-class OsiSolverInterface;
-
 #include "CoinModel.hpp"
 
 // Link with the CoinUtils and Osi Libraries.
@@ -15,6 +13,8 @@ class OsiSolverInterface;
 
 #include <string>
 #include <vector>
+
+class OsiSolverInterface;
 
 
 namespace ilp_solver

@@ -8,8 +8,6 @@ static_assert(WITH_OSI == 1,
 
 #include "ilp_solver_osi_model.hpp" // Including this also links with the required COIN Libraries.
 
-class OsiSolverInterface;
-
 #pragma warning(push)
 #pragma warning(disable : 5033) // silence warning in CBC concerning the deprecated keyword 'register'
 #pragma warning(disable : 4309) // silence warning in CBC concerning truncations of constant values in 64 bit.
@@ -21,6 +19,8 @@ class OsiSolverInterface;
 #pragma comment(lib, "libCbc.lib")
 #pragma comment(lib, "libClp.lib")
 #pragma comment(lib, "libCgl.lib")
+
+class OsiSolverInterface;
 
 
 namespace ilp_solver
