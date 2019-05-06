@@ -273,11 +273,7 @@ namespace ilp_solver
     {
         // uses the extension of p_path, so this has to be ".mps".
         assert ( p_path.substr(p_path.rfind('.'), std::string::npos) == ".mps" );
-#if DO_FORWARD_NAME
         call_scip(SCIPwriteOrigProblem, d_scip, p_path.c_str(), nullptr, FALSE); // The bool is "generic names"
-#else
-        call_scip(SCIPwriteOrigProblem, d_scip, p_path.c_str(), nullptr, TRUE);
-#endif
     }
 
 
