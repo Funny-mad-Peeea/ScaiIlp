@@ -1,5 +1,10 @@
 #if WITH_CBC == 1
 
+// Link with the required CBC Libraries.
+#pragma comment(lib, "libCbc.lib")
+#pragma comment(lib, "libClp.lib")
+#pragma comment(lib, "libCgl.lib")
+
 #include "ilp_solver_cbc.hpp"
 
 #include "CglTreeInfo.hpp" // Needed to deal with the probing_info memory leak in Cbc
